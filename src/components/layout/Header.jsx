@@ -1,0 +1,67 @@
+import Link from "next/link";
+import Image from "next/image";
+
+import { ROUTES } from "@/lib/constants/routes";
+import { COLORS } from "@/lib/constants/colors";
+
+function GuestMenu() {
+  return (
+    <div className="flex items-center gap-[30px]">
+      <Link href={ROUTES.LOGIN} className="text-[14px] font-medium text-[#DDDDDD]">
+        로그인
+      </Link>
+
+      <Link href={ROUTES.SIGNUP} className="text-[14px] font-medium text-[#DDDDDD]">
+        회원가입
+      </Link>
+    </div>
+  );
+}
+
+function UserMenu() {
+  const point = 1540;
+  const nickname = "유디";
+
+  const hasUnreadNotification = true;
+
+  return (
+    <div className="flex items-center gap-[30px]">
+      <span className="text-[14px] font-bold text-[#DDDDDD]">{point.toLocaleString()} P</span>
+
+      <button type="button" aria-label="알림" className="flex items-center justify-center">
+        <Image
+          src={
+            hasUnreadNotification ? "/img/icons/alarm_active.png" : "/img/icons/alarm_default.png"
+          }
+          alt="알림"
+          width={24}
+          height={24}
+        />
+      </button>
+
+      <span className="text-[18px] font-bold text-[#DDDDDD]">{nickname}</span>
+
+      <div className="h-[24px] w-px bg-[#5A5A5A]" />
+
+      <button type="button" className="text-[14px] font-normal text-[#5A5A5A]">
+        로그아웃
+      </button>
+    </div>
+  );
+}
+
+export default function Header() {
+  const isLoggedIn = false;
+
+  return (
+    <header className="h-[80px] bg-[#0F0F0F]">
+      <div className="mx-auto flex h-full max-w-[1920px] items-center justify-between px-[80px]">
+        <Link href={ROUTES.HOME}>
+          <Image src="/img/logos/logo.png" alt="최애의 포토" width={138} height={28} priority />
+        </Link>
+
+        {isLoggedIn ? <UserMenu /> : <GuestMenu />}
+      </div>
+    </header>
+  );
+}
