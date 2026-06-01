@@ -49,3 +49,9 @@ a {
 .font-brand {
   font-family: "BaskinRobbins", "Noto Sans KR", sans-serif;
 }
+
+@theme {
+  --breakpoint-mobile: 375px;
+  --breakpoint-tablet: 744px;
+  --breakpoint-desktop: 1200px;
+}
