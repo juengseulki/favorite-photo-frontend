@@ -11,10 +11,16 @@ const SIZE_CLASSES = {
   searchSm: "h-[45px] w-[345px]",
 };
 
+const LABEL_SIZE_CLASSES = {
+  md: "text-[16px]",
+  lg: "text-[20px]",
+};
+
 export default function Input({
   label,
   error,
   size = "md",
+  labelSize = "md",
   type = "text",
   variant = "text",
   className = "",
@@ -27,7 +33,9 @@ export default function Input({
 
   return (
     <label className={`flex flex-col gap-[10px] ${className}`}>
-      {label && <span className="text-[14px] font-bold text-white">{label}</span>}
+      {label && (
+        <span className={`${LABEL_SIZE_CLASSES[labelSize]} font-bold text-white`}>{label}</span>
+      )}
 
       <div
         className={`
@@ -62,7 +70,7 @@ export default function Input({
         {icon && icon}
       </div>
 
-      {error && <p className="text-[12px] text-red-500">{error}</p>}
+      {error && <p className={`${LABEL_SIZE_CLASSES[labelSize]} text-red-500`}>{error}</p>}
     </label>
   );
 }
