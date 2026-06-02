@@ -1,4 +1,5 @@
 import QueryProvider from "@/providers/QueryProvider";
+import { AuthProvider } from "@/providers/AuthProvider";
 import Header from "@/components/layout/Header";
 import "./globals.css";
 
@@ -12,8 +13,10 @@ export default function RootLayout({ children }) {
     <html lang="ko">
       <body className="min-h-screen bg-gray-50 text-gray-900">
         <QueryProvider>
-          <Header />
-          <main className="min-h-[calc(100vh-128px)]">{children}</main>
+          <AuthProvider>
+            <Header />
+            <main className="min-h-[calc(100vh-128px)]">{children}</main>
+          </AuthProvider>
         </QueryProvider>
       </body>
     </html>

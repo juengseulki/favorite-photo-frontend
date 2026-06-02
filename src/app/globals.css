@@ -32,6 +32,15 @@
   box-sizing: border-box;
 }
 
+/* 브라우저 자동완성 시 배경색 강제 유지 */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0 1000px #161616 inset !important;
+  -webkit-text-fill-color: #dddddd !important;
+  caret-color: #dddddd;
+}
+
 html,
 body {
   margin: 0;
