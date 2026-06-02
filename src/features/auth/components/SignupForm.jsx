@@ -29,6 +29,10 @@ export default function SignupForm() {
 
   const validate = () => {
     const next = {};
+    if (!form.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email))
+      next.email = "유효한 이메일을 입력해 주세요.";
+    if (!form.nickname || form.nickname.length < 2 || form.nickname.length > 12)
+      next.nickname = "닉네임은 2자 이상 12자 이하로 입력해 주세요.";
     if (form.password.length < 8) next.password = "비밀번호는 8자 이상 입력해 주세요.";
     if (form.password !== form.passwordConfirm)
       next.passwordConfirm = "비밀번호가 일치하지 않습니다.";
