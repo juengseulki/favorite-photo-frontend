@@ -1,8 +1,9 @@
 export const API_ROUTES = {
   AUTH: {
-    SIGNUP: "/auth/signup",
+    SIGNUP: "/auth/register",
     LOGIN: "/auth/login",
     LOGOUT: "/auth/logout",
+    REFRESH: "/auth/refresh",
     ME: "/auth/me",
   },
   CARDS: {
