@@ -12,4 +12,4 @@ export const refreshToken = () => axiosInstance.post(API_ROUTES.AUTH.REFRESH);
 export const getMe = () => axiosInstance.get(API_ROUTES.AUTH.ME);
 
 export const completeGoogleSignup = (body) =>
-  axiosInstance.post(API_ROUTES.AUTH.GOOGLE_COMPLETE, body);
+  axiosInstance.post(API_ROUTES.AUTH.OAUTH_COMPLETE, body);

@@ -8,7 +8,7 @@ import { loginUser } from "@/lib/api/authApi";
 import { useAuth } from "@/providers/AuthProvider";
 import PrimaryButton from "@/components/common/PrimaryButton";
 import AuthInput from "./AuthInput";
-import GoogleButton from "./GoogleButton";
+import SocialButtons from "./SocialButtons";
 
 export default function LoginForm() {
   const router = useRouter();
@@ -61,7 +61,7 @@ export default function LoginForm() {
         {isLoading ? "로그인 중..." : "로그인"}
       </PrimaryButton>
 
-      <GoogleButton label="Google로 시작하기" />
+      <SocialButtons />
 
       <p className="text-center text-[16px] text-white">
         최애의 포토가 처음이신가요?{" "}

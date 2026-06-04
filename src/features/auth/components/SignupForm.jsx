@@ -8,7 +8,7 @@ import { createUser } from "@/lib/api/authApi";
 import { useAuth } from "@/providers/AuthProvider";
 import PrimaryButton from "@/components/common/PrimaryButton";
 import AuthInput from "./AuthInput";
-import GoogleButton from "./GoogleButton";
+import SocialButtons from "./SocialButtons";
 
 export default function SignupForm() {
   const router = useRouter();
@@ -117,7 +117,7 @@ export default function SignupForm() {
         {isLoading ? "가입 중..." : "가입하기"}
       </PrimaryButton>
 
-      <GoogleButton label="Google로 시작하기" />
+      <SocialButtons />
 
       <p className="text-center text-[16px] text-white">
         이미 최애의포토 회원이신가요?{" "}

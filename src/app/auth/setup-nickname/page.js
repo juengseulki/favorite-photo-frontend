@@ -15,6 +15,7 @@ function SetupNicknameForm() {
   const searchParams = useSearchParams();
   const { login } = useAuth();
 
+  const provider = searchParams.get("provider") ?? "GOOGLE";
   const providerAccountId = searchParams.get("providerAccountId");
   const email = searchParams.get("email");
 
@@ -37,7 +38,7 @@ function SetupNicknameForm() {
     setError("");
     setIsLoading(true);
     try {
-      const res = await completeGoogleSignup({ providerAccountId, email, nickname });
+      const res = await completeGoogleSignup({ provider, providerAccountId, email, nickname });
       login(res.data.data);
       router.replace(ROUTES.HOME);
     } catch (err) {
