@@ -35,8 +35,9 @@ export default function LoginForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="flex w-[440px] flex-col gap-4">
+    <form onSubmit={handleSubmit} className="flex w-[520px] flex-col gap-4">
       <AuthInput
+        label="이메일"
         type="email"
         placeholder="이메일을 입력해 주세요"
         value={email}
@@ -45,6 +46,7 @@ export default function LoginForm() {
       />
 
       <AuthInput
+        label="비밀번호"
         type="password"
         placeholder="비밀번호를 입력해 주세요"
         value={password}
@@ -52,15 +54,15 @@ export default function LoginForm() {
         required
       />
 
-      {error && <p className="text-[14px] text-[#FF483D]">{error}</p>}
+      {error && <p className="text-[13px] text-[#FF483D]">{error}</p>}
 
-      <PrimaryButton type="submit" disabled={isLoading} className="mt-2">
+      <PrimaryButton type="submit" disabled={isLoading} className="!w-full mt-2">
         {isLoading ? "로그인 중..." : "로그인"}
       </PrimaryButton>
 
-      <p className="text-center text-[14px] text-[#A4A4A4]">
+      <p className="text-center text-[16px] text-white">
         최애의 포토가 처음이신가요?{" "}
-        <Link href={ROUTES.SIGNUP} className="font-bold text-[#DDDDDD] underline">
+        <Link href={ROUTES.SIGNUP} className="text-[#EFFF04] underline">
           회원가입하기
         </Link>
       </p>
