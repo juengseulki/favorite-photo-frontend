@@ -35,7 +35,7 @@ export default function LoginForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="flex w-[520px] flex-col gap-4">
+    <form onSubmit={handleSubmit} className="flex w-[520px] flex-col gap-[34px]">
       <AuthInput
         label="이메일"
         type="email"
@@ -54,9 +54,9 @@ export default function LoginForm() {
         required
       />
 
-      {error && <p className="text-[13px] text-[#FF483D]">{error}</p>}
+      {error && <p className="-mt-[24px] text-[13px] text-[#FF483D]">{error}</p>}
 
-      <PrimaryButton type="submit" disabled={isLoading} className="!w-full mt-2">
+      <PrimaryButton type="submit" disabled={isLoading} className="!w-full">
         {isLoading ? "로그인 중..." : "로그인"}
       </PrimaryButton>
 

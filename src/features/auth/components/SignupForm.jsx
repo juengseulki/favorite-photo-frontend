@@ -69,7 +69,7 @@ export default function SignupForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="flex w-[520px] flex-col gap-4">
+    <form onSubmit={handleSubmit} className="flex w-[520px] flex-col gap-[34px]">
       <AuthInput
         label="이메일"
         type="email"
@@ -110,9 +110,9 @@ export default function SignupForm() {
         required
       />
 
-      {errors.general && <p className="text-[13px] text-[#FF483D]">{errors.general}</p>}
+      {errors.general && <p className="-mt-[24px] text-[13px] text-[#FF483D]">{errors.general}</p>}
 
-      <PrimaryButton type="submit" disabled={isLoading} className="!w-full mt-2">
+      <PrimaryButton type="submit" disabled={isLoading} className="!w-full">
         {isLoading ? "가입 중..." : "가입하기"}
       </PrimaryButton>
 
