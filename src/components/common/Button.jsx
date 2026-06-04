@@ -9,12 +9,12 @@ export default function Button({
 }) {
   const variants = {
     primary: `
-      bg-[#EFFf04]
+      bg-main
       text-black
     `,
 
     secondary: `
-      border border-[#EEEEEE]
+      border border-gray-100
       bg-transparent
       text-white
     `,
@@ -26,6 +26,12 @@ export default function Button({
   };
 
   const sizes = {
+    xs: `
+      h-[40px]
+      w-[72.5px]
+      text-[12px]
+    `,
+
     sm: `
       h-[60px]
       w-[170px]
@@ -67,8 +73,8 @@ export default function Button({
         hover:brightness-90
 
         disabled:cursor-not-allowed
-        disabled:bg-[#5A5A5A]
-        disabled:text-[#A4A4A4]
+        disabled:bg-gray-400
+        disabled:text-gray-300
 
         ${variants[variant]}
         ${sizes[size]}

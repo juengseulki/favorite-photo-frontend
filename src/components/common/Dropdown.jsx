@@ -35,7 +35,6 @@ export default function Dropdown({
   className = "",
 }) {
   const [open, setOpen] = useState(false);
-
   const dropdownRef = useRef(null);
 
   const selected = options.find((option) => option.value === value);
@@ -55,14 +54,7 @@ export default function Dropdown({
   return (
     <div ref={dropdownRef} className={`relative flex flex-col gap-[10px] ${className}`}>
       {label && (
-        <span
-          className={`
-            font-bold text-white
-            ${LABEL_SIZE_CLASSES[labelSize]}
-          `}
-        >
-          {label}
-        </span>
+        <span className={`font-bold text-white ${LABEL_SIZE_CLASSES[labelSize]}`}>{label}</span>
       )}
 
       <button
@@ -70,21 +62,17 @@ export default function Dropdown({
         onClick={() => setOpen((prev) => !prev)}
         className={`
           flex items-center justify-between
-
           rounded-[2px]
           border
-          bg-[#0F0F0F]
+          bg-black
           px-5
-
           text-[14px]
           text-white
-
           ${SIZE_CLASSES[size]}
-
-          ${error ? "border-red-500" : "border-[#DDDDDD]"}
+          ${error ? "border-red" : "border-gray-200"}
         `}
       >
-        <span className={selected ? "text-white" : "text-[#777777]"}>
+        <span className={selected ? "text-white" : "text-gray-300"}>
           {selected?.label || placeholder}
         </span>
 
@@ -103,17 +91,13 @@ export default function Dropdown({
             top-full
             z-30
             mt-2
-
+            h-auto
             overflow-hidden
-
             rounded-[2px]
             border
-            border-[#5A5A5A]
-
-            bg-[#161616]
-
+            border-gray-400
+            bg-gray-500
             ${SIZE_CLASSES[size]}
-            h-auto
           `}
         >
           {options.map((option) => (
@@ -128,12 +112,10 @@ export default function Dropdown({
                   h-[50px]
                   w-full
                   px-5
-
                   text-left
                   text-[14px]
                   text-white
-
-                  hover:bg-[#333333]
+                  hover:bg-gray-450
                 "
               >
                 {option.label}
@@ -143,7 +125,7 @@ export default function Dropdown({
         </ul>
       )}
 
-      {error && <p className="text-[12px] text-red-500">{error}</p>}
+      {error && <p className="text-[12px] text-red">{error}</p>}
     </div>
   );
 }

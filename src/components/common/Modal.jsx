@@ -48,8 +48,8 @@ export default function Modal({
           max-h-[90vh]
           overflow-y-auto
           rounded-[2px]
-          border border-[#5A5A5A]
-          bg-[#161616]
+          border border-gray-400
+          bg-gray-500
           px-6 py-8
           text-white
           tablet:px-10

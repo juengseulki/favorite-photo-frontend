@@ -52,13 +52,20 @@ export default function FileInput({
       <div className={`flex items-center gap-[10px] ${SIZE_CLASSES[size]}`}>
         <div
           className={`
-            flex h-[60px] items-center rounded-[2px] border bg-[#0F0F0F]
-            px-5 text-[14px] text-white
+            flex
+            h-[60px]
+            items-center
+            rounded-[2px]
+            border
+            bg-black
+            px-5
+            text-[14px]
+            text-white
             ${INPUT_SIZE_CLASSES[size]}
-            ${error ? "border-red-500" : "border-[#DDDDDD]"}
+            ${error ? "border-red" : "border-gray-200"}
           `}
         >
-          <span className={fileName ? "truncate text-white" : "truncate text-[#777777]"}>
+          <span className={fileName ? "truncate text-white" : "truncate text-gray-300"}>
             {fileName || "사진 업로드"}
           </span>
         </div>
@@ -67,8 +74,14 @@ export default function FileInput({
           type="button"
           onClick={handleClick}
           className="
-            h-[60px] w-[120px] rounded-[2px] border border-[#EFFF04]
-            text-[14px] font-bold text-[#EFFF04]
+            h-[60px]
+            w-[120px]
+            rounded-[2px]
+            border
+            border-main
+            text-[14px]
+            font-bold
+            text-main
           "
         >
           파일 선택
@@ -77,7 +90,7 @@ export default function FileInput({
         <input ref={inputRef} type="file" accept="image/*" hidden onChange={handleChange} />
       </div>
 
-      {error && <p className="text-[12px] text-red-500">{error}</p>}
+      {error && <p className="text-[12px] text-red">{error}</p>}
     </div>
   );
 }

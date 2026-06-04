@@ -26,17 +26,24 @@ export default function Textarea({
 
       <textarea
         className={`
-          resize-none rounded-[2px] border bg-[#0F0F0F]
-          px-5 py-[18px] text-[14px] text-white outline-none
-          placeholder:text-[#777777]
+          resize-none
+          rounded-[2px]
+          border
+          bg-black
+          px-5
+          py-[18px]
+          text-[14px]
+          text-white
+          outline-none
+          placeholder:text-gray-300
           ${SIZE_CLASSES[size]}
-          ${error ? "border-red-500" : "border-[#DDDDDD]"}
+          ${error ? "border-red" : "border-gray-200"}
           ${textareaClassName}
         `}
         {...props}
       />
 
-      {error && <p className="text-[12px] text-red-500">{error}</p>}
+      {error && <p className="text-[12px] text-red">{error}</p>}
     </label>
   );
 }

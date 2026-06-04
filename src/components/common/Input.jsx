@@ -42,10 +42,10 @@ export default function Input({
           flex items-center
           rounded-[2px]
           border
-          bg-[#0F0F0F]
+          bg-black
           px-5
           ${SIZE_CLASSES[size]}
-          ${error ? "border-red-500" : "border-[#DDDDDD]"}
+          ${error ? "border-red" : "border-gray-200"}
           ${inputClassName}
         `}
       >
@@ -58,7 +58,7 @@ export default function Input({
             text-[14px]
             text-white
             outline-none
-            placeholder:text-[#777777]
+            placeholder:text-gray-300
           "
           {...props}
         />
@@ -70,7 +70,7 @@ export default function Input({
         {icon && icon}
       </div>
 
-      {error && <p className={`${LABEL_SIZE_CLASSES[labelSize]} text-red-500`}>{error}</p>}
+      {error && <p className={`${LABEL_SIZE_CLASSES[labelSize]} text-red`}>{error}</p>}
     </label>
   );
 }
