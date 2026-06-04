@@ -5,6 +5,8 @@ export const API_ROUTES = {
     LOGOUT: "/auth/logout",
     REFRESH: "/auth/refresh",
     ME: "/auth/me",
+    GOOGLE: "/auth/google",
+    GOOGLE_COMPLETE: "/auth/google/complete",
   },
   CARDS: {
     BASE: "/cards",
