@@ -1,11 +1,10 @@
+import Image from "next/image";
 import LoginForm from "@/features/auth/components/LoginForm";
 
 export default function LoginPage() {
   return (
-    <div className="flex min-h-[calc(100vh-80px)] flex-col items-center justify-center gap-10">
-      <h1 className="font-brand text-[32px] font-bold text-[#DDDDDD]">
-        최애<span className="text-[#FFFF04]">의</span>포토
-      </h1>
+    <div className="flex min-h-[calc(100vh-80px)] flex-col items-center justify-center gap-[60px]">
+      <Image src="/img/logos/logo.png" alt="최애의 포토" width={331} height={60} priority />
       <LoginForm />
     </div>
   );

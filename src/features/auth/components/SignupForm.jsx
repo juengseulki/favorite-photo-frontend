@@ -8,6 +8,7 @@ import { createUser } from "@/lib/api/authApi";
 import { useAuth } from "@/providers/AuthProvider";
 import PrimaryButton from "@/components/common/PrimaryButton";
 import AuthInput from "./AuthInput";
+import GoogleButton from "./GoogleButton";
 
 export default function SignupForm() {
   const router = useRouter();
@@ -69,8 +70,9 @@ export default function SignupForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="flex w-[440px] flex-col gap-4">
+    <form onSubmit={handleSubmit} className="flex w-[520px] flex-col gap-[34px]">
       <AuthInput
+        label="이메일"
         type="email"
         placeholder="이메일을 입력해 주세요"
         value={form.email}
@@ -80,6 +82,7 @@ export default function SignupForm() {
       />
 
       <AuthInput
+        label="닉네임"
         type="text"
         placeholder="닉네임을 입력해 주세요"
         value={form.nickname}
@@ -89,6 +92,7 @@ export default function SignupForm() {
       />
 
       <AuthInput
+        label="비밀번호"
         type="password"
         placeholder="8자 이상 입력해 주세요"
         value={form.password}
@@ -98,6 +102,7 @@ export default function SignupForm() {
       />
 
       <AuthInput
+        label="비밀번호 확인"
         type="password"
         placeholder="비밀번호를 한번 더 입력해 주세요"
         value={form.passwordConfirm}
@@ -106,15 +111,17 @@ export default function SignupForm() {
         required
       />
 
-      {errors.general && <p className="text-[14px] text-[#FF483D]">{errors.general}</p>}
+      {errors.general && <p className="-mt-[24px] text-[13px] text-[#FF483D]">{errors.general}</p>}
 
-      <PrimaryButton type="submit" disabled={isLoading} className="mt-2">
+      <PrimaryButton type="submit" disabled={isLoading} className="!w-full">
         {isLoading ? "가입 중..." : "가입하기"}
       </PrimaryButton>
 
-      <p className="text-center text-[14px] text-[#A4A4A4]">
+      <GoogleButton label="Google로 시작하기" />
+
+      <p className="text-center text-[16px] text-white">
         이미 최애의포토 회원이신가요?{" "}
-        <Link href={ROUTES.LOGIN} className="font-bold text-[#DDDDDD] underline">
+        <Link href={ROUTES.LOGIN} className="text-[#EFFF04] underline">
           로그인하기
         </Link>
       </p>
