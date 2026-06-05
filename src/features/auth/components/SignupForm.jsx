@@ -70,7 +70,10 @@ export default function SignupForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="flex w-[520px] flex-col gap-[34px]">
+    <form
+      onSubmit={handleSubmit}
+      className="flex w-full max-w-[520px] flex-col gap-[34px] px-4 tablet:px-0"
+    >
       <AuthInput
         label="이메일"
         type="email"
@@ -119,7 +122,7 @@ export default function SignupForm() {
 
       <SocialButtons mode="signup" />
 
-      <p className="text-center text-[16px] text-white">
+      <p className="text-center text-[14px] text-white tablet:text-[16px]">
         이미 최애의포토 회원이신가요?{" "}
         <Link href={ROUTES.LOGIN} className="text-[#EFFF04] underline">
           로그인하기

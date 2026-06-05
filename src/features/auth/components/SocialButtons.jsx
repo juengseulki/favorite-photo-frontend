@@ -10,7 +10,7 @@ function SocialButton({ href, style, icon, label }) {
     <a
       href={href}
       style={style}
-      className="flex h-[60px] w-full items-center justify-center gap-3 rounded-[2px] text-[18px] font-bold transition hover:brightness-95 active:brightness-90"
+      className="flex h-[60px] w-full items-center justify-center gap-3 rounded-[2px] text-[15px] font-bold transition hover:brightness-95 active:brightness-90 tablet:text-[18px]"
     >
       {icon}
       {label}

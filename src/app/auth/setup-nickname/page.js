@@ -49,7 +49,10 @@ function SetupNicknameForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="flex w-[520px] flex-col gap-[34px]">
+    <form
+      onSubmit={handleSubmit}
+      className="flex w-full max-w-[520px] flex-col gap-[34px] px-4 tablet:px-0"
+    >
       <div className="flex flex-col gap-2">
         <p className="text-[18px] text-white">서비스에서 사용할 닉네임을 입력해 주세요</p>
         {email && (
@@ -78,8 +81,15 @@ function SetupNicknameForm() {
 
 export default function SetupNicknamePage() {
   return (
-    <div className="flex min-h-[calc(100vh-80px)] flex-col items-center justify-center gap-[60px]">
-      <Image src="/img/logos/logo.png" alt="최애의 포토" width={331} height={60} priority />
+    <div className="flex min-h-[calc(100vh-80px)] flex-col items-center justify-center gap-8 px-4 py-10 tablet:gap-[60px] tablet:px-0">
+      <Image
+        src="/img/logos/logo.png"
+        alt="최애의 포토"
+        width={331}
+        height={60}
+        className="h-auto w-[200px] tablet:w-[331px]"
+        priority
+      />
       <Suspense fallback={null}>
         <SetupNicknameForm />
       </Suspense>

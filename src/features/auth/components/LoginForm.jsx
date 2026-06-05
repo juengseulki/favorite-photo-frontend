@@ -48,7 +48,10 @@ export default function LoginForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="flex w-[520px] flex-col gap-[34px]">
+    <form
+      onSubmit={handleSubmit}
+      className="flex w-full max-w-[520px] flex-col gap-[34px] px-4 tablet:px-0"
+    >
       <Suspense fallback={null}>
         <OAuthErrorAlert onError={setError} />
       </Suspense>
@@ -79,7 +82,7 @@ export default function LoginForm() {
 
       <SocialButtons />
 
-      <p className="text-center text-[16px] text-white">
+      <p className="text-center text-[14px] text-white tablet:text-[16px]">
         최애의 포토가 처음이신가요?{" "}
         <Link href={ROUTES.SIGNUP} className="text-[#EFFF04] underline">
           회원가입하기
