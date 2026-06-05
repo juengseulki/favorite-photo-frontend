@@ -5,19 +5,12 @@ const BASE_URL = (process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:5000
   "",
 );
 
-function SocialButton({ href, bgColor, textColor, borderColor, icon, label }) {
+function SocialButton({ href, style, icon, label }) {
   return (
     <a
       href={href}
-      className="flex h-[60px] w-full items-center justify-center gap-3 rounded-[2px] transition hover:brightness-95 active:brightness-90"
-      style={{
-        backgroundColor: bgColor,
-        color: textColor,
-        border: borderColor ? `1px solid ${borderColor}` : undefined,
-        fontSize: "18px",
-        fontWeight: "700",
-        textDecoration: "none",
-      }}
+      style={style}
+      className="flex h-[60px] w-full items-center justify-center gap-3 rounded-[2px] text-[18px] font-bold transition hover:brightness-95 active:brightness-90"
     >
       {icon}
       {label}
@@ -61,30 +54,28 @@ const NaverIcon = () => (
   </svg>
 );
 
-export default function SocialButtons() {
+export default function SocialButtons({ mode = "login" }) {
+  const suffix = mode === "signup" ? "시작하기" : "로그인";
+
   return (
     <div className="flex w-full flex-col gap-3">
       <SocialButton
         href={`${BASE_URL}/api/auth/google`}
-        bgColor="#ffffff"
-        textColor="#0F0F0F"
-        borderColor="#DDDDDD"
+        style={{ backgroundColor: "#ffffff", color: "#0F0F0F", border: "1px solid #DDDDDD" }}
         icon={<GoogleIcon />}
-        label="Google로 시작하기"
+        label={`Google로 ${suffix}`}
       />
       <SocialButton
         href={`${BASE_URL}/api/auth/kakao`}
-        bgColor="#FEE500"
-        textColor="#191919"
+        style={{ backgroundColor: "#FEE500", color: "#191919" }}
         icon={<KakaoIcon />}
-        label="카카오로 시작하기"
+        label={`카카오로 ${suffix}`}
       />
       <SocialButton
         href={`${BASE_URL}/api/auth/naver`}
-        bgColor="#03C75A"
-        textColor="#ffffff"
+        style={{ backgroundColor: "#03C75A", color: "#ffffff" }}
         icon={<NaverIcon />}
-        label="네이버로 시작하기"
+        label={`네이버로 ${suffix}`}
       />
     </div>
   );

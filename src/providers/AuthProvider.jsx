@@ -39,8 +39,13 @@ export function AuthProvider({ children }) {
     setUser(null);
   };
 
+  // 포인트 변동 시 헤더 잔액 즉시 갱신 (구매/판매/랜덤박스 파트에서 사용)
+  const updatePoint = (newBalance) => {
+    setUser((prev) => (prev ? { ...prev, point: newBalance } : null));
+  };
+
   return (
-    <AuthContext.Provider value={{ user, isLoading, login, logout }}>
+    <AuthContext.Provider value={{ user, isLoading, login, logout, updatePoint }}>
       {children}
     </AuthContext.Provider>
   );

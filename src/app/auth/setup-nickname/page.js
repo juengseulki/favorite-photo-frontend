@@ -52,7 +52,11 @@ function SetupNicknameForm() {
     <form onSubmit={handleSubmit} className="flex w-[520px] flex-col gap-[34px]">
       <div className="flex flex-col gap-2">
         <p className="text-[18px] text-white">서비스에서 사용할 닉네임을 입력해 주세요</p>
-        {email && <p className="text-[14px] text-[#A4A4A4]">Google 계정: {email}</p>}
+        {email && (
+          <p className="text-[14px] text-[#A4A4A4]">
+            {provider} 계정: {email}
+          </p>
+        )}
       </div>
 
       <AuthInput

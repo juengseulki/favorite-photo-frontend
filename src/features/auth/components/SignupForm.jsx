@@ -117,7 +117,7 @@ export default function SignupForm() {
         {isLoading ? "가입 중..." : "가입하기"}
       </PrimaryButton>
 
-      <SocialButtons />
+      <SocialButtons mode="signup" />
 
       <p className="text-center text-[16px] text-white">
         이미 최애의포토 회원이신가요?{" "}
