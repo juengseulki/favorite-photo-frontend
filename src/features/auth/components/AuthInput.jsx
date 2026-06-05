@@ -18,7 +18,9 @@ export default function AuthInput({
 
   return (
     <div className="flex w-full flex-col gap-[10px]">
-      {label && <label className="text-[18px] font-normal text-white">{label}</label>}
+      {label && (
+        <label className="text-[16px] font-normal text-white tablet:text-[18px]">{label}</label>
+      )}
 
       <div className="relative">
         <input
@@ -28,8 +30,8 @@ export default function AuthInput({
           onChange={onChange}
           className={`
             h-[60px] w-full rounded-[2px] border bg-[#0F0F0F] px-5
-            text-[16px] font-light text-[#DDDDDD] placeholder-[#DDDDDD]
-            outline-none transition
+            text-[14px] font-light text-[#DDDDDD] placeholder-[#DDDDDD]
+            outline-none transition tablet:text-[16px]
             ${error ? "border-[#FF483D]" : "border-[#DDDDDD] focus:border-[#FFFF04]"}
             ${isPassword ? "pr-12" : ""}
           `}
@@ -53,7 +55,7 @@ export default function AuthInput({
         )}
       </div>
 
-      {error && <p className="text-[13px] text-[#FF483D]">{error}</p>}
+      {error && <p className="text-[12px] text-[#FF483D] tablet:text-[13px]">{error}</p>}
     </div>
   );
 }

@@ -1,7 +1,6 @@
 "use client";
 
-import { Suspense } from "react";
-import { useEffect } from "react";
+import { Suspense, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/providers/AuthProvider";
 import { setAccessToken } from "@/lib/api/axiosInstance";
@@ -14,9 +13,11 @@ function CallbackHandler() {
   const { login } = useAuth();
 
   useEffect(() => {
+    const error = searchParams.get("error");
     const token = searchParams.get("token");
-    if (!token) {
-      router.replace(ROUTES.LOGIN);
+
+    if (error || !token) {
+      router.replace(`${ROUTES.LOGIN}?error=oauth_failed`);
       return;
     }
 
@@ -27,7 +28,7 @@ function CallbackHandler() {
       router.replace(ROUTES.HOME);
     };
 
-    finalize().catch(() => router.replace(ROUTES.LOGIN));
+    finalize().catch(() => router.replace(`${ROUTES.LOGIN}?error=oauth_failed`));
   }, []);
 
   return <p className="text-[16px] text-[#A4A4A4]">로그인 처리 중...</p>;

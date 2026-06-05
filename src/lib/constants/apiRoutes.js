@@ -6,7 +6,9 @@ export const API_ROUTES = {
     REFRESH: "/auth/refresh",
     ME: "/auth/me",
     GOOGLE: "/auth/google",
-    GOOGLE_COMPLETE: "/auth/google/complete",
+    KAKAO: "/auth/kakao",
+    NAVER: "/auth/naver",
+    OAUTH_COMPLETE: "/auth/oauth/complete",
   },
   CARDS: {
     BASE: "/cards",

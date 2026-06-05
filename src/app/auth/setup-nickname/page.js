@@ -8,13 +8,14 @@ import { useAuth } from "@/providers/AuthProvider";
 import { completeGoogleSignup } from "@/lib/api/authApi";
 import { ROUTES } from "@/lib/constants/routes";
 import AuthInput from "@/features/auth/components/AuthInput";
-import PrimaryButton from "@/components/common/PrimaryButton";
+import Button from "@/components/common/Button";
 
 function SetupNicknameForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { login } = useAuth();
 
+  const provider = searchParams.get("provider") ?? "GOOGLE";
   const providerAccountId = searchParams.get("providerAccountId");
   const email = searchParams.get("email");
 
@@ -37,7 +38,7 @@ function SetupNicknameForm() {
     setError("");
     setIsLoading(true);
     try {
-      const res = await completeGoogleSignup({ providerAccountId, email, nickname });
+      const res = await completeGoogleSignup({ provider, providerAccountId, email, nickname });
       login(res.data.data);
       router.replace(ROUTES.HOME);
     } catch (err) {
@@ -48,10 +49,17 @@ function SetupNicknameForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="flex w-[520px] flex-col gap-[34px]">
+    <form
+      onSubmit={handleSubmit}
+      className="flex w-full max-w-[520px] flex-col gap-[34px] px-4 tablet:px-0"
+    >
       <div className="flex flex-col gap-2">
         <p className="text-[18px] text-white">서비스에서 사용할 닉네임을 입력해 주세요</p>
-        {email && <p className="text-[14px] text-[#A4A4A4]">Google 계정: {email}</p>}
+        {email && (
+          <p className="text-[14px] text-[#A4A4A4]">
+            {provider} 계정: {email}
+          </p>
+        )}
       </div>
 
       <AuthInput
@@ -64,17 +72,24 @@ function SetupNicknameForm() {
         required
       />
 
-      <PrimaryButton type="submit" disabled={isLoading} className="!w-full">
+      <Button variant="primary" type="submit" disabled={isLoading} className="!w-full">
         {isLoading ? "처리 중..." : "시작하기"}
-      </PrimaryButton>
+      </Button>
     </form>
   );
 }
 
 export default function SetupNicknamePage() {
   return (
-    <div className="flex min-h-[calc(100vh-80px)] flex-col items-center justify-center gap-[60px]">
-      <Image src="/img/logos/logo.png" alt="최애의 포토" width={331} height={60} priority />
+    <div className="flex min-h-[calc(100vh-80px)] flex-col items-center justify-center gap-8 px-4 py-10 tablet:gap-[60px] tablet:px-0">
+      <Image
+        src="/img/logos/logo.png"
+        alt="최애의 포토"
+        width={331}
+        height={60}
+        className="h-auto w-[200px] tablet:w-[331px]"
+        priority
+      />
       <Suspense fallback={null}>
         <SetupNicknameForm />
       </Suspense>

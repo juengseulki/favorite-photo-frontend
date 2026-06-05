@@ -6,9 +6,9 @@ import { useRouter } from "next/navigation";
 import { ROUTES } from "@/lib/constants/routes";
 import { createUser } from "@/lib/api/authApi";
 import { useAuth } from "@/providers/AuthProvider";
-import PrimaryButton from "@/components/common/Button";
+import Button from "@/components/common/Button";
 import AuthInput from "./AuthInput";
-import GoogleButton from "./GoogleButton";
+import SocialButtons from "./SocialButtons";
 
 export default function SignupForm() {
   const router = useRouter();
@@ -70,7 +70,10 @@ export default function SignupForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="flex w-[520px] flex-col gap-[34px]">
+    <form
+      onSubmit={handleSubmit}
+      className="flex w-full max-w-[520px] flex-col gap-[34px] px-4 tablet:px-0"
+    >
       <AuthInput
         label="이메일"
         type="email"
@@ -113,13 +116,13 @@ export default function SignupForm() {
 
       {errors.general && <p className="-mt-[24px] text-[13px] text-[#FF483D]">{errors.general}</p>}
 
-      <PrimaryButton type="submit" disabled={isLoading} className="!w-full">
+      <Button variant="primary" type="submit" disabled={isLoading} className="!w-full">
         {isLoading ? "가입 중..." : "가입하기"}
-      </PrimaryButton>
+      </Button>
 
-      <GoogleButton label="Google로 시작하기" />
+      <SocialButtons mode="signup" />
 
-      <p className="text-center text-[16px] text-white">
+      <p className="text-center text-[14px] text-white tablet:text-[16px]">
         이미 최애의포토 회원이신가요?{" "}
         <Link href={ROUTES.LOGIN} className="text-[#EFFF04] underline">
           로그인하기
