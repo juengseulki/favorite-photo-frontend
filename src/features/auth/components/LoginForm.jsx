@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { ROUTES } from "@/lib/constants/routes";
 import { loginUser } from "@/lib/api/authApi";
 import { useAuth } from "@/providers/AuthProvider";
-import PrimaryButton from "@/components/common/PrimaryButton";
+import PrimaryButton from "@/components/common/Button";
 import AuthInput from "./AuthInput";
 import GoogleButton from "./GoogleButton";
 
