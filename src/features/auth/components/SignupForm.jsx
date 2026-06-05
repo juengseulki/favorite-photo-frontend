@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { ROUTES } from "@/lib/constants/routes";
 import { createUser } from "@/lib/api/authApi";
 import { useAuth } from "@/providers/AuthProvider";
-import PrimaryButton from "@/components/common/PrimaryButton";
+import Button from "@/components/common/Button";
 import AuthInput from "./AuthInput";
 import SocialButtons from "./SocialButtons";
 
@@ -116,9 +116,9 @@ export default function SignupForm() {
 
       {errors.general && <p className="-mt-[24px] text-[13px] text-[#FF483D]">{errors.general}</p>}
 
-      <PrimaryButton type="submit" disabled={isLoading} className="!w-full">
+      <Button variant="primary" type="submit" disabled={isLoading} className="!w-full">
         {isLoading ? "가입 중..." : "가입하기"}
-      </PrimaryButton>
+      </Button>
 
       <SocialButtons mode="signup" />
 

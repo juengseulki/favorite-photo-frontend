@@ -6,7 +6,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { ROUTES } from "@/lib/constants/routes";
 import { loginUser } from "@/lib/api/authApi";
 import { useAuth } from "@/providers/AuthProvider";
-import PrimaryButton from "@/components/common/PrimaryButton";
+import Button from "@/components/common/Button";
 import AuthInput from "./AuthInput";
 import SocialButtons from "./SocialButtons";
 
@@ -76,9 +76,9 @@ export default function LoginForm() {
 
       {error && <p className="-mt-[24px] text-[13px] text-[#FF483D]">{error}</p>}
 
-      <PrimaryButton type="submit" disabled={isLoading} className="!w-full !h-[60px]">
+      <Button variant="primary" type="submit" disabled={isLoading} className="!w-full !h-[60px]">
         {isLoading ? "로그인 중..." : "로그인"}
-      </PrimaryButton>
+      </Button>
 
       <SocialButtons />
 
