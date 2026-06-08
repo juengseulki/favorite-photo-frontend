@@ -1,21 +1,23 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { ROUTES } from "@/lib/constants/routes";
 import { loginUser } from "@/lib/api/authApi";
 import { useAuth } from "@/providers/AuthProvider";
 import Button from "@/components/common/Button";
-import AuthInput from "./AuthInput";
+import Input from "@/components/common/Input";
 import SocialButtons from "./SocialButtons";
+import { ERROR_MESSAGES } from "@/lib/constants/errorMessages";
 
 function OAuthErrorAlert({ onError }) {
   const searchParams = useSearchParams();
 
   useEffect(() => {
     if (searchParams.get("error") === "oauth_failed") {
-      onError("소셜 로그인에 실패했습니다. 다시 시도해 주세요.");
+      onError(ERROR_MESSAGES.OAUTH_FAILED);
     }
   }, [searchParams]);
 
@@ -28,6 +30,7 @@ export default function LoginForm() {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
@@ -41,7 +44,7 @@ export default function LoginForm() {
       login(res.data.data);
       router.push(ROUTES.HOME);
     } catch (err) {
-      setError(err.response?.data?.error?.message || "로그인에 실패했습니다.");
+      setError(err.response?.data?.error?.message || ERROR_MESSAGES.LOGIN_FAILED_GENERIC);
     } finally {
       setIsLoading(false);
     }
@@ -56,7 +59,9 @@ export default function LoginForm() {
         <OAuthErrorAlert onError={setError} />
       </Suspense>
 
-      <AuthInput
+      <Input
+        size="lg"
+        inputClassName="!w-full"
         label="이메일"
         type="email"
         placeholder="이메일을 입력해 주세요"
@@ -65,12 +70,28 @@ export default function LoginForm() {
         required
       />
 
-      <AuthInput
+      <Input
+        size="lg"
+        inputClassName="!w-full"
         label="비밀번호"
-        type="password"
+        type={showPassword ? "text" : "password"}
         placeholder="비밀번호를 입력해 주세요"
         value={password}
         onChange={(e) => setPassword(e.target.value)}
+        icon={
+          <button
+            type="button"
+            onClick={() => setShowPassword((prev) => !prev)}
+            aria-label={showPassword ? "비밀번호 숨기기" : "비밀번호 보기"}
+          >
+            <Image
+              src={showPassword ? "/img/icons/visible.png" : "/img/icons/invisible.png"}
+              alt=""
+              width={24}
+              height={24}
+            />
+          </button>
+        }
         required
       />
 
