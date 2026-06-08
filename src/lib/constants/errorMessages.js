@@ -7,13 +7,18 @@ export const ERROR_MESSAGES = {
   // 로그인
   EMAIL_REQUIRED: "이메일을 입력해 주세요.",
   PASSWORD_REQUIRED: "비밀번호를 입력해 주세요.",
-  INVALID_EMAIL: "올바른 이메일 형식이 아닙니다.",
+  INVALID_EMAIL: "유효한 이메일을 입력해 주세요.",
   LOGIN_FAILED: "이메일 또는 비밀번호가 일치하지 않습니다.",
+  LOGIN_FAILED_GENERIC: "로그인에 실패했습니다.",
+  OAUTH_FAILED: "소셜 로그인에 실패했습니다. 다시 시도해 주세요.",
 
   // 회원가입
   NICKNAME_REQUIRED: "닉네임을 입력해 주세요.",
+  NICKNAME_LENGTH: "닉네임은 2자 이상 12자 이하로 입력해 주세요.",
+  PASSWORD_MIN_LENGTH: "비밀번호는 8자 이상 입력해 주세요.",
   PASSWORD_CONFIRM_REQUIRED: "비밀번호 확인을 입력해 주세요.",
   PASSWORD_NOT_MATCH: "비밀번호가 일치하지 않습니다.",
+  SIGNUP_FAILED: "회원가입에 실패했습니다.",
 
   // 포토카드
   CARD_NAME_REQUIRED: "포토카드 이름을 입력해 주세요.",
