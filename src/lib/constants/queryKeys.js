@@ -11,49 +11,45 @@ export const QUERY_KEYS = {
 
   CARDS: {
     ROOT: ["cards"],
-
     LIST: (filters = {}) => [...QUERY_KEYS.CARDS.ROOT, "list", filters],
-
     DETAIL: (cardId) => [...QUERY_KEYS.CARDS.ROOT, "detail", cardId],
+  },
 
-    MY_GALLERY: (userId, filters = {}) => [...QUERY_KEYS.CARDS.ROOT, "my-gallery", userId, filters],
+  GALLERY: {
+    ROOT: ["gallery"],
+    MY_CARDS: (filters = {}) => [...QUERY_KEYS.GALLERY.ROOT, "my-cards", filters],
+  },
+
+  MARKET: {
+    ROOT: ["market"],
+    LIST: (filters = {}) => [...QUERY_KEYS.MARKET.ROOT, "list", filters],
+    DETAIL: (saleId) => [...QUERY_KEYS.MARKET.ROOT, "detail", saleId],
   },
 
   SALES: {
     ROOT: ["sales"],
-
     LIST: (filters = {}) => [...QUERY_KEYS.SALES.ROOT, "list", filters],
-
     DETAIL: (saleId) => [...QUERY_KEYS.SALES.ROOT, "detail", saleId],
-
-    MY_SHOP: (userId, filters = {}) => [...QUERY_KEYS.SALES.ROOT, "my-shop", userId, filters],
+    MY: (filters = {}) => [...QUERY_KEYS.SALES.ROOT, "my", filters],
   },
 
   EXCHANGES: {
     ROOT: ["exchanges"],
-
     LIST: (filters = {}) => [...QUERY_KEYS.EXCHANGES.ROOT, "list", filters],
-
     DETAIL: (exchangeId) => [...QUERY_KEYS.EXCHANGES.ROOT, "detail", exchangeId],
-
-    RECEIVED: (userId) => [...QUERY_KEYS.EXCHANGES.ROOT, "received", userId],
-
-    SENT: (userId) => [...QUERY_KEYS.EXCHANGES.ROOT, "sent", userId],
+    RECEIVED: (filters = {}) => [...QUERY_KEYS.EXCHANGES.ROOT, "received", filters],
+    SENT: (filters = {}) => [...QUERY_KEYS.EXCHANGES.ROOT, "sent", filters],
   },
 
   POINTS: {
     ROOT: ["points"],
-
     ME: () => [...QUERY_KEYS.POINTS.ROOT, "me"],
-
-    HISTORIES: (filters = {}) => [...QUERY_KEYS.POINTS.ROOT, "histories", filters],
+    HISTORY: (filters = {}) => [...QUERY_KEYS.POINTS.ROOT, "history", filters],
+    RANDOM_BOX_STATUS: () => [...QUERY_KEYS.POINTS.ROOT, "random-box-status"],
   },
 
   NOTIFICATIONS: {
     ROOT: ["notifications"],
-
-    LIST: (filters = {}) => [...QUERY_KEYS.NOTIFICATIONS.ROOT, "list", filters],
-
-    UNREAD_COUNT: () => [...QUERY_KEYS.NOTIFICATIONS.ROOT, "unread-count"],
+    LIST: () => [...QUERY_KEYS.NOTIFICATIONS.ROOT, "list"],
   },
 };
