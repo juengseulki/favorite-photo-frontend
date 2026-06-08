@@ -1,14 +1,16 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { ROUTES } from "@/lib/constants/routes";
 import { createUser } from "@/lib/api/authApi";
 import { useAuth } from "@/providers/AuthProvider";
 import Button from "@/components/common/Button";
-import AuthInput from "./AuthInput";
+import Input from "@/components/common/Input";
 import SocialButtons from "./SocialButtons";
+import { ERROR_MESSAGES } from "@/lib/constants/errorMessages";
 
 export default function SignupForm() {
   const router = useRouter();
@@ -22,6 +24,8 @@ export default function SignupForm() {
   });
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showPasswordConfirm, setShowPasswordConfirm] = useState(false);
 
   const handleChange = (field) => (e) => {
     setForm((prev) => ({ ...prev, [field]: e.target.value }));
@@ -31,12 +35,12 @@ export default function SignupForm() {
   const validate = () => {
     const next = {};
     if (!form.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email))
-      next.email = "유효한 이메일을 입력해 주세요.";
+      next.email = ERROR_MESSAGES.INVALID_EMAIL;
     if (!form.nickname || form.nickname.length < 2 || form.nickname.length > 12)
-      next.nickname = "닉네임은 2자 이상 12자 이하로 입력해 주세요.";
-    if (form.password.length < 8) next.password = "비밀번호는 8자 이상 입력해 주세요.";
+      next.nickname = ERROR_MESSAGES.NICKNAME_LENGTH;
+    if (form.password.length < 8) next.password = ERROR_MESSAGES.PASSWORD_MIN_LENGTH;
     if (form.password !== form.passwordConfirm)
-      next.passwordConfirm = "비밀번호가 일치하지 않습니다.";
+      next.passwordConfirm = ERROR_MESSAGES.PASSWORD_NOT_MATCH;
     return next;
   };
 
@@ -63,7 +67,7 @@ export default function SignupForm() {
 
       if (code === "EMAIL_CONFLICT") setErrors({ email: message });
       else if (code === "NICKNAME_CONFLICT") setErrors({ nickname: message });
-      else setErrors({ general: message || "회원가입에 실패했습니다." });
+      else setErrors({ general: message || ERROR_MESSAGES.SIGNUP_FAILED });
     } finally {
       setIsLoading(false);
     }
@@ -74,7 +78,9 @@ export default function SignupForm() {
       onSubmit={handleSubmit}
       className="flex w-full max-w-[520px] flex-col gap-[34px] px-4 tablet:px-0"
     >
-      <AuthInput
+      <Input
+        size="lg"
+        inputClassName="!w-full"
         label="이메일"
         type="email"
         placeholder="이메일을 입력해 주세요"
@@ -84,7 +90,9 @@ export default function SignupForm() {
         required
       />
 
-      <AuthInput
+      <Input
+        size="lg"
+        inputClassName="!w-full"
         label="닉네임"
         type="text"
         placeholder="닉네임을 입력해 주세요"
@@ -94,23 +102,55 @@ export default function SignupForm() {
         required
       />
 
-      <AuthInput
+      <Input
+        size="lg"
+        inputClassName="!w-full"
         label="비밀번호"
-        type="password"
+        type={showPassword ? "text" : "password"}
         placeholder="8자 이상 입력해 주세요"
         value={form.password}
         onChange={handleChange("password")}
         error={errors.password}
+        icon={
+          <button
+            type="button"
+            onClick={() => setShowPassword((prev) => !prev)}
+            aria-label={showPassword ? "비밀번호 숨기기" : "비밀번호 보기"}
+          >
+            <Image
+              src={showPassword ? "/img/icons/visible.png" : "/img/icons/invisible.png"}
+              alt=""
+              width={24}
+              height={24}
+            />
+          </button>
+        }
         required
       />
 
-      <AuthInput
+      <Input
+        size="lg"
+        inputClassName="!w-full"
         label="비밀번호 확인"
-        type="password"
+        type={showPasswordConfirm ? "text" : "password"}
         placeholder="비밀번호를 한번 더 입력해 주세요"
         value={form.passwordConfirm}
         onChange={handleChange("passwordConfirm")}
         error={errors.passwordConfirm}
+        icon={
+          <button
+            type="button"
+            onClick={() => setShowPasswordConfirm((prev) => !prev)}
+            aria-label={showPasswordConfirm ? "비밀번호 숨기기" : "비밀번호 보기"}
+          >
+            <Image
+              src={showPasswordConfirm ? "/img/icons/visible.png" : "/img/icons/invisible.png"}
+              alt=""
+              width={24}
+              height={24}
+            />
+          </button>
+        }
         required
       />
 
