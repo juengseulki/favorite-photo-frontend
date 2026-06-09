@@ -21,19 +21,19 @@ export default function PhotoCard({ card: item }) {
             <span className={card.genre}>{item.genre}</span>
           </div>
 
-          <span className={card.nickname}>{item.creator.nickname}</span>
+          <span className={card.creatorNickname}>{item.creatorNickname}</span>
         </div>
       </div>
 
       <div className={card.infoArea}>
         <div className={card.infoRow}>
           <span className={card.infoLabel}>가격</span>
-          <span className={card.infoValue}>{item.price} P</span>
+          <span className={card.infoValue}>{item.initialPrice} P</span>
         </div>
 
         <div className={card.infoRow}>
           <span className={card.infoLabel}>수량</span>
-          <span className={card.infoValue}>{item.count}</span>
+          <span className={card.infoValue}>{item.quantity}</span>
         </div>
       </div>
 
