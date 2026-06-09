@@ -13,6 +13,7 @@ import {
 } from "@/features/exchange";
 import { useExchangeFilters } from "@/hooks/useExchangeFilters";
 import { useExchangeModalState } from "@/hooks/useExchangeModalState";
+import { useAuth } from "@/providers/AuthProvider";
 
 const MOCK_SALE_CARD = {
   id: 101,
@@ -58,10 +59,13 @@ const MOCK_EXCHANGE_CARDS = [
 ];
 
 export default function ExchangeTestPage() {
+  const { user, isLoading: authLoading } = useAuth();
   const [submittedValues, setSubmittedValues] = useState(null);
   const [selectedCardId, setSelectedCardId] = useState(MOCK_EXCHANGE_CARDS[0].id);
   const [decisionModalType, setDecisionModalType] = useState(null);
   const [failureOpen, setFailureOpen] = useState(false);
+  const [previewAuthMode, setPreviewAuthMode] = useState("logged-in");
+  const [previewState, setPreviewState] = useState("default");
 
   const {
     formOpen,
@@ -76,6 +80,18 @@ export default function ExchangeTestPage() {
   } = useExchangeModalState();
 
   const { keyword, setKeyword, grade, setGrade, genre, setGenre } = useExchangeFilters();
+
+  const authPreview = useMemo(() => {
+    if (previewAuthMode === "loading") {
+      return { user: null, isLoading: true };
+    }
+
+    if (previewAuthMode === "guest") {
+      return { user: null, isLoading: false };
+    }
+
+    return { user: user ?? { id: "preview-user", nickname: "preview-user" }, isLoading: false };
+  }, [previewAuthMode, user]);
 
   const filteredCards = useMemo(() => {
     return MOCK_EXCHANGE_CARDS.filter((card) => {
@@ -96,7 +112,23 @@ export default function ExchangeTestPage() {
     [selectedCardId],
   );
 
+  const cardsForPreview = useMemo(() => {
+    if (previewState === "empty") return [];
+    return filteredCards;
+  }, [filteredCards, previewState]);
+
+  const canUseExchange = !authPreview.isLoading && Boolean(authPreview.user);
+  const isCardLoading = previewState === "loading";
+  const errorMessage =
+    previewState === "error" ? "교환 가능한 포토카드 목록을 불러오지 못했습니다." : "";
+  const helperText = authPreview.isLoading
+    ? "세션을 확인하는 동안에는 교환 기능을 사용할 수 없습니다."
+    : !authPreview.user
+      ? "로그인 후에만 교환 제안 및 승인/거절 기능을 사용할 수 있습니다."
+      : "교환 가능한 내 포토카드를 선택하고 제안 흐름을 점검해 보세요.";
+
   const handleOpenDecisionModal = (decision) => {
+    if (!canUseExchange) return;
     setDecisionModalType(decision);
   };
 
@@ -109,6 +141,17 @@ export default function ExchangeTestPage() {
     completeForm();
   };
 
+  const handleOpenSelectCard = () => {
+    if (!canUseExchange) return;
+    openSelectCard();
+  };
+
+  const previewStatusCards = [
+    { key: "pending", disabled: false },
+    { key: "accepted", disabled: true },
+    { key: "rejected", disabled: true },
+  ];
+
   return (
     <main className="min-h-screen bg-black px-6 py-10 text-white">
       <div className="mx-auto max-w-[1280px] space-y-12">
@@ -118,12 +161,78 @@ export default function ExchangeTestPage() {
             <h1 className="mt-2 text-[36px] font-bold">Exchange UI Preview</h1>
           </div>
 
+          <div className="grid gap-6 border border-gray-400 p-6 desktop:grid-cols-2">
+            <div className="space-y-3">
+              <h2 className="text-[20px] font-bold">로그인 가드 미리보기</h2>
+              <div className="flex flex-wrap gap-3">
+                <Button
+                  size="sm"
+                  variant={previewAuthMode === "logged-in" ? "primary" : "secondary"}
+                  onClick={() => setPreviewAuthMode("logged-in")}
+                >
+                  로그인 상태
+                </Button>
+                <Button
+                  size="sm"
+                  variant={previewAuthMode === "guest" ? "primary" : "secondary"}
+                  onClick={() => setPreviewAuthMode("guest")}
+                >
+                  비로그인 상태
+                </Button>
+                <Button
+                  size="sm"
+                  variant={previewAuthMode === "loading" ? "primary" : "secondary"}
+                  onClick={() => setPreviewAuthMode("loading")}
+                >
+                  세션 확인중
+                </Button>
+              </div>
+              <p className="text-[14px] text-gray-300">
+                실제 auth 상태: {authLoading ? "확인 중" : user ? "로그인됨" : "비로그인"}
+              </p>
+            </div>
+
+            <div className="space-y-3">
+              <h2 className="text-[20px] font-bold">목록 상태 미리보기</h2>
+              <div className="flex flex-wrap gap-3">
+                <Button
+                  size="sm"
+                  variant={previewState === "default" ? "primary" : "secondary"}
+                  onClick={() => setPreviewState("default")}
+                >
+                  기본 상태
+                </Button>
+                <Button
+                  size="sm"
+                  variant={previewState === "empty" ? "primary" : "secondary"}
+                  onClick={() => setPreviewState("empty")}
+                >
+                  빈 상태
+                </Button>
+                <Button
+                  size="sm"
+                  variant={previewState === "loading" ? "primary" : "secondary"}
+                  onClick={() => setPreviewState("loading")}
+                >
+                  로딩 상태
+                </Button>
+                <Button
+                  size="sm"
+                  variant={previewState === "error" ? "primary" : "secondary"}
+                  onClick={() => setPreviewState("error")}
+                >
+                  에러 상태
+                </Button>
+              </div>
+            </div>
+          </div>
+
           <div className="flex flex-wrap gap-4">
             <Button size="sm" onClick={openForm}>
               판매 등록 모달 열기
             </Button>
 
-            <Button size="sm" onClick={openSelectCard}>
+            <Button size="sm" onClick={handleOpenSelectCard} disabled={!canUseExchange}>
               교환 선택 모달 열기
             </Button>
 
@@ -135,25 +244,38 @@ export default function ExchangeTestPage() {
               실패 모달 열기
             </Button>
           </div>
+
+          <p className="text-[14px] text-gray-300">{helperText}</p>
         </section>
 
         <section className="space-y-5">
           <h2 className="text-[24px] font-bold">교환 대상 카드 미리보기</h2>
           <ExchangeCardGrid
-            cards={MOCK_EXCHANGE_CARDS}
+            cards={cardsForPreview}
             selectedCardId={selectedCardId}
             onSelect={(card) => setSelectedCardId(card.id)}
+            emptyMessage="교환 가능한 포토카드가 없습니다."
+            helperMessage={
+              previewState === "empty" ? "필터를 변경하거나 다른 카드를 등록해 보세요." : ""
+            }
+            disabled={!canUseExchange}
           />
         </section>
 
         <section className="space-y-5">
           <h2 className="text-[24px] font-bold">교환 요청 카드 미리보기</h2>
-          <div className="max-w-[440px]">
-            <ExchangeRequestCard
-              card={selectedCard ?? MOCK_EXCHANGE_CARDS[0]}
-              onAccept={() => handleOpenDecisionModal("approve")}
-              onReject={() => handleOpenDecisionModal("reject")}
-            />
+          <div className="grid gap-6 desktop:grid-cols-3">
+            {previewStatusCards.map((previewCard) => (
+              <div key={previewCard.key} className="max-w-[440px]">
+                <ExchangeRequestCard
+                  card={selectedCard ?? MOCK_EXCHANGE_CARDS[0]}
+                  status={previewCard.key}
+                  disabled={previewCard.disabled || !canUseExchange}
+                  onAccept={() => handleOpenDecisionModal("approve")}
+                  onReject={() => handleOpenDecisionModal("reject")}
+                />
+              </div>
+            ))}
           </div>
         </section>
 
@@ -185,7 +307,7 @@ export default function ExchangeTestPage() {
         <ExchangeSelectCardModal
           isOpen={selectCardOpen}
           onClose={closeSelectCard}
-          cards={filteredCards}
+          cards={cardsForPreview}
           selectedCardId={selectedCardId}
           onSelectCard={(card) => setSelectedCardId(card.id)}
           onConfirm={(card) => {
@@ -198,7 +320,20 @@ export default function ExchangeTestPage() {
           onGradeChange={setGrade}
           genre={genre}
           onGenreChange={setGenre}
-          isLoading={false}
+          isLoading={isCardLoading}
+          isDisabled={!canUseExchange}
+          errorMessage={errorMessage}
+          emptyMessage="교환 가능한 포토카드가 없습니다."
+          helperText={helperText}
+          confirmDisabledReason={
+            authPreview.isLoading
+              ? "세션 확인 후 다시 시도해 주세요."
+              : !authPreview.user
+                ? "로그인 후 카드를 선택할 수 있습니다."
+                : !selectedCard
+                  ? "교환할 카드를 선택해 주세요."
+                  : ""
+          }
         />
 
         <ExchangeDecisionModal

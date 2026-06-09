@@ -22,11 +22,17 @@ export default function ExchangeSelectCardModal({
   genre,
   onGenreChange,
   isLoading = false,
+  isDisabled = false,
+  errorMessage = "",
+  emptyMessage = "교환 가능한 포토카드가 없습니다.",
+  helperText = "",
+  confirmDisabledReason = "",
 }) {
   const selectedCard = useMemo(
     () => cards.find((card) => card.id === selectedCardId),
     [cards, selectedCardId],
   );
+  const isConfirmDisabled = isDisabled || !selectedCard;
 
   return (
     <Modal
@@ -40,7 +46,7 @@ export default function ExchangeSelectCardModal({
           <Button variant="secondary" size="lg" onClick={onClose}>
             취소하기
           </Button>
-          <Button size="lg" onClick={() => onConfirm?.(selectedCard)} disabled={!selectedCard}>
+          <Button size="lg" onClick={() => onConfirm?.(selectedCard)} disabled={isConfirmDisabled}>
             선택하기
           </Button>
         </>
@@ -59,29 +65,48 @@ export default function ExchangeSelectCardModal({
             placeholder="검색"
             value={keyword}
             onChange={(event) => onKeywordChange?.(event.target.value)}
+            disabled={isDisabled}
           />
 
           <Dropdown
             size="sort"
             options={EXCHANGE_FILTER_OPTIONS.grades}
             value={grade}
-            onChange={onGradeChange}
+            onChange={isDisabled ? undefined : onGradeChange}
           />
 
           <Dropdown
             size="sort"
             options={EXCHANGE_FILTER_OPTIONS.genres}
             value={genre}
-            onChange={onGenreChange}
+            onChange={isDisabled ? undefined : onGenreChange}
           />
         </div>
 
-        {isLoading ? (
+        {helperText && <p className="text-[14px] text-gray-300">{helperText}</p>}
+
+        {errorMessage ? (
+          <div className="flex min-h-[320px] flex-col items-center justify-center gap-3 border border-red px-6 text-center">
+            <p className="text-[16px] font-bold text-white">{errorMessage}</p>
+            <p className="text-[14px] text-gray-300">잠시 후 다시 시도해 주세요.</p>
+          </div>
+        ) : isLoading ? (
           <div className="flex min-h-[320px] items-center justify-center border border-gray-400">
             <p className="text-[16px] text-gray-300">포토카드를 불러오는 중입니다.</p>
           </div>
         ) : (
-          <ExchangeCardGrid cards={cards} selectedCardId={selectedCardId} onSelect={onSelectCard} />
+          <ExchangeCardGrid
+            cards={cards}
+            selectedCardId={selectedCardId}
+            onSelect={onSelectCard}
+            emptyMessage={emptyMessage}
+            helperMessage={isDisabled ? "로그인 후 교환할 카드를 선택할 수 있습니다." : ""}
+            disabled={isDisabled}
+          />
+        )}
+
+        {confirmDisabledReason && (
+          <p className="text-right text-[13px] text-gray-300">{confirmDisabledReason}</p>
         )}
       </div>
     </Modal>
