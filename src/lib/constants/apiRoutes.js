@@ -34,8 +34,8 @@ export const API_ROUTES = {
     DETAIL: {
       SELF: (saleId) => `/sales/${saleId}`,
       PHOTOCARD: (saleId) => `/sales/${saleId}/photocard`,
-      COUNT_ALL: (saleId) => `sales/${saleId}/count-all`,
-      COUNT_ACTIVE: (saleId) => `sales/${saleId}/count-active`,
+      COUNT_ALL: (saleId) => `/sales/${saleId}/count-all`,
+      COUNT_ACTIVE: (saleId) => `/sales/${saleId}/count-active`,
     },
   },
 
