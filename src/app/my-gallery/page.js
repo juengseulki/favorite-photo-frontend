@@ -53,7 +53,7 @@ export default function MyGalleryPage() {
 
   return (
     <div className="mx-auto max-w-[1920px] px-[20px] desktop:px-[220px]">
-      <div className="hidden justify-between border-b-2 border-[#EEEEEE] desktop:flex">
+      <div className="hidden justify-between border-b-2 border-gray-100 desktop:flex">
         <span className="text-[62px] font-normal tracking-[-0.03em]">마이갤러리</span>
         <Button>포토카드 생성하기</Button>
       </div>
@@ -61,12 +61,12 @@ export default function MyGalleryPage() {
       <div className="fixed bottom-0 left-0 z-50 w-full px-[20px] pb-[20px] tablet:hidden">
         <Button size="full">포토카드 생성하기</Button>
       </div>
-      <div className="mt-10 flex flex-col gap-[20px] border-b border-[#5A5A5A] pb-3 desktop:pb-10">
+      <div className="mt-10 flex flex-col gap-[20px] border-b border-gray-400 pb-3 desktop:pb-10">
         <p className="flex gap-[10px] items-center">
           <span className="text-[14px] font-bold leading-none desktop:text-[24px]">
             {user ? `${user.nickname}님이 보유한 포토카드` : ""}
           </span>
-          <span className="text-[12px] font-normal leading-none text-[#A4A4A4] desktop:text-[20px]">
+          <span className="text-[12px] font-normal leading-none text-gray-300 desktop:text-[20px]">
             ({meta.totalCopyCount}장)
           </span>
         </p>
@@ -82,7 +82,7 @@ export default function MyGalleryPage() {
         <button
           type="button"
           onClick={() => setIsModalOpen(true)}
-          className="flex h-[50px] w-[50px] shrink-0 items-center justify-center border border-[#DDDDDD] bg-[#0F0F0F] tablet:hidden"
+          className="flex h-[50px] w-[50px] shrink-0 items-center justify-center border border-gray-200 bg-black tablet:hidden"
         >
           <Image src="/img/icons/filter.png" alt="모바일 필터 버튼" width={15} height={15} />
         </button>
