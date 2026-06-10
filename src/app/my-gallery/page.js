@@ -4,15 +4,15 @@ import { PhotoCard } from "@/components/common/Card";
 import { axiosInstance } from "@/lib/api/axiosInstance";
 import { useAuth } from "@/providers/AuthProvider";
 import { useEffect, useState } from "react";
-import Image from "next/image";
 import Button from "@/components/common/Button";
 import { GradeChip } from "@/components/common/Grade";
 import Dropdown from "@/components/common/Dropdown";
 import Input from "@/components/common/Input";
 import Pagination from "@/components/common/Pagination";
-import { useQuery } from "@tanstack/react-query";
+import { getMyGalleryCards } from "@/lib/api/galleryApi";
 
 const GRADE_OPTIONS = [
+  { label: "등급", value: "" },
   { label: "COMMON", value: "COMMON" },
   { label: "RARE", value: "RARE" },
   { label: "SUPER RARE", value: "SUPER_RARE" },
@@ -20,6 +20,7 @@ const GRADE_OPTIONS = [
 ];
 
 export const GENRE_OPTIONS = [
+  { label: "장르", value: "" },
   {
     label: "앨범",
     value: "ALBUM",
@@ -60,13 +61,16 @@ export default function MyGalleryPage() {
 
     const myGalleryCards = async () => {
       try {
-        const response = await axiosInstance.get(
-          `/me/cards?page=${meta.page}&limit=${meta.limit}&grade=${grade}&genre=${genre}&keyword=${keyword}`,
-        );
-        console.log(response.data.data);
-        setCards(response.data.data.items);
-        setMeta(response.data.data.meta);
-        setGrades(response.data.data.gradeCount);
+        const data = await getMyGalleryCards({
+          page: meta.page,
+          limit: meta.limit,
+          grade,
+          genre,
+          keyword,
+        });
+        setCards(data.items);
+        setMeta(data.meta);
+        setGrades(data.gradeCount);
       } catch (error) {
         console.error(error);
       }
@@ -82,7 +86,12 @@ export default function MyGalleryPage() {
         <Button>포토카드 생성하기</Button>
       </div>
       <div className="flex flex-col gap-[20px] mt-10 pb-10 border-b border-[#5A5A5A] ">
-        <span>{user ? `${user.nickname}님이 보유한 포토카드 (${meta.totalCopyCount}장)` : ""}</span>
+        <p className="flex gap-[10px] items-center">
+          <span className="text-[24px] font-bold">
+            {user ? `${user.nickname}님이 보유한 포토카드` : ""}
+          </span>
+          <span className="text-[20px] text-[#A4A4A4] font-normal">{`(${meta.totalCopyCount}장)`}</span>
+        </p>
         <div className="flex gap-[20px]">
           {grades.map(({ grade, count }) => (
             <GradeChip key={grade} grade={grade} count={count} />
