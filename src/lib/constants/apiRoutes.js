@@ -1,3 +1,5 @@
+import { PhotoCard } from "@/components/common/Card";
+
 export const API_ROUTES = {
   AUTH: {
     SIGNUP: "/auth/register",
@@ -29,7 +31,12 @@ export const API_ROUTES = {
   SALES: {
     BASE: "/sales",
     MY: "/me/sales",
-    DETAIL: (saleId) => `/sales/${saleId}`,
+    DETAIL: {
+      SELF: (saleId) => `/sales/${saleId}`,
+      PHOTOCARD: (saleId) => `/sales/${saleId}/photocard`,
+      COUNT_ALL: (saleId) => `sales/${saleId}/count-all`,
+      COUNT_ACTIVE: (saleId) => `sales/${saleId}/count-active`,
+    },
   },
 
   EXCHANGE: {
