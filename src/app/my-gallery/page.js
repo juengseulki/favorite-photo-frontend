@@ -2,7 +2,7 @@
 
 import { PhotoCard } from "@/components/common/Card";
 import { useAuth } from "@/providers/AuthProvider";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Button from "@/components/common/Button";
 import { GradeChip } from "@/components/common/Grade";
 import Dropdown from "@/components/common/Dropdown";
@@ -13,43 +13,41 @@ import Image from "next/image";
 import Modal from "@/components/common/Modal";
 import useResponsiveLimit from "@/hooks/useResponsiveLimit";
 import { GRADE_OPTIONS, GENRE_OPTIONS } from "@/lib/constants/galleryOptions";
+import { useQuery } from "@tanstack/react-query";
+import { QUERY_KEYS } from "@/lib/constants/queryKeys";
 
 export default function MyGalleryPage() {
   const { isLoading, user } = useAuth();
   const limit = useResponsiveLimit();
 
-  const [cards, setCards] = useState([]);
-  const [meta, setMeta] = useState({
-    page: 1,
-  });
-  const [grades, setGrades] = useState([]);
   const [grade, setGrade] = useState("");
   const [genre, setGenre] = useState("");
   const [keyword, setKeyword] = useState("");
+  const [page, setPage] = useState(1);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  useEffect(() => {
-    if (isLoading) return;
+  const { data } = useQuery({
+    queryKey: QUERY_KEYS.GALLERY.MY_CARDS({
+      page,
+      limit,
+      grade,
+      genre,
+      keyword,
+    }),
+    queryFn: () =>
+      getMyGalleryCards({
+        page,
+        limit,
+        grade,
+        genre,
+        keyword,
+      }),
+    enabled: !isLoading && !!user,
+  });
 
-    const myGalleryCards = async () => {
-      try {
-        const data = await getMyGalleryCards({
-          page: meta.page,
-          limit,
-          grade,
-          genre,
-          keyword,
-        });
-        setCards(data.items);
-        setMeta(data.meta);
-        setGrades(data.gradeCount);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    myGalleryCards();
-  }, [meta.page, isLoading, grade, genre, keyword, limit]);
+  const cards = data?.items ?? [];
+  const meta = data?.meta ?? { page: 1 };
+  const grades = data?.gradeCount ?? [];
 
   return (
     <div className="mx-auto max-w-[1920px] px-[20px] desktop:px-[220px]">
@@ -57,7 +55,6 @@ export default function MyGalleryPage() {
         <span className="text-[62px] font-normal tracking-[-0.03em]">마이갤러리</span>
         <Button>포토카드 생성하기</Button>
       </div>
-      {/* 모바일 */}
       <div className="fixed bottom-0 left-0 z-50 w-full px-[20px] pb-[20px] tablet:hidden">
         <Button size="full">포토카드 생성하기</Button>
       </div>
@@ -93,7 +90,10 @@ export default function MyGalleryPage() {
           placeholder="검색"
           size="searchLg"
           value={keyword}
-          onChange={(e) => setKeyword(e.target.value)}
+          onChange={(e) => {
+            setKeyword(e.target.value);
+            setPage(1);
+          }}
         />
 
         <div className="hidden tablet:block">
@@ -102,7 +102,10 @@ export default function MyGalleryPage() {
             size="sort"
             options={GRADE_OPTIONS}
             value={grade}
-            onChange={setGrade}
+            onChange={(value) => {
+              setGrade(value);
+              setPage(1);
+            }}
           />
         </div>
 
@@ -112,7 +115,10 @@ export default function MyGalleryPage() {
             size="sort"
             options={GENRE_OPTIONS}
             value={genre}
-            onChange={setGenre}
+            onChange={(value) => {
+              setGenre(value);
+              setPage(1);
+            }}
           />
         </div>
       </div>
@@ -123,15 +129,10 @@ export default function MyGalleryPage() {
       </div>
       <div className="hidden tablet:block">
         <Pagination
-          page={meta.page}
+          page={page}
           totalCount={meta?.totalCount ?? 0}
           pageSize={limit}
-          onPageChange={(page) =>
-            setMeta((prev) => ({
-              ...prev,
-              page,
-            }))
-          }
+          onPageChange={setPage}
         />
       </div>
       <Modal isOpen={isModalOpen} title="필터" onClose={() => setIsModalOpen(false)}>
@@ -141,14 +142,20 @@ export default function MyGalleryPage() {
             size="sort"
             options={GRADE_OPTIONS}
             value={grade}
-            onChange={setGrade}
+            onChange={(value) => {
+              setGrade(value);
+              setPage(1);
+            }}
           />
           <Dropdown
             placeholder="장르"
             size="sort"
             options={GENRE_OPTIONS}
             value={genre}
-            onChange={setGenre}
+            onChange={(value) => {
+              setGenre(value);
+              setPage(1);
+            }}
           />
         </div>
       </Modal>
