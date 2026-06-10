@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { useState } from "react";
 
 export const getPaginationRange = (currentPage, totalPages) => {
   if (totalPages <= 7) {
@@ -29,6 +30,7 @@ export default function Pagination({
   const totalPages = Math.ceil(totalCount / pageSize);
 
   const pages = getPaginationRange(page, totalPages);
+  const [openDotsIndex, setOpenDotsIndex] = useState(null);
 
   if (totalPages <= 1) return null;
 
@@ -54,7 +56,7 @@ export default function Pagination({
   };
 
   return (
-    <div className="flex gap-[20px] items-center mb-50 justify-center">
+    <div className="flex gap-[20px] items-center mb-50 mt-30 justify-center">
       <Image
         src="/img/icons/left.png"
         alt="이전 페이지"
@@ -62,19 +64,73 @@ export default function Pagination({
         className="cursor-pointer w-[24px] h-[24px]"
         width={24}
         height={24}
-        disabled={page === 1}
+        // disabled={page === 1}
         onClick={handlePrev}
       />
+      <div className="flex gap-[10px] items-center">
+        {pages.map((item, index) => {
+          const isActive = item === page;
 
-      {pages.map((item, index) =>
-        item === "..." ? (
-          <span key={index}>...</span>
-        ) : (
-          <button key={index} type="button" onClick={() => onPageChange(item)}>
-            {item}
-          </button>
-        ),
-      )}
+          if (item === "...") {
+            const prevPage = pages[index - 1];
+            const nextPage = pages[index + 1];
+
+            const dropdownPages = Array.from(
+              { length: nextPage - prevPage - 1 },
+              (_, i) => prevPage + i + 1,
+            );
+
+            return (
+              <div key={`dots-${index}`} className="relative">
+                <button
+                  type="button"
+                  className="cursor-pointer w-[50px] h-[50px]"
+                  onClick={() => setOpenDotsIndex((prev) => (prev === index ? null : index))}
+                >
+                  ...
+                </button>
+
+                {openDotsIndex === index && (
+                  <div
+                    className="absolute top-[50px] left-0 w-[50px] max-h-[180px] overflow-y-auto border border-[#EEEEEE] bg-black z-10
+            [&::-webkit-scrollbar]:w-[4px]
+            [&::-webkit-scrollbar-track]:bg-transparent
+            [&::-webkit-scrollbar-thumb]:bg-[#5A5A5A]
+            [&::-webkit-scrollbar-thumb]:rounded-full"
+                  >
+                    {dropdownPages.map((pageNumber) => (
+                      <button
+                        key={pageNumber}
+                        type="button"
+                        className="cursor-pointer w-full h-[40px]"
+                        onClick={() => {
+                          onPageChange(pageNumber);
+                          setOpenDotsIndex(null);
+                        }}
+                      >
+                        {pageNumber}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+            );
+          }
+
+          return (
+            <button
+              key={item}
+              type="button"
+              onClick={() => onPageChange(item)}
+              className={`cursor-pointer w-[50px] h-[50px] ${
+                isActive ? "rounded-sm border border-[#DDDDDD]" : ""
+              }`}
+            >
+              {item}
+            </button>
+          );
+        })}
+      </div>
 
       <Image
         src="/img/icons/right.png"
@@ -82,17 +138,9 @@ export default function Pagination({
         className="cursor-pointer w-[24px] h-[24px]"
         width={24}
         height={24}
-        disabled={page === totalPages}
+        // disabled={page === totalPages}
         onClick={handleNext}
       />
-
-      <select value={pageSize} onChange={handleSizeChange}>
-        {pageSizeOptions.map((size) => (
-          <option key={size} value={size}>
-            {size}
-          </option>
-        ))}
-      </select>
     </div>
   );
 }

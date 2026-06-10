@@ -53,6 +53,7 @@ export default function MyGalleryPage() {
   const [grades, setGrades] = useState([]);
   const [grade, setGrade] = useState("");
   const [genre, setGenre] = useState("");
+  const [keyword, setKeyword] = useState("");
 
   useEffect(() => {
     if (isLoading) return;
@@ -60,7 +61,7 @@ export default function MyGalleryPage() {
     const myGalleryCards = async () => {
       try {
         const response = await axiosInstance.get(
-          `/me/cards?page=${meta.page}&limit=${meta.limit}&grade=${grade}&genre=${genre}`,
+          `/me/cards?page=${meta.page}&limit=${meta.limit}&grade=${grade}&genre=${genre}&keyword=${keyword}`,
         );
         console.log(response.data.data);
         setCards(response.data.data.items);
@@ -72,7 +73,7 @@ export default function MyGalleryPage() {
     };
 
     myGalleryCards();
-  }, [meta.page, isLoading, grade, genre, meta.limit]);
+  }, [meta.page, isLoading, grade, genre, meta.limit, keyword]);
 
   return (
     <div className="max-w-[1920px] px-[220px]">
@@ -89,7 +90,14 @@ export default function MyGalleryPage() {
         </div>
       </div>
       <div className="flex gap-3 mt-3 mb-15">
-        <Input labelSize="md" variant="search" placeholder="검색" size="searchLg" />
+        <Input
+          labelSize="md"
+          variant="search"
+          placeholder="검색"
+          size="searchLg"
+          value={keyword}
+          onChange={(e) => setKeyword(e.target.value)}
+        />
         <Dropdown
           placeholder="등급"
           size="sort"
