@@ -21,7 +21,7 @@ export default function PhotoCard({ card: item }) {
             <span className={card.genre}>{item.genre}</span>
           </div>
 
-          <span className={card.nickname}>{item.nickname}</span>
+          <span className={card.nickname}>{item.creator.nickname}</span>
         </div>
       </div>
 
