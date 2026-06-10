@@ -7,6 +7,5 @@ export function useMarketCardDetail(saleId) {
     queryKey: QUERY_KEYS.MARKET.DETAIL(saleId),
     queryFn: () => getMarketCardDetail(saleId),
     enabled: !!saleId,
-    select: (res) => res.data,
   });
 }
