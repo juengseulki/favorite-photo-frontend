@@ -10,6 +10,7 @@ import Input from "@/components/common/Input";
 import Pagination from "@/components/common/Pagination";
 import { getMyGalleryCards } from "@/lib/api/galleryApi";
 import Image from "next/image";
+import Modal from "@/components/common/Modal";
 
 const GRADE_OPTIONS = [
   { label: "등급", value: "" },
@@ -55,6 +56,7 @@ export default function MyGalleryPage() {
   const [grade, setGrade] = useState("");
   const [genre, setGenre] = useState("");
   const [keyword, setKeyword] = useState("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     if (isLoading) return;
@@ -107,9 +109,13 @@ export default function MyGalleryPage() {
         </div>
       </div>
       <div className="mt-3 mb-3 flex justify-between gap-3 tablet:mb-20 tablet:justify-start">
-        <div className="flex h-[50px] w-[50px] shrink-0 items-center justify-center border border-[#DDDDDD] bg-[#0F0F0F] tablet:hidden">
+        <button
+          type="button"
+          onClick={() => setIsModalOpen(true)}
+          className="flex h-[50px] w-[50px] shrink-0 items-center justify-center border border-[#DDDDDD] bg-[#0F0F0F] tablet:hidden"
+        >
           <Image src="/img/icons/filter.png" alt="모바일 필터 버튼" width={15} height={15} />
-        </div>
+        </button>
         <Input
           inputClassName="w-full"
           labelSize="md"
@@ -165,6 +171,24 @@ export default function MyGalleryPage() {
           }
         />
       </div>
+      <Modal isOpen={isModalOpen} title="필터" onClose={() => setIsModalOpen(false)}>
+        <div className="flex flex-col gap-3 justify-center items-center">
+          <Dropdown
+            placeholder="등급"
+            size="sort"
+            options={GRADE_OPTIONS}
+            value={grade}
+            onChange={setGrade}
+          />
+          <Dropdown
+            placeholder="장르"
+            size="sort"
+            options={GENRE_OPTIONS}
+            value={genre}
+            onChange={setGenre}
+          />
+        </div>
+      </Modal>
     </div>
   );
 }
