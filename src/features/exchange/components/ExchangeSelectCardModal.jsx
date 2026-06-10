@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import Button from "@/components/common/Button";
 import Dropdown from "@/components/common/Dropdown";
 import Input from "@/components/common/Input";
@@ -28,11 +28,29 @@ export default function ExchangeSelectCardModal({
   helperText = "",
   confirmDisabledReason = "",
 }) {
+  const [selectionError, setSelectionError] = useState("");
+
   const selectedCard = useMemo(
     () => cards.find((card) => card.id === selectedCardId),
     [cards, selectedCardId],
   );
-  const isConfirmDisabled = isDisabled || !selectedCard;
+
+  const handleSelectCard = (card) => {
+    setSelectionError("");
+    onSelectCard?.(card);
+  };
+
+  const handleConfirm = () => {
+    if (isDisabled) return;
+
+    if (!selectedCard) {
+      setSelectionError("교환할 포토카드를 선택해주세요.");
+      return;
+    }
+
+    setSelectionError("");
+    onConfirm?.(selectedCard);
+  };
 
   return (
     <Modal
@@ -46,7 +64,7 @@ export default function ExchangeSelectCardModal({
           <Button variant="secondary" size="lg" onClick={onClose}>
             취소하기
           </Button>
-          <Button size="lg" onClick={() => onConfirm?.(selectedCard)} disabled={isConfirmDisabled}>
+          <Button size="lg" onClick={handleConfirm} disabled={isDisabled}>
             선택하기
           </Button>
         </>
@@ -86,9 +104,9 @@ export default function ExchangeSelectCardModal({
         {helperText && <p className="text-[14px] text-gray-300">{helperText}</p>}
 
         {errorMessage ? (
-          <div className="flex min-h-[320px] flex-col items-center justify-center gap-3 border border-red px-6 text-center">
+          <div className="flex min-h-[320px] flex-col items-center justify-center gap-3 border border-red-500 px-6 text-center">
             <p className="text-[16px] font-bold text-white">{errorMessage}</p>
-            <p className="text-[14px] text-gray-300">잠시 후 다시 시도해 주세요.</p>
+            <p className="text-[14px] text-gray-300">잠시 후 다시 시도해주세요.</p>
           </div>
         ) : isLoading ? (
           <div className="flex min-h-[320px] items-center justify-center border border-gray-400">
@@ -98,12 +116,14 @@ export default function ExchangeSelectCardModal({
           <ExchangeCardGrid
             cards={cards}
             selectedCardId={selectedCardId}
-            onSelect={onSelectCard}
+            onSelect={handleSelectCard}
             emptyMessage={emptyMessage}
-            helperMessage={isDisabled ? "로그인 후 교환할 카드를 선택할 수 있습니다." : ""}
+            helperMessage={isDisabled ? "로그인 후 교환 기능을 이용할 수 있습니다." : ""}
             disabled={isDisabled}
           />
         )}
+
+        {selectionError && <p className="text-[14px] font-medium text-red-500">{selectionError}</p>}
 
         {confirmDisabledReason && (
           <p className="text-right text-[13px] text-gray-300">{confirmDisabledReason}</p>

@@ -6,7 +6,15 @@ export { default as SaleExchangeFormModal } from "./components/SaleExchangeFormM
 export { default as SaleFailureModal } from "./components/SaleFailureModal";
 export { default as SaleSuccessModal } from "./components/SaleSuccessModal";
 
-export { createExchangeSale, fetchExchangeCards, respondExchange } from "@/lib/api/exchangeApi";
+export {
+  acceptExchangeProposal,
+  createExchangeProposal,
+  createExchangeSale,
+  fetchExchangeCards,
+  fetchExchangeProposals,
+  rejectExchangeProposal,
+  respondExchange,
+} from "@/lib/api/exchangeApi";
 
 export { useCreateExchangeSale } from "@/hooks/useCreateExchangeSale";
 export { useExchangeCards } from "@/hooks/useExchangeCards";

@@ -1,105 +1,271 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import Button from "@/components/common/Button";
 import {
-  ExchangeCardGrid,
   ExchangeDecisionModal,
   ExchangeRequestCard,
   ExchangeSelectCardModal,
-  SaleExchangeFormModal,
-  SaleFailureModal,
-  SaleSuccessModal,
+  fetchExchangeProposals,
+  useCreateExchangeSale,
+  useExchangeFilters,
+  useRespondExchange,
 } from "@/features/exchange";
-import { useExchangeFilters } from "@/hooks/useExchangeFilters";
-import { useExchangeModalState } from "@/hooks/useExchangeModalState";
+import { QUERY_KEYS } from "@/lib/constants/queryKeys";
 import { useAuth } from "@/providers/AuthProvider";
 
-const MOCK_SALE_CARD = {
-  id: 101,
-  name: "우리집 앞마당",
-  imageUrl: "/img/images/img1.png",
-  grade: "LEGENDARY",
-  genre: "풍경",
-  count: 3,
-  price: 4,
-  description: "우리집 앞마당 포토카드입니다.",
-  creator: {
-    nickname: "미쏘손",
-  },
-};
+const DESCRIPTION_MAX_LENGTH = 300;
 
-const MOCK_EXCHANGE_CARDS = [
+const PREVIEW_CARD_OPTIONS = [
   {
-    id: 1,
+    id: 1001,
     name: "스페인 여행",
     imageUrl: "/img/images/img1.png",
-    grade: "RARE",
+    grade: "COMMON",
     genre: "풍경",
     count: 1,
     price: 4,
-    description: "푸릇푸릇한 여름 풍경, 눈 많이 내린 겨울 풍경 사진에 관심이 많습니다.",
+    description: "실제 테스트 시에는 이 값을 본인 카드 사본 ID로 바꿔주세요.",
     creator: {
       nickname: "프로여행러",
     },
   },
   {
-    id: 2,
+    id: 1002,
     name: "How Far I’ll Go",
     imageUrl: "/img/images/img2.png",
-    grade: "COMMON",
+    grade: "SUPER RARE",
     genre: "풍경",
     count: 1,
     price: 4,
-    description: "여름 바다 풍경 사진과 교환하고 싶어요.",
+    description: "선택 모달 UI 확인용 예시 카드입니다.",
     creator: {
-      nickname: "판스타",
+      nickname: "밸스타",
     },
   },
 ];
 
+const UI_PREVIEW_RECEIVED_PROPOSALS = [
+  {
+    id: 9001,
+    saleId: 201,
+    offeredCardCopyId: 301,
+    status: "PENDING",
+    description: "겨울 풍경 카드와 교환 희망합니다.",
+    proposer: { nickname: "프로여행러" },
+    sale: { price: 4 },
+    offeredCardCopy: {
+      photoCard: {
+        name: "스페인 여행",
+        imageUrl: "/img/images/img1.png",
+        grade: "COMMON",
+        genre: "풍경",
+      },
+    },
+  },
+  {
+    id: 9002,
+    saleId: 202,
+    offeredCardCopyId: 302,
+    status: "ACCEPTED",
+    description: "여름 바다 풍경 카드와 바꾸고 싶어요.",
+    proposer: { nickname: "밸스타" },
+    sale: { price: 4 },
+    offeredCardCopy: {
+      photoCard: {
+        name: "How Far I’ll Go",
+        imageUrl: "/img/images/img2.png",
+        grade: "SUPER RARE",
+        genre: "풍경",
+      },
+    },
+  },
+  {
+    id: 9003,
+    saleId: 203,
+    offeredCardCopyId: 303,
+    status: "REJECTED",
+    description: "도심 야경 카드와 교환 문의드립니다.",
+    proposer: { nickname: "나이트러버" },
+    sale: { price: 6 },
+    offeredCardCopy: {
+      photoCard: {
+        name: "미드나잇 시티",
+        imageUrl: "/img/images/img1.png",
+        grade: "RARE",
+        genre: "풍경",
+      },
+    },
+  },
+  {
+    id: 9004,
+    saleId: 204,
+    offeredCardCopyId: 304,
+    status: "CANCELED",
+    description: "다른 교환이 먼저 성사되어 취소된 상태 예시입니다.",
+    proposer: { nickname: "캔슬러" },
+    sale: { price: 3 },
+    offeredCardCopy: {
+      photoCard: {
+        name: "선셋 코스트",
+        imageUrl: "/img/images/img2.png",
+        grade: "COMMON",
+        genre: "풍경",
+      },
+    },
+  },
+];
+
+const UI_PREVIEW_SENT_PROPOSALS = [
+  {
+    id: 9101,
+    saleId: 211,
+    offeredCardCopyId: 311,
+    status: "PENDING",
+    description: "보낸 교환 요청 카드 UI 예시입니다.",
+    proposer: { nickname: "나" },
+    sale: { price: 5 },
+    offeredCardCopy: {
+      photoCard: {
+        name: "오로라 레이크",
+        imageUrl: "/img/images/img2.png",
+        grade: "LEGENDARY",
+        genre: "풍경",
+      },
+    },
+  },
+  {
+    id: 9102,
+    saleId: 212,
+    offeredCardCopyId: 312,
+    status: "REJECTED",
+    description: "거절된 보낸 교환 요청 상태 예시입니다.",
+    proposer: { nickname: "나" },
+    sale: { price: 2 },
+    offeredCardCopy: {
+      photoCard: {
+        name: "스노우 가든",
+        imageUrl: "/img/images/img1.png",
+        grade: "RARE",
+        genre: "풍경",
+      },
+    },
+  },
+];
+
+function getErrorMessage(error, fallbackMessage) {
+  return error?.response?.data?.error?.message ?? error?.message ?? fallbackMessage;
+}
+
+function mapProposalToCard(proposal) {
+  const offeredPhotoCard = proposal?.offeredCardCopy?.photoCard ?? {};
+
+  return {
+    id: proposal?.id ?? offeredPhotoCard?.id ?? Math.random(),
+    name: offeredPhotoCard?.name ?? "포토카드",
+    imageUrl: offeredPhotoCard?.imageUrl ?? "/img/images/img1.png",
+    grade: offeredPhotoCard?.grade ?? "COMMON",
+    genre: offeredPhotoCard?.genre ?? "기타",
+    price: proposal?.sale?.price ?? 0,
+    count: 1,
+    description: proposal?.description?.trim() || "교환 설명이 아직 없습니다.",
+    creator: {
+      nickname: proposal?.proposer?.nickname ?? "사용자",
+    },
+  };
+}
+
+function ProposalSection({
+  title,
+  description,
+  proposals,
+  isLoading,
+  error,
+  emptyMessage,
+  actionable = false,
+  onAccept,
+  onReject,
+}) {
+  return (
+    <section className="space-y-5">
+      <div>
+        <h2 className="text-[24px] font-bold text-white">{title}</h2>
+        <p className="mt-2 text-[14px] text-gray-300">{description}</p>
+      </div>
+
+      {isLoading ? (
+        <div className="flex min-h-[240px] items-center justify-center border border-gray-400">
+          <p className="text-[15px] text-gray-300">교환 제안 목록을 불러오는 중입니다.</p>
+        </div>
+      ) : error ? (
+        <div className="flex min-h-[240px] flex-col items-center justify-center gap-2 border border-red-500 px-6 text-center">
+          <p className="text-[16px] font-bold text-white">
+            {getErrorMessage(error, "교환 제안 목록을 불러오지 못했습니다.")}
+          </p>
+          <p className="text-[14px] text-gray-300">로그인 상태와 API 서버 연결을 확인해주세요.</p>
+        </div>
+      ) : !proposals.length ? (
+        <div className="flex min-h-[240px] items-center justify-center border border-gray-400 px-6 text-center">
+          <p className="text-[15px] text-gray-300">{emptyMessage}</p>
+        </div>
+      ) : (
+        <div className="grid gap-6 desktop:grid-cols-2">
+          {proposals.map((proposal) => {
+            const card = mapProposalToCard(proposal);
+            const status = proposal.status?.toLowerCase() ?? "pending";
+
+            return (
+              <div key={proposal.id} className="space-y-3">
+                <div className="flex flex-wrap items-center gap-3 text-[13px] text-gray-300">
+                  <span>제안 ID: {proposal.id}</span>
+                  <span>판매글 ID: {proposal.saleId}</span>
+                  <span>제시 카드 ID: {proposal.offeredCardCopyId}</span>
+                </div>
+
+                <ExchangeRequestCard
+                  card={card}
+                  status={status}
+                  disabled={!actionable}
+                  onAccept={
+                    actionable && status === "pending" ? () => onAccept?.(proposal) : undefined
+                  }
+                  onReject={
+                    actionable && status === "pending" ? () => onReject?.(proposal) : undefined
+                  }
+                />
+              </div>
+            );
+          })}
+        </div>
+      )}
+    </section>
+  );
+}
+
 export default function ExchangeTestPage() {
   const { user, isLoading: authLoading } = useAuth();
-  const [submittedValues, setSubmittedValues] = useState(null);
-  const [selectedCardId, setSelectedCardId] = useState(MOCK_EXCHANGE_CARDS[0].id);
+  const [saleId, setSaleId] = useState("");
+  const [offeredCardCopyId, setOfferedCardCopyId] = useState("");
+  const [description, setDescription] = useState("");
+  const [descriptionValidation, setDescriptionValidation] = useState("");
+  const [selectedCardId, setSelectedCardId] = useState(PREVIEW_CARD_OPTIONS[0].id);
+  const [isSelectModalOpen, setIsSelectModalOpen] = useState(false);
   const [decisionModalType, setDecisionModalType] = useState(null);
-  const [failureOpen, setFailureOpen] = useState(false);
-  const [previewAuthMode, setPreviewAuthMode] = useState("logged-in");
-  const [previewState, setPreviewState] = useState("default");
-
-  const {
-    formOpen,
-    successOpen,
-    selectCardOpen,
-    openForm,
-    closeForm,
-    closeSuccess,
-    openSelectCard,
-    closeSelectCard,
-    completeForm,
-  } = useExchangeModalState();
-
+  const [activeProposal, setActiveProposal] = useState(null);
+  const [createFeedbackMessage, setCreateFeedbackMessage] = useState("");
+  const [createFeedbackType, setCreateFeedbackType] = useState("info");
+  const [actionSuccessMessage, setActionSuccessMessage] = useState("");
   const { keyword, setKeyword, grade, setGrade, genre, setGenre } = useExchangeFilters();
 
-  const authPreview = useMemo(() => {
-    if (previewAuthMode === "loading") {
-      return { user: null, isLoading: true };
-    }
+  const canUseExchange = !authLoading && Boolean(user);
 
-    if (previewAuthMode === "guest") {
-      return { user: null, isLoading: false };
-    }
-
-    return { user: user ?? { id: "preview-user", nickname: "preview-user" }, isLoading: false };
-  }, [previewAuthMode, user]);
-
-  const filteredCards = useMemo(() => {
-    return MOCK_EXCHANGE_CARDS.filter((card) => {
+  const filteredPreviewCards = useMemo(() => {
+    return PREVIEW_CARD_OPTIONS.filter((card) => {
       const matchesKeyword =
         !keyword ||
         card.name.toLowerCase().includes(keyword.toLowerCase()) ||
         card.description.toLowerCase().includes(keyword.toLowerCase());
-
       const matchesGrade = grade === "ALL" || card.grade === grade;
       const matchesGenre = genre === "ALL" || card.genre === genre;
 
@@ -107,212 +273,368 @@ export default function ExchangeTestPage() {
     });
   }, [genre, grade, keyword]);
 
-  const selectedCard = useMemo(
-    () => MOCK_EXCHANGE_CARDS.find((card) => card.id === selectedCardId),
+  const selectedPreviewCard = useMemo(
+    () => PREVIEW_CARD_OPTIONS.find((card) => card.id === selectedCardId) ?? null,
     [selectedCardId],
   );
 
-  const cardsForPreview = useMemo(() => {
-    if (previewState === "empty") return [];
-    return filteredCards;
-  }, [filteredCards, previewState]);
+  const sentQuery = useQuery({
+    queryKey: QUERY_KEYS.EXCHANGES.SENT(),
+    queryFn: () =>
+      fetchExchangeProposals({
+        type: "sent",
+        page: 1,
+        limit: 20,
+      }),
+    enabled: canUseExchange,
+  });
 
-  const canUseExchange = !authPreview.isLoading && Boolean(authPreview.user);
-  const isCardLoading = previewState === "loading";
-  const errorMessage =
-    previewState === "error" ? "교환 가능한 포토카드 목록을 불러오지 못했습니다." : "";
-  const helperText = authPreview.isLoading
-    ? "세션을 확인하는 동안에는 교환 기능을 사용할 수 없습니다."
-    : !authPreview.user
-      ? "로그인 후에만 교환 제안 및 승인/거절 기능을 사용할 수 있습니다."
-      : "교환 가능한 내 포토카드를 선택하고 제안 흐름을 점검해 보세요.";
+  const receivedQuery = useQuery({
+    queryKey: QUERY_KEYS.EXCHANGES.RECEIVED(),
+    queryFn: () =>
+      fetchExchangeProposals({
+        type: "received",
+        page: 1,
+        limit: 20,
+      }),
+    enabled: canUseExchange,
+  });
 
-  const handleOpenDecisionModal = (decision) => {
+  const createProposalMutation = useCreateExchangeSale({
+    onSuccess: (data) => {
+      setCreateFeedbackType("success");
+      setCreateFeedbackMessage(`교환 제안이 생성되었습니다. (proposalId: ${data?.id ?? "-"})`);
+      setDescription("");
+      setDescriptionValidation("");
+    },
+    onError: (error) => {
+      setCreateFeedbackType("error");
+      setCreateFeedbackMessage(getErrorMessage(error, "교환 제안 생성에 실패했습니다."));
+    },
+  });
+
+  const respondMutation = useRespondExchange({
+    onSuccess: (_, variables) => {
+      setActionSuccessMessage(
+        variables.decision === "approve"
+          ? "교환 제안을 승인했습니다."
+          : "교환 제안을 거절했습니다.",
+      );
+      setDecisionModalType(null);
+      setActiveProposal(null);
+    },
+    onError: () => {
+      setActionSuccessMessage("");
+    },
+  });
+
+  const sentItems = sentQuery.data?.items ?? [];
+  const receivedItems = receivedQuery.data?.items ?? [];
+
+  const handleDescriptionChange = (value) => {
+    setDescription(value);
+
+    const trimmedValue = value.trim();
+
+    if (!trimmedValue) {
+      setDescriptionValidation("");
+      return;
+    }
+
+    if (trimmedValue.length > DESCRIPTION_MAX_LENGTH) {
+      setDescriptionValidation(`교환 제시 내용은 ${DESCRIPTION_MAX_LENGTH}자 이하로 입력해주세요.`);
+      return;
+    }
+
+    setDescriptionValidation("");
+  };
+
+  const handleSubmitProposal = () => {
+    if (!canUseExchange) return;
+
+    const trimmedDescription = description.trim();
+
+    setCreateFeedbackMessage("");
+    setCreateFeedbackType("info");
+
+    if (!trimmedDescription) {
+      setDescriptionValidation("교환 제시 내용을 입력해주세요.");
+      return;
+    }
+
+    if (trimmedDescription.length > DESCRIPTION_MAX_LENGTH) {
+      setDescriptionValidation(`교환 제시 내용은 ${DESCRIPTION_MAX_LENGTH}자 이하로 입력해주세요.`);
+      return;
+    }
+
+    setDescriptionValidation("");
+
+    createProposalMutation.mutate({
+      saleId,
+      offeredCardCopyId,
+      description: trimmedDescription,
+    });
+  };
+
+  const handleOpenDecisionModal = (decision, proposal) => {
     if (!canUseExchange) return;
     setDecisionModalType(decision);
+    setActiveProposal(proposal);
+    setActionSuccessMessage("");
   };
 
-  const handleCloseDecisionModal = () => {
-    setDecisionModalType(null);
-  };
+  const handleConfirmDecision = () => {
+    if (!activeProposal || !decisionModalType || respondMutation.isPending) return;
 
-  const handleSubmitSale = async (formValues) => {
-    setSubmittedValues(formValues);
-    completeForm();
+    respondMutation.mutate({
+      proposalId: activeProposal.id,
+      decision: decisionModalType,
+    });
   };
-
-  const handleOpenSelectCard = () => {
-    if (!canUseExchange) return;
-    openSelectCard();
-  };
-
-  const previewStatusCards = [
-    { key: "pending", disabled: false },
-    { key: "accepted", disabled: true },
-    { key: "rejected", disabled: true },
-  ];
 
   return (
     <main className="min-h-screen bg-black px-6 py-10 text-white">
       <div className="mx-auto max-w-[1280px] space-y-12">
         <section className="space-y-4">
           <div>
-            <p className="text-[14px] text-gray-300">교환 UI 테스트 페이지</p>
-            <h1 className="mt-2 text-[36px] font-bold">Exchange UI Preview</h1>
+            <p className="text-[14px] text-gray-300">교환 API 연동 테스트 페이지</p>
+            <h1 className="mt-2 text-[36px] font-bold">Exchange API Test</h1>
           </div>
 
           <div className="grid gap-6 border border-gray-400 p-6 desktop:grid-cols-2">
             <div className="space-y-3">
-              <h2 className="text-[20px] font-bold">로그인 가드 미리보기</h2>
-              <div className="flex flex-wrap gap-3">
-                <Button
-                  size="sm"
-                  variant={previewAuthMode === "logged-in" ? "primary" : "secondary"}
-                  onClick={() => setPreviewAuthMode("logged-in")}
-                >
-                  로그인 상태
-                </Button>
-                <Button
-                  size="sm"
-                  variant={previewAuthMode === "guest" ? "primary" : "secondary"}
-                  onClick={() => setPreviewAuthMode("guest")}
-                >
-                  비로그인 상태
-                </Button>
-                <Button
-                  size="sm"
-                  variant={previewAuthMode === "loading" ? "primary" : "secondary"}
-                  onClick={() => setPreviewAuthMode("loading")}
-                >
-                  세션 확인중
-                </Button>
-              </div>
+              <h2 className="text-[20px] font-bold">로그인 상태</h2>
               <p className="text-[14px] text-gray-300">
-                실제 auth 상태: {authLoading ? "확인 중" : user ? "로그인됨" : "비로그인"}
+                {authLoading
+                  ? "인증 상태를 확인하는 중입니다."
+                  : user
+                    ? `${user.nickname ?? user.email ?? user.id} 계정으로 로그인되어 있습니다.`
+                    : "로그인이 필요합니다. 실제 교환 API 테스트 전 로그인해주세요."}
               </p>
             </div>
 
             <div className="space-y-3">
-              <h2 className="text-[20px] font-bold">목록 상태 미리보기</h2>
-              <div className="flex flex-wrap gap-3">
-                <Button
-                  size="sm"
-                  variant={previewState === "default" ? "primary" : "secondary"}
-                  onClick={() => setPreviewState("default")}
-                >
-                  기본 상태
-                </Button>
-                <Button
-                  size="sm"
-                  variant={previewState === "empty" ? "primary" : "secondary"}
-                  onClick={() => setPreviewState("empty")}
-                >
-                  빈 상태
-                </Button>
-                <Button
-                  size="sm"
-                  variant={previewState === "loading" ? "primary" : "secondary"}
-                  onClick={() => setPreviewState("loading")}
-                >
-                  로딩 상태
-                </Button>
-                <Button
-                  size="sm"
-                  variant={previewState === "error" ? "primary" : "secondary"}
-                  onClick={() => setPreviewState("error")}
-                >
-                  에러 상태
-                </Button>
-              </div>
+              <h2 className="text-[20px] font-bold">페이지 용도</h2>
+              <p className="text-[14px] text-gray-300">
+                상단은 실제 API 연동 테스트용, 하단은 API 연결 없이 UI와 모달 흐름을 확인하는
+                쇼케이스 영역입니다.
+              </p>
             </div>
           </div>
+        </section>
 
-          <div className="flex flex-wrap gap-4">
-            <Button size="sm" onClick={openForm}>
-              판매 등록 모달 열기
-            </Button>
+        <section className="space-y-5 border border-gray-400 p-6">
+          <div className="flex flex-col gap-2 desktop:flex-row desktop:items-end desktop:justify-between">
+            <div>
+              <h2 className="text-[24px] font-bold">교환 제안 생성 테스트</h2>
+              <p className="mt-2 text-[14px] text-gray-300">
+                판매 상세 페이지가 아직 미완성이라, 이 화면에서 직접 `saleId`와
+                `offeredCardCopyId`를 넣어 POST 요청을 검증합니다.
+              </p>
+            </div>
 
-            <Button size="sm" onClick={handleOpenSelectCard} disabled={!canUseExchange}>
-              교환 선택 모달 열기
-            </Button>
-
-            <Button size="sm" onClick={completeForm}>
-              성공 모달 열기
-            </Button>
-
-            <Button size="sm" variant="secondary" onClick={() => setFailureOpen(true)}>
-              실패 모달 열기
+            <Button
+              size="sm"
+              variant="secondary"
+              onClick={() => setIsSelectModalOpen(true)}
+              disabled={!canUseExchange}
+            >
+              예시 카드 선택 모달 열기
             </Button>
           </div>
 
-          <p className="text-[14px] text-gray-300">{helperText}</p>
+          <div className="grid gap-4 desktop:grid-cols-2">
+            <label className="space-y-2">
+              <span className="text-[14px] font-bold text-white">saleId</span>
+              <input
+                className="h-[52px] w-full border border-gray-400 bg-black px-4 text-white outline-none"
+                value={saleId}
+                onChange={(event) => setSaleId(event.target.value)}
+                placeholder="예: 12"
+              />
+            </label>
+
+            <label className="space-y-2">
+              <span className="text-[14px] font-bold text-white">offeredCardCopyId</span>
+              <input
+                className="h-[52px] w-full border border-gray-400 bg-black px-4 text-white outline-none"
+                value={offeredCardCopyId}
+                onChange={(event) => setOfferedCardCopyId(event.target.value)}
+                placeholder="예: 45"
+              />
+            </label>
+          </div>
+
+          <label className="block space-y-2">
+            <span className="text-[14px] font-bold text-white">description</span>
+            <textarea
+              className="h-[140px] w-full resize-none border border-gray-400 bg-black px-4 py-3 text-white outline-none"
+              value={description}
+              onChange={(event) => handleDescriptionChange(event.target.value)}
+              placeholder="교환 제안 내용을 입력해주세요."
+            />
+          </label>
+
+          {descriptionValidation && (
+            <p className="text-[14px] font-medium text-red-500">{descriptionValidation}</p>
+          )}
+
+          {selectedPreviewCard && (
+            <div className="rounded border border-gray-400 px-4 py-3 text-[14px] text-gray-300">
+              선택된 예시 카드:{" "}
+              <span className="font-bold text-white">{selectedPreviewCard.name}</span>
+              {" · "}예시 ID: {selectedPreviewCard.id}
+              {" · "}실제 테스트 시에는 입력값을 본인 카드 사본 ID로 수정해주세요.
+            </div>
+          )}
+
+          <div className="flex flex-wrap gap-3">
+            <Button
+              size="sm"
+              onClick={handleSubmitProposal}
+              disabled={!canUseExchange || createProposalMutation.isPending}
+            >
+              {createProposalMutation.isPending ? "교환 제안 생성 중..." : "교환 제안 보내기"}
+            </Button>
+
+            <Button
+              size="sm"
+              variant="secondary"
+              onClick={() => {
+                setCreateFeedbackMessage("");
+                setCreateFeedbackType("info");
+                sentQuery.refetch();
+                receivedQuery.refetch();
+              }}
+              disabled={!canUseExchange}
+            >
+              목록 새로고침
+            </Button>
+          </div>
+
+          {createFeedbackMessage && (
+            <p
+              className={`text-[14px] ${
+                createFeedbackType === "error" ? "font-medium text-red-500" : "text-gray-300"
+              }`}
+            >
+              {createFeedbackMessage}
+            </p>
+          )}
         </section>
 
-        <section className="space-y-5">
-          <h2 className="text-[24px] font-bold">교환 대상 카드 미리보기</h2>
-          <ExchangeCardGrid
-            cards={cardsForPreview}
-            selectedCardId={selectedCardId}
-            onSelect={(card) => setSelectedCardId(card.id)}
-            emptyMessage="교환 가능한 포토카드가 없습니다."
-            helperMessage={
-              previewState === "empty" ? "필터를 변경하거나 다른 카드를 등록해 보세요." : ""
-            }
-            disabled={!canUseExchange}
-          />
+        <ProposalSection
+          title="받은 교환 제안 목록"
+          description="내 판매글에 도착한 교환 제안입니다. PENDING 상태일 때만 승인/거절 버튼이 활성화됩니다."
+          proposals={receivedItems}
+          isLoading={receivedQuery.isLoading}
+          error={receivedQuery.error}
+          emptyMessage="받은 교환 제안이 없습니다."
+          actionable
+          onAccept={(proposal) => handleOpenDecisionModal("approve", proposal)}
+          onReject={(proposal) => handleOpenDecisionModal("reject", proposal)}
+        />
+
+        <ProposalSection
+          title="내가 보낸 교환 제안 목록"
+          description="내가 제안한 교환 목록입니다. 현재는 조회 전용으로 확인합니다."
+          proposals={sentItems}
+          isLoading={sentQuery.isLoading}
+          error={sentQuery.error}
+          emptyMessage="보낸 교환 제안이 없습니다."
+        />
+
+        {actionSuccessMessage && (
+          <section className="rounded border border-gray-400 px-5 py-4 text-[14px] text-gray-300">
+            {actionSuccessMessage}
+          </section>
+        )}
+
+        <section className="space-y-4 border border-gray-400 p-6">
+          <div>
+            <p className="text-[14px] text-gray-300">API 연결 없이 확인하는 UI 쇼케이스</p>
+            <h2 className="mt-2 text-[28px] font-bold text-white">Exchange UI Preview</h2>
+            <p className="mt-2 text-[14px] text-gray-300">
+              디자인 리뷰나 버튼/모달 연결 확인용 예시 영역입니다.
+            </p>
+          </div>
+
+          <div className="flex flex-wrap gap-3">
+            <Button size="sm" variant="secondary" onClick={() => setIsSelectModalOpen(true)}>
+              카드 선택 모달 보기
+            </Button>
+            <Button
+              size="sm"
+              variant="secondary"
+              onClick={() => handleOpenDecisionModal("approve", UI_PREVIEW_RECEIVED_PROPOSALS[0])}
+            >
+              승인 모달 보기
+            </Button>
+            <Button
+              size="sm"
+              variant="secondary"
+              onClick={() => handleOpenDecisionModal("reject", UI_PREVIEW_RECEIVED_PROPOSALS[0])}
+            >
+              거절 모달 보기
+            </Button>
+          </div>
         </section>
 
+        <ProposalSection
+          title="받은 교환 요청 UI 미리보기"
+          description="PENDING / ACCEPTED / REJECTED / CANCELED 상태별 카드 UI 확인용 예시입니다."
+          proposals={UI_PREVIEW_RECEIVED_PROPOSALS}
+          isLoading={false}
+          error={null}
+          emptyMessage="미리보기 데이터가 없습니다."
+          actionable
+          onAccept={(proposal) => handleOpenDecisionModal("approve", proposal)}
+          onReject={(proposal) => handleOpenDecisionModal("reject", proposal)}
+        />
+
+        <ProposalSection
+          title="내가 제시한 교환 목록 UI 미리보기"
+          description="보낸 교환 제안 카드형 목록 예시입니다. 실제 페이지 반영 전 구성 확인에 사용합니다."
+          proposals={UI_PREVIEW_SENT_PROPOSALS}
+          isLoading={false}
+          error={null}
+          emptyMessage="미리보기 데이터가 없습니다."
+        />
+
         <section className="space-y-5">
-          <h2 className="text-[24px] font-bold">교환 요청 카드 미리보기</h2>
+          <div>
+            <h2 className="text-[24px] font-bold text-white">상태 예시</h2>
+            <p className="mt-2 text-[14px] text-gray-300">
+              빈 목록, 카드 없음, 서버 에러 문구 배치 예시를 빠르게 확인할 수 있습니다.
+            </p>
+          </div>
+
           <div className="grid gap-6 desktop:grid-cols-3">
-            {previewStatusCards.map((previewCard) => (
-              <div key={previewCard.key} className="max-w-[440px]">
-                <ExchangeRequestCard
-                  card={selectedCard ?? MOCK_EXCHANGE_CARDS[0]}
-                  status={previewCard.key}
-                  disabled={previewCard.disabled || !canUseExchange}
-                  onAccept={() => handleOpenDecisionModal("approve")}
-                  onReject={() => handleOpenDecisionModal("reject")}
-                />
-              </div>
-            ))}
+            <div className="flex min-h-[180px] items-center justify-center border border-gray-400 px-6 text-center">
+              <p className="text-[15px] text-gray-300">보낸 교환 제안이 없습니다.</p>
+            </div>
+
+            <div className="flex min-h-[180px] items-center justify-center border border-gray-400 px-6 text-center">
+              <p className="text-[15px] text-gray-300">교환 가능한 포토카드가 없습니다.</p>
+            </div>
+
+            <div className="flex min-h-[180px] flex-col items-center justify-center gap-3 border border-red-500 px-6 text-center">
+              <p className="text-[16px] font-bold text-white">교환 제안 처리에 실패했습니다.</p>
+              <p className="text-[14px] text-gray-300">다시 시도해주세요.</p>
+            </div>
           </div>
         </section>
-
-        <SaleExchangeFormModal
-          isOpen={formOpen}
-          onClose={closeForm}
-          onSubmit={handleSubmitSale}
-          card={MOCK_SALE_CARD}
-        />
-
-        <SaleSuccessModal
-          isOpen={successOpen}
-          onClose={closeSuccess}
-          onConfirm={closeSuccess}
-          cardName={MOCK_SALE_CARD.name}
-          quantity={Number(submittedValues?.quantity ?? 2)}
-          grade={MOCK_SALE_CARD.grade}
-        />
-
-        <SaleFailureModal
-          isOpen={failureOpen}
-          onClose={() => setFailureOpen(false)}
-          onConfirm={() => setFailureOpen(false)}
-          cardName={MOCK_SALE_CARD.name}
-          quantity={Number(submittedValues?.quantity ?? 2)}
-          grade={MOCK_SALE_CARD.grade}
-        />
 
         <ExchangeSelectCardModal
-          isOpen={selectCardOpen}
-          onClose={closeSelectCard}
-          cards={cardsForPreview}
+          isOpen={isSelectModalOpen}
+          onClose={() => setIsSelectModalOpen(false)}
+          cards={filteredPreviewCards}
           selectedCardId={selectedCardId}
           onSelectCard={(card) => setSelectedCardId(card.id)}
           onConfirm={(card) => {
-            console.log("선택한 카드", card);
-            closeSelectCard();
+            setSelectedCardId(card.id);
+            setOfferedCardCopyId(String(card.id));
+            setIsSelectModalOpen(false);
           }}
           keyword={keyword}
           onKeywordChange={setKeyword}
@@ -320,35 +642,36 @@ export default function ExchangeTestPage() {
           onGradeChange={setGrade}
           genre={genre}
           onGenreChange={setGenre}
-          isLoading={isCardLoading}
           isDisabled={!canUseExchange}
-          errorMessage={errorMessage}
-          emptyMessage="교환 가능한 포토카드가 없습니다."
-          helperText={helperText}
-          confirmDisabledReason={
-            authPreview.isLoading
-              ? "세션 확인 후 다시 시도해 주세요."
-              : !authPreview.user
-                ? "로그인 후 카드를 선택할 수 있습니다."
-                : !selectedCard
-                  ? "교환할 카드를 선택해 주세요."
-                  : ""
+          helperText={
+            canUseExchange
+              ? "선택 모달은 UI 테스트용입니다. 실제 API 테스트 시에는 카드 사본 ID를 직접 확인해 입력해주세요."
+              : "로그인 후 교환 기능을 이용할 수 있습니다."
           }
+          emptyMessage="조건에 맞는 예시 카드가 없습니다."
+          confirmDisabledReason={!canUseExchange ? "로그인 후 카드 선택이 가능합니다." : ""}
         />
 
         <ExchangeDecisionModal
           isOpen={Boolean(decisionModalType)}
-          onClose={handleCloseDecisionModal}
-          onConfirm={() => {
-            console.log("교환 제시 처리", {
-              decision: decisionModalType,
-              card: selectedCard,
-            });
-            handleCloseDecisionModal();
+          onClose={() => {
+            if (respondMutation.isPending) return;
+            setDecisionModalType(null);
+            setActiveProposal(null);
           }}
+          onConfirm={handleConfirmDecision}
           decision={decisionModalType ?? "reject"}
-          cardName={selectedCard?.name ?? MOCK_EXCHANGE_CARDS[0].name}
-          grade={selectedCard?.grade ?? MOCK_EXCHANGE_CARDS[0].grade}
+          cardName={mapProposalToCard(activeProposal ?? {}).name}
+          grade={mapProposalToCard(activeProposal ?? {}).grade}
+          errorMessage={
+            respondMutation.error
+              ? getErrorMessage(
+                  respondMutation.error,
+                  "교환 제안 처리에 실패했습니다. 다시 시도해주세요.",
+                )
+              : ""
+          }
+          isSubmitting={respondMutation.isPending}
         />
       </div>
     </main>

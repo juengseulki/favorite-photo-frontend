@@ -23,6 +23,8 @@ export default function ExchangeDecisionModal({
   decision = "reject",
   cardName = "포토카드",
   grade = "COMMON",
+  errorMessage = "",
+  isSubmitting = false,
 }) {
   const copy = DECISION_COPY[decision] ?? DECISION_COPY.reject;
 
@@ -41,8 +43,12 @@ export default function ExchangeDecisionModal({
           [{grade} | {cardName}] 카드와의 교환을 {copy.actionVerb}하시겠습니까?
         </p>
 
-        <Button className="mt-10" size="sm" onClick={onConfirm}>
-          {copy.actionLabel}
+        {errorMessage && (
+          <p className="mt-6 max-w-[280px] text-[14px] font-medium text-red-500">{errorMessage}</p>
+        )}
+
+        <Button className="mt-10" size="sm" onClick={onConfirm} disabled={isSubmitting}>
+          {isSubmitting ? "처리 중..." : copy.actionLabel}
         </Button>
       </div>
     </Modal>
