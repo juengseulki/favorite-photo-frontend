@@ -2,7 +2,7 @@
 
 import { PhotoCard } from "@/components/common/Card";
 import { useAuth } from "@/providers/AuthProvider";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import Button from "@/components/common/Button";
 import { GradeChip } from "@/components/common/Grade";
 import Dropdown from "@/components/common/Dropdown";
@@ -13,12 +13,13 @@ import Image from "next/image";
 import Modal from "@/components/common/Modal";
 import useResponsiveLimit from "@/hooks/useResponsiveLimit";
 import { GRADE_OPTIONS, GENRE_OPTIONS } from "@/lib/constants/galleryOptions";
-import { useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery } from "@tanstack/react-query";
 import { QUERY_KEYS } from "@/lib/constants/queryKeys";
 
 export default function MyGalleryPage() {
   const { isLoading, user } = useAuth();
   const limit = useResponsiveLimit();
+  const observerRef = useRef(null);
 
   const [grade, setGrade] = useState("");
   const [genre, setGenre] = useState("");
@@ -26,7 +27,7 @@ export default function MyGalleryPage() {
   const [page, setPage] = useState(1);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const { data } = useQuery({
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery({
     queryKey: QUERY_KEYS.GALLERY.MY_CARDS({
       page,
       limit,
@@ -34,20 +35,43 @@ export default function MyGalleryPage() {
       genre,
       keyword,
     }),
-    queryFn: () =>
+    queryFn: ({ pageParam = 1 }) =>
       getMyGalleryCards({
-        page,
+        page: pageParam,
         limit,
         grade,
         genre,
         keyword,
       }),
+    initialPageParam: 1,
+    getNextPageParam: (lastPage) => {
+      const page = lastPage.meta.page;
+      const totalPages = lastPage.meta.totalPages;
+
+      return page < totalPages ? page + 1 : undefined;
+    },
     enabled: !isLoading && !!user,
   });
 
-  const cards = data?.items ?? [];
-  const meta = data?.meta ?? { page: 1 };
-  const grades = data?.gradeCount ?? [];
+  const cards = data?.pages.flatMap((page) => page.items) ?? [];
+  const meta = data?.pages[0]?.meta ?? {};
+  const grades = data?.pages[0]?.gradeCount ?? [];
+
+  // 하단 감지용
+  useEffect(() => {
+    if (!observerRef.current) return;
+    if (!hasNextPage) return;
+
+    const observer = new IntersectionObserver((t) => {
+      if (t[0].isIntersecting && !isFetchingNextPage) {
+        fetchNextPage();
+      }
+    });
+
+    observer.observe(observerRef.current);
+
+    return () => observer.disconnect();
+  }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
 
   return (
     <div className="mx-auto max-w-[1920px] px-[20px] desktop:px-[220px]">
@@ -127,6 +151,7 @@ export default function MyGalleryPage() {
           return <PhotoCard key={card.id} card={card} />;
         })}
       </div>
+      <div ref={observerRef} className="h-[1px] tablet:hidden" />
       <div className="hidden tablet:block">
         <Pagination
           page={page}
