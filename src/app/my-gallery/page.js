@@ -11,46 +11,16 @@ import Pagination from "@/components/common/Pagination";
 import { getMyGalleryCards } from "@/lib/api/galleryApi";
 import Image from "next/image";
 import Modal from "@/components/common/Modal";
-
-const GRADE_OPTIONS = [
-  { label: "등급", value: "" },
-  { label: "COMMON", value: "COMMON" },
-  { label: "RARE", value: "RARE" },
-  { label: "SUPER RARE", value: "SUPER_RARE" },
-  { label: "LEGENDARY", value: "LEGENDARY" },
-];
-
-export const GENRE_OPTIONS = [
-  { label: "장르", value: "" },
-  {
-    label: "앨범",
-    value: "ALBUM",
-  },
-  {
-    label: "특전",
-    value: "SPECIAL",
-  },
-  {
-    label: "팬싸",
-    value: "FAN_SIGN",
-  },
-  {
-    label: "시즌그리팅",
-    value: "SEASON_GREETING",
-  },
-  {
-    label: "콘서트",
-    value: "CONCERT",
-  },
-];
+import useResponsiveLimit from "@/hooks/useResponsiveLimit";
+import { GRADE_OPTIONS, GENRE_OPTIONS } from "@/lib/constants/galleryOptions";
 
 export default function MyGalleryPage() {
   const { isLoading, user } = useAuth();
+  const limit = useResponsiveLimit();
 
   const [cards, setCards] = useState([]);
   const [meta, setMeta] = useState({
     page: 1,
-    limit: 15,
   });
   const [grades, setGrades] = useState([]);
   const [grade, setGrade] = useState("");
@@ -65,7 +35,7 @@ export default function MyGalleryPage() {
       try {
         const data = await getMyGalleryCards({
           page: meta.page,
-          limit: meta.limit,
+          limit,
           grade,
           genre,
           keyword,
@@ -79,7 +49,7 @@ export default function MyGalleryPage() {
     };
 
     myGalleryCards();
-  }, [meta.page, isLoading, grade, genre, meta.limit, keyword]);
+  }, [meta.page, isLoading, grade, genre, keyword, limit]);
 
   return (
     <div className="mx-auto max-w-[1920px] px-[20px] desktop:px-[220px]">
@@ -155,18 +125,11 @@ export default function MyGalleryPage() {
         <Pagination
           page={meta.page}
           totalCount={meta?.totalCount ?? 0}
-          pageSize={meta.limit}
+          pageSize={limit}
           onPageChange={(page) =>
             setMeta((prev) => ({
               ...prev,
               page,
-            }))
-          }
-          onPageSizeChange={(pageSize) =>
-            setMeta((prev) => ({
-              ...prev,
-              pageSize,
-              page: 1,
             }))
           }
         />
