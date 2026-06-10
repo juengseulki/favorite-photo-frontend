@@ -13,12 +13,12 @@ import Image from "next/image";
 import Modal from "@/components/common/Modal";
 import useResponsiveLimit from "@/hooks/useResponsiveLimit";
 import { GRADE_OPTIONS, GENRE_OPTIONS } from "@/lib/constants/galleryOptions";
-import { useInfiniteQuery } from "@tanstack/react-query";
+import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import { QUERY_KEYS } from "@/lib/constants/queryKeys";
 
 export default function MyGalleryPage() {
   const { isLoading, user } = useAuth();
-  const limit = useResponsiveLimit();
+  const { limit, isMobile } = useResponsiveLimit();
   const observerRef = useRef(null);
 
   const [grade, setGrade] = useState("");
@@ -27,21 +27,32 @@ export default function MyGalleryPage() {
   const [page, setPage] = useState(1);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery({
+  const commonParams = {
+    limit,
+    grade,
+    genre,
+    keyword,
+  };
+
+  const pageQuery = useQuery({
     queryKey: QUERY_KEYS.GALLERY.MY_CARDS({
+      ...commonParams,
       page,
-      limit,
-      grade,
-      genre,
-      keyword,
     }),
-    queryFn: ({ pageParam = 1 }) =>
+    queryFn: () =>
       getMyGalleryCards({
+        ...commonParams,
+        page,
+      }),
+    enabled: !isLoading && !!user && !isMobile,
+  });
+
+  const infiniteQuery = useInfiniteQuery({
+    queryKey: QUERY_KEYS.GALLERY.MY_CARDS(commonParams),
+    queryFn: ({ pageParam }) =>
+      getMyGalleryCards({
+        ...commonParams,
         page: pageParam,
-        limit,
-        grade,
-        genre,
-        keyword,
       }),
     initialPageParam: 1,
     getNextPageParam: (lastPage) => {
@@ -50,28 +61,40 @@ export default function MyGalleryPage() {
 
       return page < totalPages ? page + 1 : undefined;
     },
-    enabled: !isLoading && !!user,
+    enabled: !isLoading && !!user && isMobile,
   });
 
-  const cards = data?.pages.flatMap((page) => page.items) ?? [];
-  const meta = data?.pages[0]?.meta ?? {};
-  const grades = data?.pages[0]?.gradeCount ?? [];
+  const cards = isMobile
+    ? (infiniteQuery.data?.pages.flatMap((page) => page.items) ?? [])
+    : (pageQuery.data?.items ?? []);
+
+  const meta = isMobile ? (infiniteQuery.data?.pages[0]?.meta ?? {}) : (pageQuery.data?.meta ?? {});
+
+  const grades = isMobile
+    ? (infiniteQuery.data?.pages[0]?.gradeCount ?? [])
+    : (pageQuery.data?.gradeCount ?? []);
 
   // 하단 감지용
   useEffect(() => {
+    if (!isMobile) return;
     if (!observerRef.current) return;
-    if (!hasNextPage) return;
+    if (!infiniteQuery.hasNextPage) return;
 
     const observer = new IntersectionObserver((t) => {
-      if (t[0].isIntersecting && !isFetchingNextPage) {
-        fetchNextPage();
+      if (t[0].isIntersecting && !infiniteQuery.isFetchingNextPage) {
+        infiniteQuery.fetchNextPage();
       }
     });
 
     observer.observe(observerRef.current);
 
     return () => observer.disconnect();
-  }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
+  }, [
+    isMobile,
+    infiniteQuery.fetchNextPage,
+    infiniteQuery.hasNextPage,
+    infiniteQuery.isFetchingNextPage,
+  ]);
 
   return (
     <div className="mx-auto max-w-[1920px] px-[20px] desktop:px-[220px]">

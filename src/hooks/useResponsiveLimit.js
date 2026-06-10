@@ -3,26 +3,29 @@
 import { useEffect, useState } from "react";
 
 export default function useResponsiveLimit() {
-  const [limit, setLimit] = useState(16);
+  const [responsive, setResponsive] = useState({
+    limit: 16,
+    isMobile: false,
+  });
 
   useEffect(() => {
-    const updateLimit = () => {
-      const nextLimit = window.innerWidth >= 1200 ? 15 : 16;
+    const updateResponsive = () => {
+      const width = window.innerWidth;
 
-      setLimit((prev) => {
-        if (prev === nextLimit) return prev;
-        return nextLimit;
+      setResponsive({
+        limit: width >= 1200 ? 15 : 16,
+        isMobile: width < 768,
       });
     };
 
-    updateLimit();
+    updateResponsive();
 
-    window.addEventListener("resize", updateLimit);
+    window.addEventListener("resize", updateResponsive);
 
     return () => {
-      window.removeEventListener("resize", updateLimit);
+      window.removeEventListener("resize", updateResponsive);
     };
   }, []);
 
-  return limit;
+  return responsive;
 }
