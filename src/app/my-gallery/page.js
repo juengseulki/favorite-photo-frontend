@@ -64,9 +64,18 @@ export default function MyGalleryPage() {
     enabled: !isLoading && !!user && isMobile,
   });
 
-  const cards = isMobile
+  const rawCards = isMobile
     ? (infiniteQuery.data?.pages.flatMap((page) => page.items) ?? [])
     : (pageQuery.data?.items ?? []);
+
+  const cards = rawCards.map((card) => ({
+    ...card,
+    creator: {
+      nickname: card.creatorNickname,
+    },
+    price: card.initialPrice,
+    count: card.quantity,
+  }));
 
   const meta = isMobile ? (infiniteQuery.data?.pages[0]?.meta ?? {}) : (pageQuery.data?.meta ?? {});
 
