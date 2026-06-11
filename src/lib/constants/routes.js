@@ -3,6 +3,8 @@ export const ROUTES = {
   LOGIN: "/login",
   SIGNUP: "/signup",
   MARKET: "/market",
+  MARKET_DETAIL: (saleId) => `/market/${saleId}`,
   MY_GALLERY: "/my-gallery",
   MY_SHOP: "/my-shop",
+  MY_SHOP_DETAIL: (saleId) => `/my-shop/${saleId}`,
 };
