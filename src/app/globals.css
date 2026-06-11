@@ -80,3 +80,17 @@ a {
   --color-pink: #ff2a6a;
   --color-main: #ffff04;
 }
+
+@keyframes flow {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(-33.333333%);
+  }
+}
+
+.animate-flow {
+  animation: flow 45s linear infinite;
+}
