@@ -1,5 +1,6 @@
 import Image from "next/image";
 import GradeBadge from "@/components/common/Grade/GradeBadge";
+import { getGenreLabel } from "@/lib/constants/marketOptions";
 import { card } from "./cardStyles";
 
 export default function PhotoCard({ card: item }) {
@@ -24,7 +25,7 @@ export default function PhotoCard({ card: item }) {
 
             <span className={card.divider} />
 
-            <span className={card.genre}>{item.genre}</span>
+            <span className={card.genre}>{getGenreLabel(item.genre)}</span>
           </div>
 
           <span className={card.nickname}>{item.creator.nickname}</span>
@@ -34,7 +35,7 @@ export default function PhotoCard({ card: item }) {
       <div className={card.infoArea}>
         <div className={card.infoRow}>
           <span className={card.infoLabel}>가격</span>
-          <span className={card.infoValue}>{item.price} P</span>
+          <span className={card.infoValue}>{Number(item.price).toLocaleString()} P</span>
         </div>
 
         <div className={card.infoRow}>

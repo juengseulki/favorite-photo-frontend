@@ -16,7 +16,6 @@ import {
   MARKET_GENRE_OPTIONS,
   MARKET_GRADE_OPTIONS,
   MARKET_SORT_OPTIONS,
-  MARKET_SOLD_OUT_OPTIONS,
 } from "@/lib/constants/marketOptions";
 import { normalizeMarketCard } from "@/lib/utils/marketMappers";
 
@@ -26,7 +25,6 @@ export default function MarketPage() {
   const [grade, setGrade] = useState("");
   const [genre, setGenre] = useState("");
   const [sort, setSort] = useState("latest");
-  const [status, setStatus] = useState("");
   const [keyword, setKeyword] = useState("");
   const [cursor, setCursor] = useState();
   const [cursorHistory, setCursorHistory] = useState([]);
@@ -39,9 +37,8 @@ export default function MarketPage() {
       grade,
       genre,
       sort,
-      status,
     }),
-    [genre, grade, keyword, limit, sort, status],
+    [genre, grade, keyword, limit, sort],
   );
 
   const { data, isPending } = useQuery({
@@ -87,11 +84,6 @@ export default function MarketPage() {
     resetPagination();
   };
 
-  const handleStatusChange = (value) => {
-    setStatus(value);
-    resetPagination();
-  };
-
   const handleSortChange = (value) => {
     setSort(value);
     resetPagination();
@@ -127,13 +119,6 @@ export default function MarketPage() {
         options={MARKET_GENRE_OPTIONS}
         value={genre}
         onChange={handleGenreChange}
-      />
-      <Dropdown
-        placeholder="매진 여부"
-        size="sort"
-        options={MARKET_SOLD_OUT_OPTIONS}
-        value={status}
-        onChange={handleStatusChange}
       />
     </>
   );
