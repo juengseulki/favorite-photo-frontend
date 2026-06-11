@@ -37,7 +37,7 @@ export function useRandomBox(isOpen) {
     if (remainingSeconds <= 0) return;
 
     const timer = setInterval(() => {
-      setRemainingSeconds((prev) => prev - 1);
+      setRemainingSeconds((t) => t - 1);
     }, 1000);
 
     return () => clearInterval(timer);
