@@ -15,11 +15,14 @@ import useResponsiveLimit from "@/hooks/useResponsiveLimit";
 import { GRADE_OPTIONS, GENRE_OPTIONS } from "@/lib/constants/galleryOptions";
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import { QUERY_KEYS } from "@/lib/constants/queryKeys";
+import { ROUTES } from "@/lib/constants";
+import { useRouter } from "next/navigation";
 
 export default function MyGalleryPage() {
   const { isLoading, user } = useAuth();
   const { limit, isMobile } = useResponsiveLimit();
   const observerRef = useRef(null);
+  const router = useRouter();
 
   const [grade, setGrade] = useState("");
   const [genre, setGenre] = useState("");
@@ -109,10 +112,12 @@ export default function MyGalleryPage() {
     <div className="mx-auto max-w-[1920px] px-[20px] desktop:px-[220px]">
       <div className="hidden justify-between border-b-2 border-gray-100 desktop:flex">
         <span className="text-[62px] font-normal tracking-[-0.03em]">마이갤러리</span>
-        <Button>포토카드 생성하기</Button>
+        <Button onClick={() => router.push(ROUTES.CREATE_CARD)}>포토카드 생성하기</Button>
       </div>
       <div className="fixed bottom-0 left-0 z-50 w-full px-[20px] pb-[20px] tablet:hidden">
-        <Button size="full">포토카드 생성하기</Button>
+        <Button size="full" onClick={() => router.push(ROUTES.CREATE_CARD)}>
+          포토카드 생성하기
+        </Button>
       </div>
       <div className="mt-10 flex flex-col gap-[20px] border-b border-gray-400 pb-3 desktop:pb-10">
         <p className="flex gap-[10px] items-center">

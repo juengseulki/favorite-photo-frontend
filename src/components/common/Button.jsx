@@ -65,6 +65,12 @@ export default function Button({
     tablet:w-[226px]
     tablet:text-[16px]
   `,
+
+    create: `
+  h-[60px]
+  w-[440px]
+  text-[16px]
+`,
   };
 
   return (
