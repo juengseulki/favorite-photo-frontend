@@ -7,4 +7,5 @@ export const ROUTES = {
   MY_GALLERY: "/my-gallery",
   MY_SHOP: "/my-shop",
   MY_SHOP_DETAIL: (saleId) => `/my-shop/${saleId}`,
+  CREATE_CARD: "/cards/create",
 };
