@@ -8,6 +8,7 @@ const SIZE_CLASSES = {
   default: "w-[345px] tablet:w-[400px] desktop:w-[560px]",
   form: "w-[345px] tablet:w-[744px] desktop:w-[1160px]",
   point: "w-[345px] tablet:w-[600px] desktop:w-[1034px]",
+  pointResult: "w-[345px] tablet:w-[600px] desktop:w-[455px]",
 };
 
 export default function Modal({

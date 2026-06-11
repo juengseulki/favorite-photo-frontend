@@ -11,36 +11,39 @@ export const BOXES = [
 export function useRandomBox(isOpen) {
   const [selectedBox, setSelectedBox] = useState(null);
   const [remainingSeconds, setRemainingSeconds] = useState(0);
+  const [resultPoint, setResultPoint] = useState(null);
 
-  const { data: randomBoxStatus, isLoading } = useQuery({
+  const { data: randomBoxStatus } = useQuery({
     queryKey: ["randomBoxStatus"],
-    queryFn: getRandomBoxStatus,
+    queryFn: async () => {
+      const data = await getRandomBoxStatus();
+
+      setRemainingSeconds(data.remainingSeconds);
+
+      return data;
+    },
     enabled: isOpen,
   });
 
   const { mutate: openBox } = useMutation({
     mutationFn: openRandomBox,
+    onSuccess: async (data) => {
+      const status = await getRandomBoxStatus();
+
+      setRemainingSeconds(status.remainingSeconds);
+      setResultPoint(data.amount);
+    },
   });
-
-  useEffect(() => {
-    if (!isOpen || !randomBoxStatus) return;
-
-    const timer = setTimeout(() => {
-      setRemainingSeconds(randomBoxStatus.remainingSeconds ?? 0);
-    }, 0);
-
-    return () => clearTimeout(timer);
-  }, [isOpen, randomBoxStatus?.remainingSeconds]);
 
   useEffect(() => {
     if (!isOpen) return;
     if (remainingSeconds <= 0) return;
 
-    const timer = setInterval(() => {
+    const timer = setTimeout(() => {
       setRemainingSeconds((t) => t - 1);
     }, 1000);
 
-    return () => clearInterval(timer);
+    return () => clearTimeout(timer);
   }, [isOpen, remainingSeconds]);
 
   // 00시 00분 형식
@@ -61,6 +64,13 @@ export function useRandomBox(isOpen) {
     openBox(selectedBox);
   };
 
+  const isResult = resultPoint !== null;
+
+  const resetRandomBox = () => {
+    setResultPoint(null);
+    setSelectedBox(null);
+  };
+
   return {
     BOXES,
     selectedBox,
@@ -68,7 +78,9 @@ export function useRandomBox(isOpen) {
     handleSelectBox,
     handleOpenBox,
     randomBoxStatus,
-    isLoading,
     remainingTimeText,
+    resultPoint,
+    isResult,
+    resetRandomBox,
   };
 }
