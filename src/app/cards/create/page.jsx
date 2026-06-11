@@ -78,82 +78,176 @@ export default function CreatePhotoCard() {
 
   return (
     <div className="mx-auto max-w-[1920px] px-[20px] desktop:px-[220px] gap-[80px]">
-      <div className="hidden justify-between border-b-2 border-gray-100 desktop:flex mb-[80px]">
-        <span className="text-[62px] font-normal tracking-[-0.03em] font-brand">포토카드 생성</span>
+      <div className="hidden tablet:flex justify-between border-b-2 border-gray-100 mb-20">
+        <span className="font-brand text-[48px] desktop:text-[62px] font-normal tracking-[-0.03em]">
+          포토카드 생성
+        </span>
       </div>
       <form
         onSubmit={handleSubmit}
-        className="flex flex-col justify-center items-center gap-[65px] mb-30"
+        className="flex flex-col justify-center items-center  gap-10 tablet:gap-[65px] mb-10 tablet:mb-30
+  "
       >
         <div className="flex flex-col gap-[10px]">
           <Input
-            label={"포토카드 이름"}
+            className="tablet:hidden"
+            size="sm"
+            label="포토카드 이름"
             placeholder="포토카드 이름을 입력해주세요"
             value={name}
             onChange={(e) => setName(e.target.value)}
           />
+
+          <Input
+            className="hidden tablet:flex"
+            label="포토카드 이름"
+            placeholder="포토카드 이름을 입력해주세요"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+          />
+
           {errors.name && <p className="text-[16px] text-red">{errors.name}</p>}
         </div>
+
         <div className="flex flex-col gap-[10px]">
           <Dropdown
-            label={"등급"}
+            className="tablet:hidden"
+            size="sm"
+            label="등급"
             placeholder="등급을 선택해 주세요"
             options={GRADE_OPTIONS}
             value={grade}
             onChange={setGrade}
           />
+
+          <Dropdown
+            className="hidden tablet:flex"
+            label="등급"
+            placeholder="등급을 선택해 주세요"
+            options={GRADE_OPTIONS}
+            value={grade}
+            onChange={setGrade}
+          />
+
           {errors.grade && <p className="text-[16px] text-red">{errors.grade}</p>}
         </div>
 
         <div className="flex flex-col gap-[10px]">
           <Dropdown
-            label={"장르"}
+            className="tablet:hidden"
+            size="sm"
+            label="장르"
             placeholder="장르를 선택해 주세요"
             options={GENRE_OPTIONS}
             value={genre}
             onChange={setGenre}
           />
+
+          <Dropdown
+            className="hidden tablet:flex"
+            label="장르"
+            placeholder="장르를 선택해 주세요"
+            options={GENRE_OPTIONS}
+            value={genre}
+            onChange={setGenre}
+          />
+
           {errors.genre && <p className="text-[16px] text-red">{errors.genre}</p>}
         </div>
 
         <div className="flex flex-col gap-[10px]">
           <Input
-            label={"가격"}
+            className="tablet:hidden"
+            size="sm"
+            label="가격"
             placeholder="가격을 입력해 주세요"
             value={initialPrice}
             onChange={(e) => setInitialPrice(e.target.value)}
           />
+          <Input
+            className="hidden tablet:flex"
+            label="가격"
+            placeholder="가격을 입력해 주세요"
+            value={initialPrice}
+            onChange={(e) => setInitialPrice(e.target.value)}
+          />
+
           {errors.initialPrice && <p className="text-[16px] text-red">{errors.initialPrice}</p>}
         </div>
 
         <div className="flex flex-col gap-[10px]">
           <Input
-            label={"총 발행량"}
-            placeholder="총 발행향을 입력해주세요"
+            className="tablet:hidden"
+            size="sm"
+            label="총 발행량"
+            placeholder="총 발행량을 입력해주세요"
             value={totalQuantity}
             onChange={(e) => setTotalQuantity(e.target.value)}
           />
+
+          <Input
+            className="hidden tablet:flex"
+            label="총 발행량"
+            placeholder="총 발행량을 입력해주세요"
+            value={totalQuantity}
+            onChange={(e) => setTotalQuantity(e.target.value)}
+          />
+
           {errors.totalQuantity && <p className="text-[16px] text-red">{errors.totalQuantity}</p>}
         </div>
-
         <div className="flex flex-col gap-[10px]">
           <FileInput
+            className="tablet:hidden"
+            size="sm"
             label="사진 업로드"
             onChange={(file) => {
               setImageFile(file);
             }}
           />
+
+          <FileInput
+            className="hidden tablet:flex"
+            label="사진 업로드"
+            onChange={(file) => {
+              setImageFile(file);
+            }}
+          />
+
           {errors.imageFile && <p className="text-[16px] text-red">{errors.imageFile}</p>}
         </div>
-        <Textarea
-          label={"포토카드 설명"}
-          placeholder="카드 설명을 입력해 주세요"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-        />
-        <Button size="create" type="submit">
-          생성하기
-        </Button>
+        <div className="tablet:hidden">
+          <Textarea
+            size="sm"
+            label="포토카드 설명"
+            placeholder="카드 설명을 입력해 주세요"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+          />
+        </div>
+        <div className="hidden tablet:block">
+          <Textarea
+            label="포토카드 설명"
+            placeholder="카드 설명을 입력해 주세요"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+          />
+        </div>
+
+        <div className="tablet:hidden">
+          <Button
+            size="create"
+            type="submit"
+            className="w-[345px] h-[55px] tablet:w-[440px] tablet:h-[60px]"
+          >
+            생성하기
+          </Button>
+        </div>
+
+        <div className="hidden tablet:block">
+          <Button size="create" type="submit">
+            생성하기
+          </Button>
+        </div>
       </form>
     </div>
   );
