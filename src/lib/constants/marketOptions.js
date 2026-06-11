@@ -1,5 +1,11 @@
 export const MARKET_FILTER_ALL = "";
 
+export const MARKET_SOLD_OUT_OPTIONS = [
+  { label: "매진 여부", value: "" },
+  { label: "판매 중", value: "ON_SALE" },
+  { label: "판매 완료", value: "SOLD_OUT" },
+];
+
 export const MARKET_GRADE_OPTIONS = [
   { label: "등급 전체", value: MARKET_FILTER_ALL },
   { label: "COMMON", value: "COMMON" },
