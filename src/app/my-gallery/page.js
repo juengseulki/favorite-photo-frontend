@@ -80,6 +80,8 @@ export default function MyGalleryPage() {
     count: card.quantity,
   }));
 
+  console.log(cards);
+
   const meta = isMobile ? (infiniteQuery.data?.pages[0]?.meta ?? {}) : (pageQuery.data?.meta ?? {});
 
   const grades = isMobile
