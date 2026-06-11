@@ -5,4 +5,5 @@ export const ROUTES = {
   MARKET: "/market",
   MY_GALLERY: "/my-gallery",
   MY_SHOP: "/my-shop",
+  CREATE_CARD: "/cards/create",
 };

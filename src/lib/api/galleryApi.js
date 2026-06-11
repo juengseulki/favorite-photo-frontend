@@ -8,3 +8,9 @@ export async function getMyGalleryCards({ page, limit, grade, genre, keyword }) 
 
   return response.data.data;
 }
+
+export async function postPhotoCards(formData) {
+  const response = await axiosInstance.post(API_ROUTES.GALLERY.MY_CARDS, formData);
+
+  return response.data.data;
+}
