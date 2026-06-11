@@ -7,7 +7,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/providers/AuthProvider";
 import { completeGoogleSignup } from "@/lib/api/authApi";
 import { ROUTES } from "@/lib/constants/routes";
-import AuthInput from "@/features/auth/components/AuthInput";
+import Input from "@/components/common/Input";
 import Button from "@/components/common/Button";
 
 function SetupNicknameForm() {
@@ -62,7 +62,9 @@ function SetupNicknameForm() {
         )}
       </div>
 
-      <AuthInput
+      <Input
+        size="lg"
+        inputClassName="!w-full"
         label="닉네임"
         type="text"
         placeholder="닉네임을 입력해 주세요"

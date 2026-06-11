@@ -55,6 +55,16 @@ export default function Button({
       w-full
       text-[16px]
     `,
+
+    landing: `
+    h-[40px]
+    w-[150px]
+    text-[12px]
+
+    tablet:h-[55px]
+    tablet:w-[226px]
+    tablet:text-[16px]
+  `,
   };
 
   return (
