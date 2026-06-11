@@ -8,13 +8,13 @@ export const card = {
 
   defaultSize: `
     w-[170px] min-h-[234px] p-[10px]
-    tablet:w-[342px] tablet:min-h-[517px] tablet:p-[30px]
+    tablet:w-[342px] tablet:min-h-[517px] tablet:p-[20px]
     desktop:w-[440px] desktop:min-h-[600px] desktop:p-[40px]
   `,
 
   exchangeSize: `
     w-[170px] min-h-[308px] p-[10px]
-    tablet:w-[342px] tablet:min-h-[561px] tablet:p-[30px]
+    tablet:w-[342px] tablet:min-h-[561px] tablet:p-[20px]
     desktop:w-[440px] desktop:min-h-[626px] desktop:p-[40px]
   `,
 
@@ -29,7 +29,7 @@ export const card = {
     mt-[10px]
     truncate
     text-[14px] font-bold text-white
-    tablet:mt-[25px] tablet:text-[22px]
+    tablet:mt-[32px] tablet:text-[22px]
   `,
 
   metaWrap: `
