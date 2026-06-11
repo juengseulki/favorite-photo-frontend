@@ -7,8 +7,15 @@ import Button from "@/components/common/Button";
 import { useRandomBox } from "@/features/point/hooks/useRandomBox";
 
 export default function PointModal({ isOpen, onClose }) {
-  const { boxes, selectedBox, handleSelectBox, isLoading, canOpen, remainingTimeText } =
-    useRandomBox(isOpen);
+  const {
+    boxes,
+    selectedBox,
+    handleSelectBox,
+    isLoading,
+    canOpen,
+    remainingTimeText,
+    handleOpenBox,
+  } = useRandomBox(isOpen);
 
   useEffect(() => {
     if (!isLoading) return;
@@ -54,7 +61,7 @@ export default function PointModal({ isOpen, onClose }) {
 
         <section className="flex justify-center">
           {selectedBox && (
-            <Button size="point" disabled={!canOpen}>
+            <Button size="point" disabled={!canOpen} onClick={handleOpenBox}>
               선택완료
             </Button>
           )}

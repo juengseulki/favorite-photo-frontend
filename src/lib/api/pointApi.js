@@ -6,3 +6,9 @@ export async function getRandomBoxStatus() {
 
   return response.data.data;
 }
+
+export async function openRandomBox(selectedBox) {
+  const response = await axiosInstance.post(`${API_ROUTES.POINTS.RANDOM_BOX}`, { selectedBox });
+
+  return response.data.data;
+}

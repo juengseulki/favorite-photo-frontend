@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { getRandomBoxStatus } from "@/lib/api/pointApi";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import { getRandomBoxStatus, openRandomBox } from "@/lib/api/pointApi";
 
 export const boxes = [
   { id: 1, src: "/img/random_box/box1_lf.png" },
@@ -25,6 +25,10 @@ export function useRandomBox(isOpen) {
     enabled: isOpen,
   });
 
+  const { mutate: openBox } = useMutation({
+    mutationFn: openRandomBox,
+  });
+
   const remainingTimeText = formatRemainingTime(randomBoxStatus?.remainingSeconds);
 
   const canOpen = randomBoxStatus?.canOpen ?? false;
@@ -33,11 +37,16 @@ export function useRandomBox(isOpen) {
     setSelectedBox(boxId);
   };
 
+  const handleOpenBox = () => {
+    openBox(selectedBox);
+  };
+
   return {
     boxes,
     selectedBox,
     setSelectedBox,
     handleSelectBox,
+    handleOpenBox,
     randomBoxStatus,
     isLoading,
     canOpen,
