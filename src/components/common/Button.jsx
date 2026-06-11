@@ -74,6 +74,10 @@ export default function Button({
   tablet:h-[60px]
   tablet:w-[440px]
 `,
+    point: `  
+  h-[60px]
+  w-[520px]
+  text-[16px]`,
   };
 
   return (
