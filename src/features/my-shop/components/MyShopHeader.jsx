@@ -3,7 +3,7 @@ import Image from "next/image";
 const MyShopHeader = () => {
   return (
     <>
-      <div className="tablet:hidden flex justify-between gap-[20px] p-[20px] h-[60px] font-brand text-[20px] font-normal ">
+      <div className="tablet:hidden flex justify-between gap-[20px] m-[20px] h-[60px] font-brand text-[20px] font-normal ">
         <div className="w-[22px] h-[22px] relative shrink-0">
           <Image src="/img/icons/back.png" alt="뒤로가기 아이콘" fill />
         </div>
