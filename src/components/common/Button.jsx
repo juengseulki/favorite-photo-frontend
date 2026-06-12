@@ -65,6 +65,19 @@ export default function Button({
     tablet:w-[226px]
     tablet:text-[16px]
   `,
+
+    create: `
+  h-[55px]
+  w-[345px]
+  text-[16px]
+
+  tablet:h-[60px]
+  tablet:w-[440px]
+`,
+    point: `  
+  h-[60px]
+  w-[520px]
+  text-[16px]`,
   };
 
   return (

@@ -22,7 +22,7 @@
   --color-blue: #29c9f9;
   --color-purple: #a77eff;
   --color-pink: #ff2a6a;
-  --color-main: #ffff04;
+  --color-main: #efff04;
 }
 
 .font-brand {
@@ -78,7 +78,7 @@ a {
   --color-blue: #29c9f9;
   --color-purple: #a77eff;
   --color-pink: #ff2a6a;
-  --color-main: #ffff04;
+  --color-main: #efff04;
 }
 
 @keyframes flow {
