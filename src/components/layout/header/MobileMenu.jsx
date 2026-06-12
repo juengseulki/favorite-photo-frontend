@@ -3,9 +3,14 @@ import { ROUTES } from "@/lib/constants/routes";
 import PointModal from "@/features/point/components/randomBoxModal";
 import { useState } from "react";
 
-export default function MobileMenu({ user, isOpen, onClose, onLogout }) {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
+export default function MobileMenu({
+  user,
+  isOpen,
+  onClose,
+  onLogout,
+  isModalOpen,
+  setIsModalOpen,
+}) {
   if (!isOpen) return null;
 
   return (
@@ -78,7 +83,12 @@ export default function MobileMenu({ user, isOpen, onClose, onLogout }) {
           </>
         )}
       </aside>
-      <PointModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+      <PointModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        isModalOpen
+        setIsModalOpen
+      />
     </>
   );
 }
