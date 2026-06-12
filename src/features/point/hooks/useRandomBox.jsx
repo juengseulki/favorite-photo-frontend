@@ -3,10 +3,22 @@ import { useQuery, useMutation } from "@tanstack/react-query";
 import { getRandomBoxStatus, openRandomBox } from "@/lib/api/pointApi";
 import { useAuth } from "@/providers/AuthProvider";
 
-export const BOXES = [
+export const BOXES_L = [
   { id: 1, src: "/img/random_box/box1_lf.png" },
   { id: 2, src: "/img/random_box/box2_ct.png" },
   { id: 3, src: "/img/random_box/box3_rg.png" },
+];
+
+export const BOXES_M = [
+  { id: 1, src: "/img/random_box/box1_lf_tb.png" },
+  { id: 2, src: "/img/random_box/box2_ct_tb.png" },
+  { id: 3, src: "/img/random_box/box3_rg_tb.png" },
+];
+
+export const BOXES_S = [
+  { id: 1, src: "/img/random_box/box1_lf_mb.png" },
+  { id: 2, src: "/img/random_box/box2_ct_mb.png" },
+  { id: 3, src: "/img/random_box/box3_rg_mb.png" },
 ];
 
 export function useRandomBox(isOpen) {
@@ -76,7 +88,9 @@ export function useRandomBox(isOpen) {
   };
 
   return {
-    BOXES,
+    BOXES_L,
+    BOXES_M,
+    BOXES_S,
     selectedBox,
     setSelectedBox,
     handleSelectBox,
