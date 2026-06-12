@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { ROUTES } from "@/lib/constants/routes";
 import PointModal from "@/features/point/components/randomBoxModal";
-import { useState } from "react";
 
 export default function MobileMenu({
   user,
