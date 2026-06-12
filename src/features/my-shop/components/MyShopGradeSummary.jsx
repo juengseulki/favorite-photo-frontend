@@ -1,7 +1,7 @@
 import { GradeChip } from "@/components/common/Grade";
 import { useAuth } from "@/providers/AuthProvider";
 
-const MyShopGradeSummary = ({ meta, grades }) => {
+const MyShopGradeSummary = ({ meta = {}, grades = [] }) => {
   let { user } = useAuth();
 
   //TODO: 나중에 가능하다면 다른 파일로 분리하기
@@ -12,10 +12,10 @@ const MyShopGradeSummary = ({ meta, grades }) => {
   };
 
   return (
-    <div>
-      <div>
-        <div>{user?.nickname}님이 보유하신 카드</div>
-        <div>{meta?.totalCopyCount}장</div>
+    <div className="flex flex-col gap-[20px]">
+      <div className="flex gap-[5px]">
+        <div className="text-white text-[20px] font-bold">{user?.nickname}님이 보유한 카드</div>
+        <div className="text-gray-300 text-[18px] font-normal">({meta.totalCopyCount}장)</div>
       </div>
       <div className="tablet:hidden flex gap-[10px]">
         {grades.map(({ grade, count }) => (
