@@ -12,7 +12,7 @@ const MyShopGradeSummary = ({ meta = {}, grades = [] }) => {
   };
 
   return (
-    <div className="flex flex-col gap-[20px]">
+    <div className="flex flex-col gap-[15px] tablet:gap-[20px]">
       <div className="flex gap-[5px]">
         <div className="text-white text-[20px] font-bold">{user?.nickname}님이 보유한 카드</div>
         <div className="text-gray-300 text-[18px] font-normal">({meta.totalCopyCount}장)</div>
