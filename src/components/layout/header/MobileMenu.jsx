@@ -1,7 +1,11 @@
 import Link from "next/link";
 import { ROUTES } from "@/lib/constants/routes";
+import PointModal from "@/features/point/components/randomBoxModal";
+import { useState } from "react";
 
 export default function MobileMenu({ user, isOpen, onClose, onLogout }) {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   if (!isOpen) return null;
 
   return (
@@ -40,6 +44,9 @@ export default function MobileMenu({ user, isOpen, onClose, onLogout }) {
                 <Link href={ROUTES.MY_SHOP} onClick={onClose}>
                   판매 중인 포토카드
                 </Link>
+                <button onClick={() => setIsModalOpen(true)} className="text-left">
+                  랜덤 포인트
+                </button>
               </div>
             </nav>
 
@@ -71,6 +78,7 @@ export default function MobileMenu({ user, isOpen, onClose, onLogout }) {
           </>
         )}
       </aside>
+      <PointModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </>
   );
 }
