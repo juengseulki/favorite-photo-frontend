@@ -2,8 +2,8 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useState, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { ROUTES } from "@/lib/constants/routes";
 import { createUser } from "@/lib/api/authApi";
 import { useAuth } from "@/providers/AuthProvider";
@@ -12,9 +12,16 @@ import Input from "@/components/common/Input";
 import SocialButtons from "./SocialButtons";
 import { ERROR_MESSAGES } from "@/lib/constants/errorMessages";
 
-export default function SignupForm() {
+function SignupFormContent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { login } = useAuth();
+
+  const redirectUrl = searchParams.get("redirect") ?? ROUTES.HOME;
+  const loginHref =
+    redirectUrl !== ROUTES.HOME
+      ? `${ROUTES.LOGIN}?redirect=${encodeURIComponent(redirectUrl)}`
+      : ROUTES.LOGIN;
 
   const [form, setForm] = useState({
     email: "",
@@ -34,40 +41,58 @@ export default function SignupForm() {
 
   const validate = () => {
     const next = {};
-    if (!form.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email))
+
+    if (!form.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
       next.email = ERROR_MESSAGES.INVALID_EMAIL;
-    if (!form.nickname || form.nickname.length < 2 || form.nickname.length > 12)
+    }
+
+    if (!form.nickname || form.nickname.length < 2 || form.nickname.length > 12) {
       next.nickname = ERROR_MESSAGES.NICKNAME_LENGTH;
-    if (form.password.length < 8) next.password = ERROR_MESSAGES.PASSWORD_MIN_LENGTH;
-    if (form.password !== form.passwordConfirm)
+    }
+
+    if (form.password.length < 8) {
+      next.password = ERROR_MESSAGES.PASSWORD_MIN_LENGTH;
+    }
+
+    if (form.password !== form.passwordConfirm) {
       next.passwordConfirm = ERROR_MESSAGES.PASSWORD_NOT_MATCH;
+    }
+
     return next;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     const validationErrors = validate();
+
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
       return;
     }
 
     setIsLoading(true);
+
     try {
       const res = await createUser({
         email: form.email,
         nickname: form.nickname,
         password: form.password,
       });
+
       login(res.data.data);
-      router.push(ROUTES.HOME);
+      router.replace(redirectUrl);
     } catch (err) {
       const code = err.response?.data?.error?.code;
       const message = err.response?.data?.error?.message;
 
-      if (code === "EMAIL_CONFLICT") setErrors({ email: message });
-      else if (code === "NICKNAME_CONFLICT") setErrors({ nickname: message });
-      else setErrors({ general: message || ERROR_MESSAGES.SIGNUP_FAILED });
+      if (code === "EMAIL_CONFLICT") {
+        setErrors({ email: message });
+      } else if (code === "NICKNAME_CONFLICT") {
+        setErrors({ nickname: message });
+      } else {
+        setErrors({ general: message || ERROR_MESSAGES.SIGNUP_FAILED });
+      }
     } finally {
       setIsLoading(false);
     }
@@ -164,10 +189,18 @@ export default function SignupForm() {
 
       <p className="text-center text-[14px] text-white tablet:text-[16px]">
         이미 최애의포토 회원이신가요?{" "}
-        <Link href={ROUTES.LOGIN} className="text-[#EFFF04] underline">
+        <Link href={loginHref} className="text-[#EFFF04] underline">
           로그인하기
         </Link>
       </p>
     </form>
+  );
+}
+
+export default function SignupForm() {
+  return (
+    <Suspense fallback={null}>
+      <SignupFormContent />
+    </Suspense>
   );
 }

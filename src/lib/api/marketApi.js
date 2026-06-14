@@ -31,4 +31,10 @@ export async function purchaseMarketCards({ saleId, quantity }) {
   return response.data?.data ?? response.data;
 }
 
+export const getMarketDetail = async (saleId) => {
+  const { data } = await axiosInstance.get(API_ROUTES.MARKET.DETAIL(saleId));
+
+  return data.data;
+};
+
 export const purchaseCard = purchaseMarketCards;
