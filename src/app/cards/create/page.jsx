@@ -50,6 +50,10 @@ export default function CreatePhotoCard() {
       newErrors.totalQuantity = ERROR_MESSAGES.CARD_QUANTITY_REQUIRED;
     }
 
+    if (!description) {
+      newErrors.description = ERROR_MESSAGES.CARD_DESCRIPTION_REQUIRED;
+    }
+
     setErrors(newErrors);
 
     return Object.keys(newErrors).length === 0;
@@ -214,24 +218,29 @@ export default function CreatePhotoCard() {
 
           {errors.imageFile && <p className="text-[16px] text-red">{errors.imageFile}</p>}
         </div>
-        <div className="tablet:hidden">
-          <Textarea
-            size="sm"
-            label="포토카드 설명"
-            placeholder="카드 설명을 입력해 주세요"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-          />
-        </div>
-        <div className="hidden tablet:block">
-          <Textarea
-            label="포토카드 설명"
-            placeholder="카드 설명을 입력해 주세요"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-          />
-        </div>
+        <div className="flex flex-col gap-[10px]">
+          <div>
+            <Textarea
+              size="sm"
+              label="포토카드 설명"
+              placeholder="카드 설명을 입력해 주세요"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              className="tablet:hidden"
+            />
+          </div>
+          <div>
+            <Textarea
+              label="포토카드 설명"
+              placeholder="카드 설명을 입력해 주세요"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              className="hidden tablet:block"
+            />
 
+            {errors.description && <p className="text-[16px] text-red">{errors.description}</p>}
+          </div>
+        </div>
         <div className="tablet:hidden">
           <Button
             size="create"

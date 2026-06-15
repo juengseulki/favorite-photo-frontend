@@ -27,6 +27,7 @@ export const ERROR_MESSAGES = {
   CARD_GENRE_REQUIRED: "장르를 선택해 주세요.",
   CARD_PRICE_REQUIRED: "가격을 입력해 주세요.",
   CARD_QUANTITY_REQUIRED: "수량을 입력해 주세요.",
+  CARD_DESCRIPTION_REQUIRED: "설명을 입력해 주세요.",
 
   // 판매
   SALE_CREATE_FAILED: "판매 등록에 실패했습니다.",
