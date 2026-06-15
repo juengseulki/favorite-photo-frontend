@@ -7,6 +7,7 @@ export function useExchangeProposals(saleId) {
     queryKey: QUERY_KEYS.EXCHANGES.RECEIVED({ saleId }),
     queryFn: () => getReceivedExchangeProposals({ limit: 50 }),
     enabled: !!saleId,
-    select: (res) => (res.data?.items ?? []).filter((item) => item.sale?.id === saleId),
+    select: (res) =>
+      (res.data?.items ?? []).filter((item) => Number(item.sale?.id) === Number(saleId)),
   });
 }

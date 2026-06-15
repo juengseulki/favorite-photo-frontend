@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { PhotoCard } from "@/components/common/Card";
 import { normalizeExchangeCard } from "@/lib/utils/exchangeMappers";
@@ -7,7 +7,7 @@ export default function ExchangeCardGrid({
   cards = [],
   selectedCardId,
   onSelect,
-  emptyMessage = "��ȯ ������ ����ī�尡 �����ϴ�.",
+  emptyMessage = "교환 가능한 포토카드가 없습니다.",
   helperMessage = "",
   disabled = false,
 }) {
