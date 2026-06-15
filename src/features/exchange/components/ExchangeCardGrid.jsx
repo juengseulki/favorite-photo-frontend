@@ -2,6 +2,23 @@
 
 import { PhotoCard } from "@/components/common/Card";
 
+function toPhotoCard(card) {
+  return {
+    ...card,
+    id: card.id ?? card.cardCopyId ?? card.photoCardId,
+    name: card.name ?? card.photoCard?.name,
+    imageUrl: card.imageUrl ?? card.photoCard?.imageUrl,
+    grade: card.grade ?? card.photoCard?.grade,
+    genre: card.genre ?? card.photoCard?.genre,
+    price: card.price ?? card.initialPrice ?? card.photoCard?.initialPrice ?? 0,
+    count: card.count ?? card.quantity ?? 1,
+    creator: card.creator ??
+      card.photoCard?.creator ?? {
+        nickname: card.creatorNickname ?? card.ownerNickname ?? card.nickname ?? "알 수 없음",
+      },
+  };
+}
+
 export default function ExchangeCardGrid({
   cards = [],
   selectedCardId,
@@ -17,21 +34,20 @@ export default function ExchangeCardGrid({
   }
 
   return (
-    <div className="grid gap-6 desktop:grid-cols-2">
+    <div className="grid grid-cols-2 gap-x-[20px] gap-y-[40px]">
       {cards.map((card) => {
-        const selected = selectedCardId === card.id;
+        const normalizedCard = toPhotoCard(card);
+        const selected = selectedCardId === normalizedCard.id;
 
         return (
           <button
-            key={card.id}
+            key={normalizedCard.id}
             type="button"
-            className={`w-fit text-left transition ${
-              selected ? "brightness-110" : "hover:brightness-90"
-            }`}
-            onClick={() => onSelect?.(card)}
+            className="w-fit text-left"
+            onClick={() => onSelect?.(normalizedCard)}
           >
-            <div className={selected ? "inline-block border border-main p-[1px]" : "inline-block"}>
-              <PhotoCard card={card} />
+            <div className={selected ? "border border-main p-[1px]" : ""}>
+              <PhotoCard card={normalizedCard} />
             </div>
           </button>
         );

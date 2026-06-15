@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { ROUTES } from "@/lib/constants/routes";
 
 import Button from "@/components/common/Button";
 import { LANDING_IMAGES } from "../constants/landingImages";
@@ -94,7 +95,7 @@ export default function CTASection() {
           나의 최애를 지금 찾아보세요!
         </h2>
 
-        <Link href="/market" className="mt-[27.39px]">
+        <Link href={ROUTES.MARKET} className="mt-[27.39px]">
           <Button size="landing">최애 찾으러 가기</Button>
         </Link>
       </div>

@@ -19,14 +19,21 @@ function OAuthErrorAlert({ onError }) {
     if (searchParams.get("error") === "oauth_failed") {
       onError(ERROR_MESSAGES.OAUTH_FAILED);
     }
-  }, [searchParams]);
+  }, [searchParams, onError]);
 
   return null;
 }
 
-export default function LoginForm() {
+function LoginFormContent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { login } = useAuth();
+
+  const redirectUrl = searchParams.get("redirect") ?? ROUTES.HOME;
+  const signupHref =
+    redirectUrl !== ROUTES.HOME
+      ? `${ROUTES.SIGNUP}?redirect=${encodeURIComponent(redirectUrl)}`
+      : ROUTES.SIGNUP;
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -42,7 +49,7 @@ export default function LoginForm() {
     try {
       const res = await loginUser({ email, password });
       login(res.data.data);
-      router.push(ROUTES.HOME);
+      router.replace(redirectUrl);
     } catch (err) {
       setError(err.response?.data?.error?.message || ERROR_MESSAGES.LOGIN_FAILED_GENERIC);
     } finally {
@@ -55,9 +62,7 @@ export default function LoginForm() {
       onSubmit={handleSubmit}
       className="flex w-full max-w-[520px] flex-col gap-[34px] px-4 tablet:px-0"
     >
-      <Suspense fallback={null}>
-        <OAuthErrorAlert onError={setError} />
-      </Suspense>
+      <OAuthErrorAlert onError={setError} />
 
       <Input
         size="lg"
@@ -97,7 +102,7 @@ export default function LoginForm() {
 
       {error && <p className="-mt-[24px] text-[13px] text-[#FF483D]">{error}</p>}
 
-      <Button variant="primary" type="submit" disabled={isLoading} className="!w-full !h-[60px]">
+      <Button variant="primary" type="submit" disabled={isLoading} className="!h-[60px] !w-full">
         {isLoading ? "로그인 중..." : "로그인"}
       </Button>
 
@@ -105,10 +110,18 @@ export default function LoginForm() {
 
       <p className="text-center text-[14px] text-white tablet:text-[16px]">
         최애의 포토가 처음이신가요?{" "}
-        <Link href={ROUTES.SIGNUP} className="text-[#EFFF04] underline">
+        <Link href={signupHref} className="text-[#EFFF04] underline">
           회원가입하기
         </Link>
       </p>
     </form>
+  );
+}
+
+export default function LoginForm() {
+  return (
+    <Suspense fallback={null}>
+      <LoginFormContent />
+    </Suspense>
   );
 }

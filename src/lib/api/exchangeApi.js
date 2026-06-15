@@ -1,4 +1,6 @@
 import { axiosInstance } from "@/lib/api/axiosInstance";
+import { API_ROUTES } from "@/lib/constants/apiRoutes";
+
 import {
   buildExchangeCardQueryParams,
   toExchangeResponsePayload,
@@ -7,7 +9,6 @@ import {
 
 const EXCHANGE_API_ROUTES = {
   SALES: "/exchanges/sales",
-  AVAILABLE_CARDS: "/exchanges/cards",
   RESPOND: (exchangeId) => `/exchanges/${exchangeId}/respond`,
 };
 
@@ -20,14 +21,17 @@ export async function createExchangeSale({ formValues, card }) {
   return response.data;
 }
 
+// ⭐ 교환할 내 카드 조회
 export async function fetchExchangeCards(filters = {}) {
   const queryString = buildExchangeCardQueryParams(filters);
+
   const url = queryString
-    ? `${EXCHANGE_API_ROUTES.AVAILABLE_CARDS}?${queryString}`
-    : EXCHANGE_API_ROUTES.AVAILABLE_CARDS;
+    ? `${API_ROUTES.GALLERY.MY_CARDS}?${queryString}`
+    : API_ROUTES.GALLERY.MY_CARDS;
 
   const response = await axiosInstance.get(url);
-  return response.data;
+
+  return response.data?.data ?? response.data;
 }
 
 export async function respondExchange({ exchangeId, selectedCardId, decision }) {
@@ -37,4 +41,15 @@ export async function respondExchange({ exchangeId, selectedCardId, decision }) 
   );
 
   return response.data;
+}
+
+// 교환 요청 생성
+export async function createExchangeProposal({ saleId, offeredCardCopyId, description = "" }) {
+  const response = await axiosInstance.post(API_ROUTES.EXCHANGE.BASE, {
+    saleId,
+    offeredCardCopyId,
+    description,
+  });
+
+  return response.data?.data ?? response.data;
 }

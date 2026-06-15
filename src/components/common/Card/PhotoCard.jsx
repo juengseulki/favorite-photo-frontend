@@ -6,9 +6,11 @@ import { card } from "./cardStyles";
 export default function PhotoCard({ card: item }) {
   const SERVER_URL = process.env.NEXT_PUBLIC_API_BASE_URL.replace("/api", "");
 
-  const imageSrc = item.imageUrl.startsWith("http")
+  const imageSrc = item.imageUrl?.startsWith("http")
     ? item.imageUrl
-    : `${SERVER_URL}${item.imageUrl}`;
+    : item.imageUrl?.startsWith("/")
+      ? item.imageUrl
+      : `${SERVER_URL}/${item.imageUrl}`;
 
   return (
     <article className={`${card.base} ${card.defaultSize}`}>
