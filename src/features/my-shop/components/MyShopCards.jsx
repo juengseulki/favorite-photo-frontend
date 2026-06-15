@@ -1,6 +1,9 @@
 import { PhotoCard } from "@/components/common/Card";
 
 const MyShopCards = ({ cards }) => {
+  if (cards.length === 0) {
+    return <div className="text-gray-200">판매&교환 카드가 없습니다.</div>;
+  }
   return (
     <div
       className="
@@ -21,7 +24,7 @@ const MyShopCards = ({ cards }) => {
         "
     >
       {cards.map((card) => (
-        <PhotoCard key={card.id} card={card} />
+        <PhotoCard key={card.id} card={card} revealStatus={true} />
       ))}
     </div>
   );

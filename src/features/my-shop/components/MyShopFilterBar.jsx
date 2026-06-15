@@ -13,10 +13,11 @@ const MyShopFilterBar = ({
   onTradeTypeChange,
   isSoldOut,
   onIsSoldOutChange,
+  openFilter,
   onOpenFilter,
 }) => {
   return (
-    <div className="flex items-center gap-[10px] tablet:gap-[30px] desktop:gap-[60px]">
+    <div className="flex items-center gap-[10px] tablet:gap-[30px] desktop:gap-[60px] my-[20px]">
       <div className="tablet:hidden">
         <button
           type="button"
@@ -25,6 +26,7 @@ const MyShopFilterBar = ({
         >
           <Image src="/img/icons/filter.png" alt="모바일 필터 버튼" width={15} height={15} />
         </button>
+        {openFilter && <div>여기에 필터 선택공간 </div>}
       </div>
       <Input
         size="searchMd"

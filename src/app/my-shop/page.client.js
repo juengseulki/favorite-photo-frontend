@@ -5,15 +5,77 @@ import MyShopFilterBar from "@/features/my-shop/components/MyShopFilterBar";
 import MyShopGradeSummary from "@/features/my-shop/components/MyShopGradeSummary";
 import MyShopHeader from "@/features/my-shop/components/MyShopHeader";
 import MyShopPagination from "@/features/my-shop/components/MyShopPagination";
+import { useMyShopCards } from "@/features/my-shop/hooks/useMyShopCards";
+import { useState } from "react";
 
 const MyShopClient = () => {
+  const [keyword, setKeyword] = useState("");
+  const [grade, setGrade] = useState("");
+  const [genre, setGenre] = useState("");
+  const [tradeType, setTradeType] = useState("");
+  const [isSoldOut, setIsSoldOut] = useState("");
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(16); //데스크톱 15개, 태블릿 & 모바일 16개
+
+  const [openFilter, setOpenFilter] = useState(false);
+
+  const { data, isLoading, isError, error } = useMyShopCards({
+    keyword,
+    grade,
+    genre,
+    tradeType,
+    isSoldOut,
+    page,
+    limit,
+  });
+
+  if (isLoading) return <div>로딩 중..</div>;
+  if (isError) return <div>데이터를 가져오던 중 에러가 발생했습니다.</div>;
+
+  //items를 가져온 뒤에 접근.
+  const items = data.items || [];
+  const meta = data.meta;
+
+  //각 Grade별 개수
+  const grades = [
+    {
+      grade: "COMMON",
+      count: items.filter((item) => item.grade === "COMMON").length,
+    },
+    {
+      grade: "RARE",
+      count: items.filter((item) => item.grade === "RARE").length,
+    },
+    {
+      grade: "SUPER_RARE",
+      count: items.filter((item) => item.grade === "SUPER_RARE").length,
+    },
+    {
+      grade: "LEGENDARY",
+      count: items.filter((item) => item.grade === "LEGENDARY").length,
+    },
+  ];
+
   return (
-    <div>
-      <MyShopHeader />
-      <MyShopGradeSummary />
-      <MyShopFilterBar />
-      <MyShopCards />
-      <MyShopPagination />
+    <div className="flex justify-center ">
+      <div className="flex flex-col gap-[40px] ">
+        <MyShopHeader />
+        <MyShopGradeSummary meta={meta} grades={grades} />
+        <MyShopFilterBar
+          grade={grade}
+          onGradeChange={setGrade}
+          genre={genre}
+          onGenreChange={setGenre}
+          tradeType={tradeType}
+          onTradeTypeChange={setTradeType}
+          isSoldOut={isSoldOut}
+          onIsSoldOutChange={setIsSoldOut}
+          openFilter={openFilter}
+          onOpenFilter={() => setOpenFilter((prev) => !prev)}
+        />
+        <MyShopCards cards={items} />
+        <MyShopPagination page={page} meta={meta} limit={limit} setPage={setPage} />
+      </div>
     </div>
   );
 };
