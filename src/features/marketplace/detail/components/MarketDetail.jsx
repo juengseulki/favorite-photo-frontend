@@ -80,7 +80,9 @@ export default function MarketDetail() {
   if (isLoading) return null;
 
   if (isError || !sale) {
-    return <main className="min-h-screen bg-black text-white">�� ������ �ҷ����� ���߽��ϴ�.</main>;
+    return (
+      <main className="min-h-screen bg-black text-white">상세 정보를 불러오지 못했습니다.</main>
+    );
   }
 
   const exchange = {
@@ -112,7 +114,7 @@ export default function MarketDetail() {
     <main className="min-h-screen bg-black text-white">
       <div className="mx-auto w-full px-[16px] pb-[80px] pt-[24px] desktop:w-[1480px] desktop:px-0 desktop:pb-[140px] desktop:pt-[124px]">
         <p className="font-brand mb-[24px] text-[14px] text-gray-300 desktop:mb-[60px] desktop:text-[24px]">
-          �����÷��̽�
+          마켓플레이스
         </p>
 
         <h1 className="border-b border-gray-200 pb-[10px] text-[20px] font-bold leading-none desktop:pb-[20px] desktop:text-[40px]">

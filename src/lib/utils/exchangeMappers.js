@@ -35,7 +35,7 @@ export function normalizeExchangeCard(card = {}) {
         card.owner?.nickname ??
         card.nickname ??
         card.photoCard?.creator?.nickname ??
-        "�־�����",
+        "최애의포토",
     },
   };
 }
