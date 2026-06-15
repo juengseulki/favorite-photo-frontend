@@ -33,6 +33,7 @@ export default function Dropdown({
   iconSize,
   error,
   className = "",
+  buttonClassName = "",
 }) {
   const [open, setOpen] = useState(false);
   const dropdownRef = useRef(null);
@@ -70,9 +71,10 @@ export default function Dropdown({
           text-white
           ${SIZE_CLASSES[size]}
           ${error ? "border-red" : "border-gray-200"}
+          ${buttonClassName}
         `}
       >
-        <span className={selected ? "text-white" : "text-gray-300"}>
+        <span className={`${selected ? "text-white" : "text-gray-300"} shrink-0`}>
           {selected?.label || placeholder}
         </span>
 
