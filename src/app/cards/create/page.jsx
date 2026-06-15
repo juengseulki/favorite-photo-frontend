@@ -50,8 +50,8 @@ export default function CreatePhotoCard() {
       newErrors.totalQuantity = ERROR_MESSAGES.CARD_QUANTITY_REQUIRED;
     }
 
-    if (!description.trim()) {
-      newErrors.description = "카드 설명을 입력해 주세요.";
+    if (!description) {
+      newErrors.description = ERROR_MESSAGES.CARD_DESCRIPTION_REQUIRED;
     }
 
     setErrors(newErrors);
@@ -239,7 +239,6 @@ export default function CreatePhotoCard() {
           </div>
           {errors.description && <p className="text-[16px] text-red">{errors.description}</p>}
         </div>
-
         <div className="tablet:hidden">
           <Button
             size="create"
