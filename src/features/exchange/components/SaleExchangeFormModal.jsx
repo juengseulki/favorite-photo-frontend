@@ -13,6 +13,8 @@ import {
   EXCHANGE_GRADE_OPTIONS,
 } from "@/lib/constants/exchangeOptions";
 
+const DESCRIPTION_MAX_LENGTH = 300;
+
 function QuantityField({ quantity, maxQuantity, onChange }) {
   const safeMaxQuantity = Math.max(1, Number(maxQuantity) || 1);
 
@@ -54,8 +56,10 @@ export default function SaleExchangeFormModal({
   card,
   defaultValues = EXCHANGE_FORM_DEFAULT_VALUES,
   isSubmitting = false,
+  errorMessage = "",
 }) {
   const [formValues, setFormValues] = useState(defaultValues);
+  const [descriptionError, setDescriptionError] = useState("");
 
   const previewCard = useMemo(
     () => ({
@@ -68,10 +72,39 @@ export default function SaleExchangeFormModal({
 
   const handleChange = (key, value) => {
     setFormValues((prev) => ({ ...prev, [key]: value }));
+
+    if (key === "description") {
+      const trimmedValue = value.trim();
+
+      if (!trimmedValue) {
+        setDescriptionError("");
+        return;
+      }
+
+      if (trimmedValue.length > DESCRIPTION_MAX_LENGTH) {
+        setDescriptionError(`교환 제시 내용은 ${DESCRIPTION_MAX_LENGTH}자 이하로 입력해주세요.`);
+        return;
+      }
+
+      setDescriptionError("");
+    }
   };
 
   const handleSubmit = () => {
-    onSubmit?.(formValues);
+    const trimmedDescription = formValues.description?.trim() ?? "";
+
+    if (!trimmedDescription) {
+      setDescriptionError("교환 제시 내용을 입력해주세요.");
+      return;
+    }
+
+    if (trimmedDescription.length > DESCRIPTION_MAX_LENGTH) {
+      setDescriptionError(`교환 제시 내용은 ${DESCRIPTION_MAX_LENGTH}자 이하로 입력해주세요.`);
+      return;
+    }
+
+    setDescriptionError("");
+    onSubmit?.({ ...formValues, description: trimmedDescription });
   };
 
   return (
@@ -117,7 +150,7 @@ export default function SaleExchangeFormModal({
               value={formValues.price}
               onChange={(event) => handleChange("price", event.target.value)}
               rightText="P"
-              placeholder="가격을 입력해 주세요"
+              placeholder="가격을 입력해 주세요."
             />
           </div>
         </section>
@@ -128,7 +161,7 @@ export default function SaleExchangeFormModal({
           <div className="grid gap-5 desktop:grid-cols-2">
             <Dropdown
               label="등급"
-              placeholder="등급을 선택해 주세요"
+              placeholder="등급을 선택해 주세요."
               options={EXCHANGE_GRADE_OPTIONS}
               value={formValues.grade}
               onChange={(value) => handleChange("grade", value)}
@@ -136,7 +169,7 @@ export default function SaleExchangeFormModal({
 
             <Dropdown
               label="장르"
-              placeholder="장르를 선택해 주세요"
+              placeholder="장르를 선택해 주세요."
               options={EXCHANGE_GENRE_OPTIONS}
               value={formValues.genre}
               onChange={(value) => handleChange("genre", value)}
@@ -146,11 +179,19 @@ export default function SaleExchangeFormModal({
           <Textarea
             className="mt-5"
             label="교환 희망 설명"
-            placeholder="설명을 입력해 주세요"
+            placeholder="설명을 입력해 주세요."
             value={formValues.description}
             onChange={(event) => handleChange("description", event.target.value)}
             textareaClassName="h-[160px] w-full"
           />
+
+          {descriptionError && (
+            <p className="mt-3 text-[14px] font-medium text-red-500">{descriptionError}</p>
+          )}
+
+          {errorMessage && (
+            <p className="mt-4 text-[14px] font-medium text-red-500">{errorMessage}</p>
+          )}
         </section>
       </div>
     </Modal>

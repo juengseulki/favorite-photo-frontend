@@ -8,7 +8,15 @@ export { default as SaleSuccessModal } from "./components/SaleSuccessModal";
 export { default as ExchangeProposalFormModal } from "./components/ExchangeProposalFormModal";
 export { default as ExchangeProposalResultModal } from "./components/ExchangeProposalResultModal";
 
-export { createExchangeSale, fetchExchangeCards, respondExchange } from "@/lib/api/exchangeApi";
+export {
+  acceptExchangeProposal,
+  createExchangeProposal,
+  createExchangeSale,
+  fetchExchangeCards,
+  fetchExchangeProposals,
+  rejectExchangeProposal,
+  respondExchange,
+} from "@/lib/api/exchangeApi";
 
 export { useCreateExchangeSale } from "@/hooks/useCreateExchangeSale";
 export { useExchangeCards } from "@/hooks/useExchangeCards";
