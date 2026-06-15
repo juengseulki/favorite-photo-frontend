@@ -1,33 +1,39 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
-import { useQuery } from "@tanstack/react-query";
 import { PhotoCard } from "@/components/common/Card";
 import Dropdown from "@/components/common/Dropdown";
 import Input from "@/components/common/Input";
 import Modal from "@/components/common/Modal";
 import Button from "@/components/common/Button";
 import useResponsiveLimit from "@/hooks/useResponsiveLimit";
-import { getMarketCards } from "@/lib/api/marketApi";
-import { QUERY_KEYS } from "@/lib/constants/queryKeys";
-import { QUERY_STALE_TIME } from "@/lib/constants/queryOptions";
+import { useMarketCards } from "@/hooks/useMarketCards";
 import {
   MARKET_GENRE_OPTIONS,
   MARKET_GRADE_OPTIONS,
   MARKET_SORT_OPTIONS,
+  MARKET_SALE_STATUS_OPTIONS,
 } from "@/lib/constants/marketOptions";
-import { normalizeMarketCard } from "@/lib/utils/marketMappers";
+
+const withOptionCounts = (options, counts = {}) =>
+  options.map((option) =>
+    option.value
+      ? {
+          ...option,
+          label: `${option.label} ${counts[option.value] ?? 0}`,
+        }
+      : option,
+  );
 
 export default function MarketPage() {
   const { limit } = useResponsiveLimit();
 
   const [grade, setGrade] = useState("");
   const [genre, setGenre] = useState("");
+  const [saleStatus, setSaleStatus] = useState("");
   const [sort, setSort] = useState("latest");
   const [keyword, setKeyword] = useState("");
-  const [cursor, setCursor] = useState();
-  const [cursorHistory, setCursorHistory] = useState([]);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
 
   const filters = useMemo(
@@ -37,71 +43,66 @@ export default function MarketPage() {
       grade,
       genre,
       sort,
+      saleStatus,
     }),
-    [genre, grade, keyword, limit, sort],
+    [genre, grade, keyword, limit, sort, saleStatus],
   );
 
-  const { data, isPending } = useQuery({
-    queryKey: QUERY_KEYS.MARKET.LIST({ ...filters, cursor }),
-    queryFn: async () => {
-      const result = await getMarketCards({
-        ...filters,
-        cursor,
-      });
-
-      const cards = Array.isArray(result?.cards) ? result.cards : [];
-
-      return {
-        ...result,
-        cards: cards.map(normalizeMarketCard),
-      };
+  const { data, isPending, fetchNextPage, hasNextPage, isFetchingNextPage } = useMarketCards(
+    filters,
+    {
+      retry: false,
     },
-    staleTime: QUERY_STALE_TIME.MEDIUM,
-    retry: false,
-  });
+  );
 
-  const cards = data?.cards ?? [];
+  const cards = data?.pages.flatMap((page) => page.cards ?? []) ?? [];
+  const counts = data?.pages[0]?.counts;
+  const gradeOptions = useMemo(
+    () => withOptionCounts(MARKET_GRADE_OPTIONS, counts?.grades),
+    [counts?.grades],
+  );
+  const genreOptions = useMemo(
+    () => withOptionCounts(MARKET_GENRE_OPTIONS, counts?.genres),
+    [counts?.genres],
+  );
+  const saleStatusOptions = useMemo(
+    () => withOptionCounts(MARKET_SALE_STATUS_OPTIONS, counts?.saleStatuses),
+    [counts?.saleStatuses],
+  );
   const displayCards = cards;
-  const page = cursorHistory.length + 1;
+  const loadMoreRef = useRef(null);
 
-  const resetPagination = () => {
-    setCursor(undefined);
-    setCursorHistory([]);
-  };
+  useEffect(() => {
+    const target = loadMoreRef.current;
+
+    if (!target) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && hasNextPage && !isPending && !isFetchingNextPage) {
+          fetchNextPage();
+        }
+      },
+      {
+        root: null,
+        rootMargin: "200px",
+        threshold: 0,
+      },
+    );
+
+    observer.observe(target);
+
+    return () => {
+      observer.disconnect();
+    };
+  }, [fetchNextPage, hasNextPage, isPending, isFetchingNextPage]);
 
   const handleKeywordChange = (e) => {
     setKeyword(e.target.value);
-    resetPagination();
-  };
-
-  const handleGradeChange = (value) => {
-    setGrade(value);
-    resetPagination();
-  };
-
-  const handleGenreChange = (value) => {
-    setGenre(value);
-    resetPagination();
   };
 
   const handleSortChange = (value) => {
     setSort(value);
-    resetPagination();
-  };
-
-  const handlePrevPage = () => {
-    setCursorHistory((prev) => {
-      const nextHistory = prev.slice(0, -1);
-      setCursor(nextHistory.at(-1));
-      return nextHistory;
-    });
-  };
-
-  const handleNextPage = () => {
-    if (!data?.nextCursor) return;
-
-    setCursorHistory((prev) => [...prev, data.nextCursor]);
-    setCursor(data.nextCursor);
   };
 
   const renderFilterControls = () => (
@@ -109,16 +110,23 @@ export default function MarketPage() {
       <Dropdown
         placeholder="등급"
         size="sort"
-        options={MARKET_GRADE_OPTIONS}
+        options={gradeOptions}
         value={grade}
-        onChange={handleGradeChange}
+        onChange={setGrade}
       />
       <Dropdown
         placeholder="장르"
         size="sort"
-        options={MARKET_GENRE_OPTIONS}
+        options={genreOptions}
         value={genre}
-        onChange={handleGenreChange}
+        onChange={setGenre}
+      />
+      <Dropdown
+        placeholder="매진여부"
+        size="sort"
+        options={saleStatusOptions}
+        value={saleStatus}
+        onChange={setSaleStatus}
       />
     </>
   );
@@ -198,26 +206,11 @@ export default function MarketPage() {
         )}
       </section>
 
-      <section className="mt-[40px] flex items-center justify-center gap-[20px] desktop:hidden">
-        <Button
-          variant="secondary"
-          size="xs"
-          disabled={page === 1 || isPending}
-          onClick={handlePrevPage}
-        >
-          이전
-        </Button>
-        <span className="min-w-[80px] text-center text-[14px] font-bold text-white">
-          {page} 페이지
-        </span>
-        <Button
-          variant="secondary"
-          size="xs"
-          disabled={!data?.nextCursor || isPending}
-          onClick={handleNextPage}
-        >
-          다음
-        </Button>
+      <section
+        ref={loadMoreRef}
+        className="mt-[40px] flex min-h-[60px] items-center justify-center"
+      >
+        {isFetchingNextPage && <span className="text-[14px] text-gray-300">더 불러오는 중...</span>}
       </section>
 
       <Modal isOpen={isFilterOpen} title="필터" onClose={() => setIsFilterOpen(false)}>

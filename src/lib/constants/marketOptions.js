@@ -1,7 +1,7 @@
 export const MARKET_FILTER_ALL = "";
 
 export const MARKET_GRADE_OPTIONS = [
-  { label: "등급 전체", value: MARKET_FILTER_ALL },
+  { label: "등급", value: MARKET_FILTER_ALL },
   { label: "COMMON", value: "COMMON" },
   { label: "RARE", value: "RARE" },
   { label: "SUPER RARE", value: "SUPER_RARE" },
@@ -9,7 +9,7 @@ export const MARKET_GRADE_OPTIONS = [
 ];
 
 export const MARKET_GENRE_OPTIONS = [
-  { label: "장르 전체", value: MARKET_FILTER_ALL },
+  { label: "장르", value: MARKET_FILTER_ALL },
   { label: "앨범", value: "ALBUM" },
   { label: "특전", value: "SPECIAL" },
   { label: "팬싸", value: "FAN_SIGN" },
@@ -20,6 +20,12 @@ export const MARKET_GENRE_OPTIONS = [
   { label: "콜라보", value: "COLLAB" },
   { label: "팬클럽", value: "FANCLUB" },
   { label: "기타", value: "ETC" },
+];
+
+export const MARKET_SALE_STATUS_OPTIONS = [
+  { label: "매진여부", value: MARKET_FILTER_ALL },
+  { label: "판매중", value: "onSale" },
+  { label: "매진", value: "soldOut" },
 ];
 
 export const MARKET_SORT_OPTIONS = [
