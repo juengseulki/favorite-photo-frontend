@@ -8,20 +8,18 @@ import {
 } from "@/lib/utils/exchangeMappers";
 
 const EXCHANGE_API_ROUTES = {
-  SALES: "/exchanges/sales",
-  RESPOND: (exchangeId) => `/exchanges/${exchangeId}/respond`,
+  RESPOND: (exchangeId) => `/exchange-proposals/${exchangeId}/respond`,
 };
 
 export async function createExchangeSale({ formValues, card }) {
   const response = await axiosInstance.post(
-    EXCHANGE_API_ROUTES.SALES,
+    API_ROUTES.SALES.BASE,
     toExchangeSalePayload(formValues, card),
   );
 
-  return response.data;
+  return response.data?.data ?? response.data;
 }
 
-// ⭐ 교환할 내 카드 조회
 export async function fetchExchangeCards(filters = {}) {
   const queryString = buildExchangeCardQueryParams(filters);
 
@@ -40,16 +38,33 @@ export async function respondExchange({ exchangeId, selectedCardId, decision }) 
     toExchangeResponsePayload(exchangeId, selectedCardId, decision),
   );
 
-  return response.data;
+  return response.data?.data ?? response.data;
 }
 
-// 교환 요청 생성
 export async function createExchangeProposal({ saleId, offeredCardCopyId, description = "" }) {
   const response = await axiosInstance.post(API_ROUTES.EXCHANGE.BASE, {
     saleId,
     offeredCardCopyId,
     description,
   });
+
+  return response.data?.data ?? response.data;
+}
+
+export async function acceptExchangeProposal(proposalId) {
+  const response = await axiosInstance.patch(API_ROUTES.EXCHANGE.ACCEPT(proposalId));
+
+  return response.data?.data ?? response.data;
+}
+
+export async function rejectExchangeProposal(proposalId) {
+  const response = await axiosInstance.patch(API_ROUTES.EXCHANGE.REJECT(proposalId));
+
+  return response.data?.data ?? response.data;
+}
+
+export async function cancelExchangeProposal(proposalId) {
+  const response = await axiosInstance.patch(API_ROUTES.EXCHANGE.CANCEL(proposalId));
 
   return response.data?.data ?? response.data;
 }
