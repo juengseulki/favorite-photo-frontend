@@ -1,9 +1,11 @@
 import { PhotoCard } from "@/components/common/Card";
+import { SaleExchangeFormModal } from "@/features/exchange";
 
-export default function GalleryGrid({ cards }) {
+export default function GalleryGrid({ cards, selectedCard, setSelectedCard }) {
   return (
-    <div
-      className="
+    <>
+      <div
+        className="
         grid
         grid-cols-2
         justify-items-center
@@ -19,10 +21,20 @@ export default function GalleryGrid({ cards }) {
         desktop:gap-x-[80px]
         desktop:gap-y-[80px]
       "
-    >
-      {cards.map((card) => (
-        <PhotoCard key={card.id} card={card} />
-      ))}
-    </div>
+      >
+        {cards.map((card) => (
+          <div key={card.id} onClick={() => setSelectedCard(card)}>
+            <PhotoCard card={card} />
+          </div>
+        ))}
+      </div>
+      {selectedCard && (
+        <SaleExchangeFormModal
+          isOpen={true}
+          onClose={() => setSelectedCard(null)}
+          card={selectedCard}
+        />
+      )}
+    </>
   );
 }
