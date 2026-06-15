@@ -5,6 +5,8 @@ export { default as ExchangeSelectCardModal } from "./components/ExchangeSelectC
 export { default as SaleExchangeFormModal } from "./components/SaleExchangeFormModal";
 export { default as SaleFailureModal } from "./components/SaleFailureModal";
 export { default as SaleSuccessModal } from "./components/SaleSuccessModal";
+export { default as ExchangeProposalFormModal } from "./components/ExchangeProposalFormModal";
+export { default as ExchangeProposalResultModal } from "./components/ExchangeProposalResultModal";
 
 export {
   acceptExchangeProposal,

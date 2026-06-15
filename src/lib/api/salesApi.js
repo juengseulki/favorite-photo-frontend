@@ -3,19 +3,27 @@ import { API_ROUTES } from "@/lib/constants/apiRoutes";
 
 export async function getMySales({ page = 1, limit = 15, status } = {}) {
   const params = new URLSearchParams();
+
   params.set("page", String(page));
   params.set("limit", String(limit));
-  if (status) params.set("status", status);
+
+  if (status) {
+    params.set("status", status);
+  }
+
   const response = await axiosInstance.get(`${API_ROUTES.SALES.MY}?${params}`);
-  return response.data;
+
+  return response.data?.data ?? response.data;
 }
 
 export async function getSaleDetail(saleId) {
   const response = await axiosInstance.get(API_ROUTES.SALES.DETAIL(saleId));
-  return response.data;
+
+  return response.data?.data ?? response.data;
 }
 
 export async function cancelSale(saleId) {
   const response = await axiosInstance.delete(API_ROUTES.SALES.DETAIL(saleId));
-  return response.data;
+
+  return response.data?.data ?? response.data;
 }

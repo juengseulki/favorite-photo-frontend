@@ -1,77 +1,70 @@
 import { axiosInstance } from "@/lib/api/axiosInstance";
 import { API_ROUTES } from "@/lib/constants/apiRoutes";
-import { buildExchangeCardQueryParams } from "@/lib/utils/exchangeMappers";
 
-function unwrapResponse(response) {
-  return response?.data?.data ?? response?.data ?? null;
-}
+import {
+  buildExchangeCardQueryParams,
+  toExchangeResponsePayload,
+  toExchangeSalePayload,
+} from "@/lib/utils/exchangeMappers";
 
-export async function createExchangeProposal({ saleId, offeredCardCopyId, description = "" }) {
-  const response = await axiosInstance.post(API_ROUTES.EXCHANGE.BASE, {
-    saleId: Number(saleId),
-    offeredCardCopyId: Number(offeredCardCopyId),
-    description: description.trim(),
-  });
+const EXCHANGE_API_ROUTES = {
+  RESPOND: (exchangeId) => `/exchange-proposals/${exchangeId}/respond`,
+};
 
-  return unwrapResponse(response);
-}
+export async function createExchangeSale({ formValues, card }) {
+  const response = await axiosInstance.post(
+    API_ROUTES.SALES.BASE,
+    toExchangeSalePayload(formValues, card),
+  );
 
-export async function fetchExchangeProposals({
-  type = "received",
-  status,
-  page = 1,
-  limit = 10,
-} = {}) {
-  const response = await axiosInstance.get(API_ROUTES.EXCHANGE.BASE, {
-    params: {
-      type,
-      ...(status ? { status } : {}),
-      page,
-      limit,
-    },
-  });
-
-  return unwrapResponse(response);
-}
-
-export async function acceptExchangeProposal(proposalId) {
-  const response = await axiosInstance.patch(API_ROUTES.EXCHANGE.ACCEPT(proposalId));
-  return unwrapResponse(response);
-}
-
-export async function rejectExchangeProposal(proposalId) {
-  const response = await axiosInstance.patch(API_ROUTES.EXCHANGE.REJECT(proposalId));
-  return unwrapResponse(response);
-}
-
-export async function respondExchange({ proposalId, decision }) {
-  if (decision === "approve") {
-    return acceptExchangeProposal(proposalId);
-  }
-
-  return rejectExchangeProposal(proposalId);
+  return response.data?.data ?? response.data;
 }
 
 export async function fetchExchangeCards(filters = {}) {
   const queryString = buildExchangeCardQueryParams(filters);
+
   const url = queryString
     ? `${API_ROUTES.GALLERY.MY_CARDS}?${queryString}`
     : API_ROUTES.GALLERY.MY_CARDS;
 
   const response = await axiosInstance.get(url);
-  return unwrapResponse(response);
+
+  return response.data?.data ?? response.data;
 }
 
-export async function createExchangeSale({
-  saleId,
-  offeredCardCopyId,
-  description,
-  formValues,
-  card,
-} = {}) {
-  return createExchangeProposal({
-    saleId: saleId ?? formValues?.saleId,
-    offeredCardCopyId: offeredCardCopyId ?? card?.id ?? formValues?.offeredCardCopyId,
-    description: description ?? formValues?.description ?? "",
+export async function respondExchange({ exchangeId, selectedCardId, decision }) {
+  const response = await axiosInstance.post(
+    EXCHANGE_API_ROUTES.RESPOND(exchangeId),
+    toExchangeResponsePayload(exchangeId, selectedCardId, decision),
+  );
+
+  return response.data?.data ?? response.data;
+}
+
+export async function createExchangeProposal({ saleId, offeredCardCopyId, description = "" }) {
+  const response = await axiosInstance.post(API_ROUTES.EXCHANGE.BASE, {
+    saleId,
+    offeredCardCopyId,
+    description,
   });
+
+  return response.data?.data ?? response.data;
+}
+
+export async function acceptExchangeProposal(proposalId) {
+  const response = await axiosInstance.patch(API_ROUTES.EXCHANGE.ACCEPT(proposalId));
+
+  return response.data?.data ?? response.data;
+}
+
+export async function rejectExchangeProposal(proposalId) {
+  const response = await axiosInstance.patch(API_ROUTES.EXCHANGE.REJECT(proposalId));
+
+  return response.data?.data ?? response.data;
+}
+
+export async function cancelExchangeProposal(proposalId) {
+  const response = await axiosInstance.patch(API_ROUTES.EXCHANGE.CANCEL(proposalId));
+
+  return response.data?.data ?? response.data;
 }
