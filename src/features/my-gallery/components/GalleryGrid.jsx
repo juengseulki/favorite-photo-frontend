@@ -33,7 +33,6 @@ export default function GalleryGrid({ cards, selectedCard, setSelectedCard }) {
           isOpen={true}
           onClose={() => setSelectedCard(null)}
           card={selectedCard}
-          titke
         />
       )}
     </>
