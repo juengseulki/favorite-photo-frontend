@@ -14,6 +14,7 @@ export default function Header() {
   const router = useRouter();
   const { user, isLoading, logout } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleLogout = async () => {
     await logout();
@@ -65,6 +66,8 @@ export default function Header() {
         isOpen={isOpen}
         onClose={() => setIsOpen(false)}
         onLogout={handleLogout}
+        isModalOpen={isModalOpen}
+        setIsModalOpen={setIsModalOpen}
       />
     </header>
   );
