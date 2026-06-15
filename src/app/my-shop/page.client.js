@@ -58,7 +58,7 @@ const MyShopClient = () => {
   ];
 
   return (
-    <div className="mx-auto w-full max-w-[1840] px-[15px] tablet:px-[20px] desktop:px-[220px] ">
+    <div className="mx-auto w-full max-w-[1840px] px-[15px] tablet:px-[20px] desktop:px-[220px] ">
       <div className="flex flex-col gap-[15px] tablet:gap-[40px] ">
         <MyShopHeader />
         <MyShopGradeSummary meta={meta} grades={grades} />

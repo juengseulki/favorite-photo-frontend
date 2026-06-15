@@ -17,16 +17,16 @@ export default function PhotoCard({ card: item, revealStatus = false }) {
       <div className={`${card.image} relative`}>
         <Image src={imageSrc} alt={item.name} fill className="object-cover" />
         {revealStatus &&
-          (card.status === "SOLD_OUT" ? (
+          (item.status === "SOLD_OUT" ? (
             <div className="w-full h-full bg-black bg-opacity-30 absolute inset-0">
               <Image src="/img/icons/soldout.png" alt="품절 아이콘" fill />
             </div>
           ) : (
             <div className="px-[10px] py-[4px] bg-black bg-opacity-5 rounded-sm absolute top-[10px] left-[10px]">
-              {card.status === "ON_SALE" && (
+              {item.status === "ON_SALE" && (
                 <div className="text-[16px] font-normal text-white ">판매 중</div>
               )}
-              {card.status === "PENDING" && (
+              {item.status === "PENDING" && (
                 <div className="text-[16px] font-normal text-main ">교환 제시 대기 중</div>
               )}
             </div>
