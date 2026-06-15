@@ -15,7 +15,33 @@ export default function PhotoCard({ card: item }) {
   return (
     <article className={`${card.base} ${card.defaultSize}`}>
       <div className={card.image}>
-        <Image src={imageSrc} alt={item.name} fill className="object-cover" />
+        <Image
+          src={imageSrc}
+          alt={item.name}
+          fill
+          className={`object-cover ${item.isSoldOut ? "brightness-[0.45] blur-[1px]" : ""}`}
+        />
+
+        {item.isSoldOut && (
+          <div className="absolute inset-0 flex items-center justify-center">
+            <span
+              style={{ transform: "rotate(-24deg)" }}
+              className="
+                flex h-[74px] w-[74px]
+                items-center justify-center rounded-full
+                border-[3px] border-red
+                text-center text-[18px] font-bold leading-[1.05]
+                text-red
+                tablet:h-[110px] tablet:w-[110px] tablet:border-[4px] tablet:text-[26px]
+                desktop:h-[124px] desktop:w-[124px] desktop:text-[30px]
+              "
+            >
+              SOLD
+              <br />
+              OUT
+            </span>
+          </div>
+        )}
       </div>
 
       <h3 className={card.title}>{item.name}</h3>
