@@ -62,20 +62,23 @@ const MyShopClient = () => {
       <div className="flex flex-col gap-[15px] tablet:gap-[40px] ">
         <MyShopHeader />
         <MyShopGradeSummary meta={meta} grades={grades} />
-        <MyShopFilterBar
-          grade={grade}
-          onGradeChange={setGrade}
-          genre={genre}
-          onGenreChange={setGenre}
-          tradeType={tradeType}
-          onTradeTypeChange={setTradeType}
-          isSoldOut={isSoldOut}
-          onIsSoldOutChange={setIsSoldOut}
-          openFilter={openFilter}
-          onOpenFilter={() => setOpenFilter((prev) => !prev)}
-          keyword={keyword}
-          onKeywordChange={setKeyword}
-        />
+        <div className="border-t border-gray-400">
+          <MyShopFilterBar
+            grade={grade}
+            onGradeChange={setGrade}
+            genre={genre}
+            onGenreChange={setGenre}
+            tradeType={tradeType}
+            onTradeTypeChange={setTradeType}
+            isSoldOut={isSoldOut}
+            onIsSoldOutChange={setIsSoldOut}
+            openFilter={openFilter}
+            onOpenFilter={() => setOpenFilter((prev) => !prev)}
+            keyword={keyword}
+            onKeywordChange={setKeyword}
+          />
+        </div>
+
         <MyShopCards cards={items} />
         <MyShopPagination page={page} meta={meta} limit={limit} setPage={setPage} />
       </div>

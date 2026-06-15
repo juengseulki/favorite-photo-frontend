@@ -1,4 +1,5 @@
 import { PhotoCard } from "@/components/common/Card";
+import Link from "next/link";
 
 const MyShopCards = ({ cards }) => {
   if (cards.length === 0) {
@@ -24,7 +25,9 @@ const MyShopCards = ({ cards }) => {
         "
     >
       {cards.map((card) => (
-        <PhotoCard key={card.id} card={card} revealStatus={true} />
+        <Link key={card.saleId} href={`/my-shop/${card.saleId}`}>
+          <PhotoCard card={card} revealStatus={true} />
+        </Link>
       ))}
     </div>
   );
