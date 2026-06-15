@@ -39,13 +39,13 @@ export default function Button({
     `,
 
     md: `
-      h-[75px]
+      h-[60px]
       w-[342px]
       text-[18px]
     `,
 
     lg: `
-      h-[80px]
+      h-[60px]
       w-[440px]
       text-[20px]
     `,
@@ -67,17 +67,22 @@ export default function Button({
   `,
 
     create: `
-  h-[55px]
-  w-[345px]
-  text-[16px]
+      h-[55px]
+      w-[345px]
+      text-[16px]
 
-  tablet:h-[60px]
-  tablet:w-[440px]
+      tablet:h-[60px]
+      tablet:w-[440px]
 `,
     point: `  
-  h-[60px]
-  w-[520px]
-  text-[16px]`,
+      h-[60px]
+      w-[520px]
+      text-[16px]`,
+
+    exchange: `
+        h-[60px]
+        w-[210px]
+        text-[18px]`,
   };
 
   return (
