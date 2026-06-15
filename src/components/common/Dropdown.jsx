@@ -74,7 +74,7 @@ export default function Dropdown({
           ${buttonClassName}
         `}
       >
-        <span className={selected ? "text-white" : "text-gray-300"}>
+        <span className={`${selected ? "text-white" : "text-gray-300"} shrink-0`}>
           {selected?.label || placeholder}
         </span>
 
