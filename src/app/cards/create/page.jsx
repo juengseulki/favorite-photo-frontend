@@ -62,6 +62,8 @@ export default function CreatePhotoCard() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    if (!validateForm()) return;
+
     const formData = new FormData();
 
     formData.append("name", name);
@@ -71,7 +73,6 @@ export default function CreatePhotoCard() {
     formData.append("initialPrice", initialPrice);
     formData.append("totalQuantity", totalQuantity);
     formData.append("image", imageFile);
-    if (!validateForm()) return;
     try {
       await postPhotoCards(formData);
       router.push("/my-gallery");
