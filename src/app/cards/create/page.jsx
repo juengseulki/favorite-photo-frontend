@@ -77,16 +77,15 @@ export default function CreatePhotoCard() {
   };
 
   return (
-    <div className="mx-auto max-w-[1920px] px-[20px] desktop:px-[220px] gap-[80px]">
-      <div className="hidden tablet:flex justify-between border-b-2 border-gray-100 mb-20">
-        <span className="font-brand text-[48px] desktop:text-[62px] font-normal tracking-[-0.03em]">
+    <div className="mx-auto max-w-[1920px] px-[20px] tablet:px-[60px] desktop:px-[220px] gap-[80px]">
+      <div className="hidden tablet:flex justify-between border-b-2 border-gray-100 mb-10">
+        <span className="font-brand text-[40px] desktop:text-[50px] font-normal tracking-[-0.03em]">
           포토카드 생성
         </span>
       </div>
       <form
         onSubmit={handleSubmit}
-        className="flex flex-col justify-center items-center  gap-10 tablet:gap-[65px] mb-10 tablet:mb-30
-  "
+        className="flex flex-col justify-center items-center gap-10 tablet:gap-[30px] mb-10 tablet:mb-10"
       >
         <div className="flex flex-col gap-[10px]">
           <Input

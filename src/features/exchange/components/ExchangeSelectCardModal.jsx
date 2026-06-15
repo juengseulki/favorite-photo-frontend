@@ -37,22 +37,35 @@ export default function ExchangeSelectCardModal({
       bodyClassName="mt-0"
       actions={
         <>
-          <Button variant="secondary" size="lg" onClick={onClose}>
-            취소하기
-          </Button>
-          <Button size="lg" onClick={() => onConfirm?.(selectedCard)} disabled={!selectedCard}>
-            선택하기
-          </Button>
+          {
+            <div className="flex w-full justify-center gap-[80px] px-[80px]">
+              <Button variant="secondary" size="lg" className="flex-1" onClick={onClose}>
+                취소하기
+              </Button>
+
+              <Button
+                size="lg"
+                className="flex-1"
+                onClick={() => onConfirm?.(selectedCard)}
+                disabled={!selectedCard}
+              >
+                선택하기
+              </Button>
+            </div>
+          }
         </>
       }
     >
-      <div className="space-y-8">
+      <div className="mx-auto w-[940px] space-y-8">
         <div>
-          <span className="text-[20px] font-bold text-white">마이갤러리</span>
-          <h2 className="mt-3 text-[40px] font-bold text-white">포토카드 교환하기</h2>
+          <span className="font-brand text-[20px] font-bold text-white">마이갤러리</span>
+
+          <h2 className="font-brand mt-[12px] text-[40px] font-bold text-white">
+            포토카드 교환하기
+          </h2>
         </div>
 
-        <div className="flex flex-col gap-4 border-t border-gray-400 pt-6 desktop:flex-row desktop:items-end">
+        <div className="flex flex-col gap-4 border-t border-gray-400 pt-[20px] desktop:flex-row desktop:items-end">
           <Input
             size="searchLg"
             variant="search"
