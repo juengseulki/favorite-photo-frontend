@@ -9,10 +9,15 @@ import { useAuth } from "@/providers/AuthProvider";
 import GuestMenu from "./header/GuestMenu";
 import UserMenu from "./header/UserMenu";
 import MobileMenu from "./header/MobileMenu";
+import useNotificationSSE from "@/hooks/useNotificationSSE";
 
 export default function Header() {
   const router = useRouter();
   const { user, isLoading, logout } = useAuth();
+  useNotificationSSE({
+    enabled: !!user,
+  });
+
   const [isOpen, setIsOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
