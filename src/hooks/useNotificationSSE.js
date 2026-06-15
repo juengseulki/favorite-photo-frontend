@@ -3,16 +3,19 @@
 import { useEffect } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { QUERY_KEYS } from "@/lib/constants/queryKeys";
+import { getAccessToken } from "@/lib/api/axiosInstance";
 
 export default function useNotificationSSE({ enabled = true } = {}) {
   const queryClient = useQueryClient();
 
   useEffect(() => {
-    if (!enabled) return;
+    const accessToken = getAccessToken();
+
+    if (!enabled || !accessToken) return;
 
     const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 
-    const eventSource = new EventSource(`${baseUrl}/notifications/stream`, {
+    const eventSource = new EventSource(`${baseUrl}/notifications/stream?token=${accessToken}`, {
       withCredentials: true,
     });
 

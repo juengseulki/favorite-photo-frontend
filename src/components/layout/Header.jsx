@@ -14,6 +14,7 @@ import useNotificationSSE from "@/hooks/useNotificationSSE";
 export default function Header() {
   const router = useRouter();
   const { user, isLoading, logout } = useAuth();
+
   useNotificationSSE({
     enabled: !!user,
   });
