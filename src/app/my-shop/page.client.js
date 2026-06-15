@@ -73,6 +73,8 @@ const MyShopClient = () => {
           onIsSoldOutChange={setIsSoldOut}
           openFilter={openFilter}
           onOpenFilter={() => setOpenFilter((prev) => !prev)}
+          keyword={keyword}
+          onKeywordChange={setKeyword}
         />
         <MyShopCards cards={items} />
         <MyShopPagination page={page} meta={meta} limit={limit} setPage={setPage} />

@@ -14,6 +14,8 @@ const MyShopFilterBar = ({
   isSoldOut,
   onIsSoldOutChange,
   onOpenFilter,
+  keyword,
+  onKeywordChange,
 }) => {
   return (
     <div className="flex items-center gap-[10px] tablet:gap-[30px] desktop:gap-[60px] my-[20px]">
@@ -32,6 +34,8 @@ const MyShopFilterBar = ({
         variant="search"
         inputClassName="w-full"
         placeholder="검색"
+        value={keyword}
+        onChange={(e) => onKeywordChange(e.target.value)}
       />
       <div className="hidden tablet:flex tablet:gap-[25px] desktop:gap-[45px]">
         <Dropdown
