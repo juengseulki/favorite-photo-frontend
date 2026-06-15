@@ -18,6 +18,7 @@ export default function MyGalleryPage() {
   const [keyword, setKeyword] = useState("");
   const [page, setPage] = useState(1);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedCard, setSelectedCard] = useState(null);
 
   const { cards, meta, grades, observerRef } = useMyGalleryCards({
     limit,
@@ -59,7 +60,7 @@ export default function MyGalleryPage() {
         onOpenFilter={() => setIsModalOpen(true)}
       />
 
-      <GalleryGrid cards={cards} />
+      <GalleryGrid cards={cards} selectedCard={selectedCard} setSelectedCard={setSelectedCard} />
 
       <div ref={observerRef} className="h-[1px] tablet:hidden" />
 
