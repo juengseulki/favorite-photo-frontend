@@ -19,7 +19,7 @@ const MyShopGradeSummary = ({ meta = {}, grades = [] }) => {
         </div>
         <div className="text-gray-300 text-[18px] font-normal">({meta.totalCount || "0"}장)</div>
       </div>
-      <div className="tablet:hidden flex gap-[10px]">
+      <div className="overflow-x-auto tablet:hidden flex gap-[10px]">
         {grades.map(({ grade, count }) => (
           <GradeChip key={grade} grade={grade} count={count} size={SIZE.MOBILE} />
         ))}

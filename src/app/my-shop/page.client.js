@@ -2,6 +2,7 @@
 
 import MyShopCards from "@/features/my-shop/components/MyShopCards";
 import MyShopFilterBar from "@/features/my-shop/components/MyShopFilterBar";
+import MyShopFilterModal from "@/features/my-shop/components/MyShopFilterModal";
 import MyShopGradeSummary from "@/features/my-shop/components/MyShopGradeSummary";
 import MyShopHeader from "@/features/my-shop/components/MyShopHeader";
 import MyShopPagination from "@/features/my-shop/components/MyShopPagination";
@@ -57,8 +58,8 @@ const MyShopClient = () => {
   ];
 
   return (
-    <div className="flex justify-center ">
-      <div className="flex flex-col gap-[40px] ">
+    <div className="mx-auto w-full max-w-[1840] px-[15px] tablet:px-[20px] desktop:px-[220px] ">
+      <div className="flex flex-col gap-[15px] tablet:gap-[40px] ">
         <MyShopHeader />
         <MyShopGradeSummary meta={meta} grades={grades} />
         <MyShopFilterBar
@@ -76,6 +77,20 @@ const MyShopClient = () => {
         <MyShopCards cards={items} />
         <MyShopPagination page={page} meta={meta} limit={limit} setPage={setPage} />
       </div>
+      {openFilter && (
+        <MyShopFilterModal
+          isOpen={openFilter}
+          onClose={() => setOpenFilter(false)}
+          grade={grade}
+          genre={genre}
+          tradeType={tradeType}
+          isSoldOut={isSoldOut}
+          onGradeChange={setGrade}
+          onGenreChange={setGenre}
+          onTradeTypeChange={setTradeType}
+          onIsSoldOutChange={setIsSoldOut}
+        />
+      )}
     </div>
   );
 };

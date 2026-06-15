@@ -13,7 +13,6 @@ const MyShopFilterBar = ({
   onTradeTypeChange,
   isSoldOut,
   onIsSoldOutChange,
-  openFilter,
   onOpenFilter,
 }) => {
   return (
@@ -26,10 +25,9 @@ const MyShopFilterBar = ({
         >
           <Image src="/img/icons/filter.png" alt="모바일 필터 버튼" width={15} height={15} />
         </button>
-        {openFilter && <div>여기에 필터 선택공간 </div>}
       </div>
       <Input
-        size="searchMd"
+        size="searchLg"
         labelSize="md"
         variant="search"
         inputClassName="w-full"
