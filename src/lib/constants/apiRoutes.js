@@ -28,7 +28,7 @@ export const API_ROUTES = {
 
   SALES: {
     BASE: "/sales",
-    MY: "/me/sales",
+    MY: "/me/sales/cards",
     DETAIL: (saleId) => `/sales/${saleId}`,
   },
 

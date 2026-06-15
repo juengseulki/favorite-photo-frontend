@@ -24,6 +24,16 @@ export const SALE_STATUS_LABEL = {
   CANCELED: "취소됨",
 };
 
+export const CARD_GENRE_OPTIONS = Object.entries(GENRE_LABEL_MAP).map(([value, label]) => ({
+  label,
+  value,
+}));
+
+export const CARD_GRADE_OPTIONS = Object.entries(GRADE_LABEL_MAP).map(([value, label]) => ({
+  label,
+  value,
+}));
+
 export const getGenreLabel = (genre) => GENRE_LABEL_MAP[genre] ?? genre;
 export const getGradeLabel = (grade) => GRADE_LABEL_MAP[grade] ?? grade;
 export const getSaleStatusLabel = (status) => SALE_STATUS_LABEL[status] ?? status;
