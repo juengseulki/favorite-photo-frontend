@@ -13,13 +13,20 @@ export async function getMySales({ page = 1, limit = 15, status } = {}) {
 
   const response = await axiosInstance.get(`${API_ROUTES.SALES.MY}?${params}`);
 
-  return response.data?.data ?? response.data;
+  return response.data;
 }
 
 export async function getSaleDetail(saleId) {
-  const response = await axiosInstance.get(API_ROUTES.SALES.DETAIL(saleId));
+  const response = await axiosInstance.get(API_ROUTES.MARKET.DETAIL(saleId));
+  return response.data;
+}
 
-  return response.data?.data ?? response.data;
+export async function modifySale(saleId, { photoCardId, data }) {
+  const response = await axiosInstance.patch(API_ROUTES.SALES.DETAIL(saleId), {
+    photoCardId,
+    data,
+  });
+  return response.data;
 }
 
 export async function cancelSale(saleId) {
