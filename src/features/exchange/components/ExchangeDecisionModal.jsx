@@ -5,14 +5,14 @@ import Modal from "@/components/common/Modal";
 
 const DECISION_COPY = {
   reject: {
-    title: "교환 제시 거절",
-    actionLabel: "거절하기",
-    actionVerb: "거절",
+    title: "��ȯ ���� ����",
+    actionLabel: "�����ϱ�",
+    actionVerb: "����",
   },
   approve: {
-    title: "교환 제시 승인",
-    actionLabel: "승인하기",
-    actionVerb: "승인",
+    title: "��ȯ ���� ����",
+    actionLabel: "�����ϱ�",
+    actionVerb: "����",
   },
 };
 
@@ -21,7 +21,7 @@ export default function ExchangeDecisionModal({
   onClose,
   onConfirm,
   decision = "reject",
-  cardName = "포토카드",
+  cardName = "����ī��",
   grade = "COMMON",
   errorMessage = "",
   isSubmitting = false,
@@ -40,7 +40,7 @@ export default function ExchangeDecisionModal({
         <h2 className="text-[24px] font-bold text-white">{copy.title}</h2>
 
         <p className="mt-8 max-w-[280px] text-[14px] leading-[1.6] text-gray-300">
-          [{grade} | {cardName}] 카드와의 교환을 {copy.actionVerb}하시겠습니까?
+          [{grade} | {cardName}] ī����� ��ȯ�� {copy.actionVerb}�Ͻðڽ��ϱ�?
         </p>
 
         {errorMessage && (
@@ -48,7 +48,7 @@ export default function ExchangeDecisionModal({
         )}
 
         <Button className="mt-10" size="sm" onClick={onConfirm} disabled={isSubmitting}>
-          {isSubmitting ? "처리 중..." : copy.actionLabel}
+          {isSubmitting ? "ó�� ��..." : copy.actionLabel}
         </Button>
       </div>
     </Modal>
