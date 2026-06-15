@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 import Image from "next/image";
@@ -30,7 +30,7 @@ export default function MySaleDetailPage() {
   const { mutate: cancelSale, isPending: isCanceling } = useCancelSale(numericSaleId);
   const { mutate: modifySale, isPending: isModifying } = useModifySale(numericSaleId);
   const { mutate: acceptProposal } = useAcceptExchangeProposal(numericSaleId);
-  const { mutate: rejectProposal } = useRejectExchangeProposal();
+  const { mutate: rejectProposal } = useRejectExchangeProposal(numericSaleId);
 
   const [editOpen, setEditOpen] = useState(false);
   const [takeDownOpen, setTakeDownOpen] = useState(false);
@@ -108,7 +108,7 @@ export default function MySaleDetailPage() {
 
   const hasExchange = sale.exchangeGrade || sale.exchangeGenre || sale.exchangeDescription;
   const isOnSale = sale.status === "ON_SALE";
-  const pendingProposals = proposals.filter((p) => p.status === "PENDING");
+  const pendingProposals = proposals.filter((proposal) => proposal.status === "PENDING");
 
   return (
     <main
@@ -147,7 +147,7 @@ export default function MySaleDetailPage() {
         "
       >
         {/* 좌측: 카드 이미지 */}
-        <div className="relative shrink-0 w-full tablet:w-[342px] desktop:w-[960px]">
+        <div className="relative w-full shrink-0 tablet:w-[342px] desktop:w-[960px]">
           <div
             className="
               relative aspect-[4/3] w-full
@@ -168,7 +168,7 @@ export default function MySaleDetailPage() {
 
         {/* 우측: 판매 정보 */}
         <div className="flex flex-1 flex-col">
-          {/* 등급 · 장르 · 판매자 닉네임 */}
+          {/* 등급 / 장르 / 판매자 닉네임 */}
           <div className="flex items-center gap-[10px]">
             <GradeBadge grade={sale.grade} size="md" />
             <span className="h-[14px] w-[1px] bg-gray-400" />
@@ -190,7 +190,7 @@ export default function MySaleDetailPage() {
 
           <div className="my-[20px] h-[1px] bg-gray-400" />
 
-          {/* 가격 · 수량 */}
+          {/* 가격 / 수량 */}
           <dl className="space-y-[10px]">
             <div className="flex items-center justify-between">
               <dt className="text-[18px] text-gray-300">가격</dt>
@@ -215,8 +215,8 @@ export default function MySaleDetailPage() {
                     alt=""
                     width={28}
                     height={28}
-                    onError={(e) => {
-                      e.currentTarget.style.display = "none";
+                    onError={(event) => {
+                      event.currentTarget.style.display = "none";
                     }}
                   />
                   <h2 className="text-[24px] font-bold text-white">교환 희망 정보</h2>

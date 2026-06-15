@@ -4,16 +4,39 @@ import Dropdown from "@/components/common/Dropdown";
 import {
   MARKET_GENRE_OPTIONS,
   MARKET_GRADE_OPTIONS,
+  MARKET_SALE_STATUS_OPTIONS,
   MARKET_SORT_OPTIONS,
 } from "@/lib/constants/marketOptions";
 
-function FilterControls({ grade, genre, onGradeChange, onGenreChange }) {
+const withOptionCounts = (options, counts = {}) =>
+  options.map((option) =>
+    option.value
+      ? {
+          ...option,
+          label: `${option.label} ${counts[option.value] ?? 0}`,
+        }
+      : option,
+  );
+
+function FilterControls({
+  grade,
+  genre,
+  saleStatus,
+  counts,
+  onGradeChange,
+  onGenreChange,
+  onSaleStatusChange,
+}) {
+  const gradeOptions = withOptionCounts(MARKET_GRADE_OPTIONS, counts?.grades);
+  const genreOptions = withOptionCounts(MARKET_GENRE_OPTIONS, counts?.genres);
+  const saleStatusOptions = withOptionCounts(MARKET_SALE_STATUS_OPTIONS, counts?.saleStatuses);
+
   return (
     <>
       <Dropdown
         placeholder="등급"
         size="sort"
-        options={MARKET_GRADE_OPTIONS}
+        options={gradeOptions}
         value={grade}
         onChange={onGradeChange}
       />
@@ -21,9 +44,17 @@ function FilterControls({ grade, genre, onGradeChange, onGenreChange }) {
       <Dropdown
         placeholder="장르"
         size="sort"
-        options={MARKET_GENRE_OPTIONS}
+        options={genreOptions}
         value={genre}
         onChange={onGenreChange}
+      />
+
+      <Dropdown
+        placeholder="매진여부"
+        size="sort"
+        options={saleStatusOptions}
+        value={saleStatus}
+        onChange={onSaleStatusChange}
       />
     </>
   );

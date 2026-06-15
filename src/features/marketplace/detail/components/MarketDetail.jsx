@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
 
 import {
@@ -9,8 +9,9 @@ import {
   ExchangeSelectCardModal,
   ExchangeProposalResultModal,
 } from "@/features/exchange";
-import { createExchangeProposal, fetchExchangeCards } from "@/lib/api/exchangeApi";
-import { QUERY_KEYS } from "@/lib/constants/queryKeys";
+import { createExchangeProposal } from "@/lib/api/exchangeApi";
+import { useExchangeCards } from "@/hooks/useExchangeCards";
+import { normalizeExchangeCard } from "@/lib/utils/exchangeMappers";
 
 import { useMarketDetail } from "../hooks/useMarketDetail";
 import MarketDetailImage from "./MarketDetailImage";
@@ -36,21 +37,16 @@ export default function MarketDetail() {
   const [proposalResult, setProposalResult] = useState(null);
   const [myProposalCards, setMyProposalCards] = useState([]);
 
-  const filters = useMemo(() => ({ keyword }), [keyword]);
+  const filters = useMemo(() => ({ keyword, grade, genre }), [keyword, grade, genre]);
+  const { data: exchangeCards = [], isLoading: isExchangeCardsLoading } = useExchangeCards(
+    filters,
+    { enabled: isExchangeModalOpen },
+  );
 
-  const { data: exchangeCards = [], isLoading: isExchangeCardsLoading } = useQuery({
-    queryKey: [...QUERY_KEYS.GALLERY.MY_CARDS(filters), "exchange-select"],
-    queryFn: () => fetchExchangeCards(filters),
-    enabled: isExchangeModalOpen,
-  });
-
-  const exchangeCardList = Array.isArray(exchangeCards)
-    ? exchangeCards
-    : (exchangeCards?.cards ??
-      exchangeCards?.items ??
-      exchangeCards?.list ??
-      exchangeCards?.data ??
-      []);
+  const exchangeCardList = useMemo(
+    () => (Array.isArray(exchangeCards) ? exchangeCards.map(normalizeExchangeCard) : []),
+    [exchangeCards],
+  );
 
   const { mutate: createProposal, isPending } = useMutation({
     mutationFn: createExchangeProposal,
@@ -58,7 +54,19 @@ export default function MarketDetail() {
       setIsProposalModalOpen(false);
       setProposalResult("success");
 
-      setMyProposalCards((prev) => [...prev, selectedExchangeCard]);
+      setMyProposalCards((prev) =>
+        selectedExchangeCard
+          ? [
+              ...prev,
+              {
+                ...selectedExchangeCard,
+                id: variables.offeredCardCopyId,
+                cardCopyId: variables.offeredCardCopyId,
+                description: variables.description,
+              },
+            ]
+          : prev,
+      );
 
       setSelectedExchangeCard(null);
       setSelectedCardId(null);
@@ -83,10 +91,11 @@ export default function MarketDetail() {
     genre: sale.exchangeGenre ?? sale.exchange?.genre ?? "",
   };
 
-  const handleSelectCard = (Card) => {
-    if (!Card) return;
+  const handleSelectCard = (card) => {
+    if (!card) return;
 
-    setSelectedExchangeCard(Card);
+    const normalizedCard = normalizeExchangeCard(card);
+    setSelectedExchangeCard(normalizedCard);
     setIsExchangeModalOpen(false);
     setIsProposalModalOpen(true);
   };

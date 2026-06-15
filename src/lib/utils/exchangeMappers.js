@@ -1,23 +1,40 @@
 import { EXCHANGE_FILTER_ALL } from "@/lib/constants/exchangeOptions";
 
 export function normalizeExchangeCard(card = {}) {
+  const cardCopyId =
+    card.cardCopyId ??
+    card.offeredCardCopyId ??
+    card.cardCopies?.[0]?.id ??
+    (card.photoCardId ? null : card.id) ??
+    null;
+
+  const photoCardId =
+    card.photoCardId ??
+    card.photoCard?.id ??
+    card.cardId ??
+    (card.cardCopyId ? card.id : null) ??
+    null;
+
   return {
-    id: card.id ?? card.cardCopyId ?? card.cardId ?? "",
-    cardCopyId: card.cardCopyId ?? card.cardCopies?.[0]?.id ?? card.id,
-    photoCardId: card.photoCardId ?? card.cardId ?? card.id,
-    name: card.name ?? card.title ?? "",
+    ...card,
+    id: cardCopyId ?? card.id ?? "",
+    cardCopyId,
+    photoCardId,
+    name: card.name ?? card.title ?? card.photoCard?.name ?? "",
     description: card.description ?? "",
-    imageUrl: card.imageUrl ?? card.image ?? "/img/images/img1.png",
-    grade: card.grade ?? "COMMON",
-    genre: card.genre ?? "ETC",
-    price: card.price ?? card.initialPrice ?? card.salePrice ?? 0,
+    imageUrl: card.imageUrl ?? card.image ?? card.photoCard?.imageUrl ?? "/img/images/img1.png",
+    grade: card.grade ?? card.photoCard?.grade ?? "COMMON",
+    genre: card.genre ?? card.photoCard?.genre ?? "ETC",
+    price: card.price ?? card.initialPrice ?? card.salePrice ?? card.photoCard?.initialPrice ?? 0,
     count: card.count ?? card.quantity ?? 0,
+    quantity: card.quantity ?? card.count ?? 0,
     creator: {
       nickname:
         card.creator?.nickname ??
         card.creatorNickname ??
         card.owner?.nickname ??
         card.nickname ??
+        card.photoCard?.creator?.nickname ??
         "최애의포토",
     },
   };
@@ -47,7 +64,7 @@ export function toExchangeSalePayload(formValues = {}, card = {}) {
 export function toExchangeResponsePayload(exchangeId, selectedCardId, decision) {
   return {
     exchangeId,
-    offeredCardId: selectedCardId,
+    offeredCardCopyId: selectedCardId,
     decision,
   };
 }
