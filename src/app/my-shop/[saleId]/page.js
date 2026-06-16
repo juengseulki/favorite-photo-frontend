@@ -29,13 +29,22 @@ export default function MySaleDetailPage() {
 
   const { mutate: cancelSale, isPending: isCanceling } = useCancelSale(numericSaleId);
   const { mutate: modifySale, isPending: isModifying } = useModifySale(numericSaleId);
-  const { mutate: acceptProposal } = useAcceptExchangeProposal(numericSaleId);
-  const { mutate: rejectProposal } = useRejectExchangeProposal(numericSaleId);
+  const { mutate: acceptProposal, isPending: isAccepting } =
+    useAcceptExchangeProposal(numericSaleId);
+  const { mutate: rejectProposal, isPending: isRejecting } =
+    useRejectExchangeProposal(numericSaleId);
 
   const [editOpen, setEditOpen] = useState(false);
   const [takeDownOpen, setTakeDownOpen] = useState(false);
   const [decisionState, setDecisionState] = useState(null);
   const [actionError, setActionError] = useState("");
+
+  const isDecisionSubmitting = isAccepting || isRejecting;
+
+  const closeDecisionModal = () => {
+    setDecisionState(null);
+    setActionError("");
+  };
 
   const handleTakeDown = () => {
     setActionError("");
@@ -61,29 +70,29 @@ export default function MySaleDetailPage() {
   };
 
   const handleDecisionConfirm = () => {
-    if (!decisionState) return;
+    if (!decisionState || isDecisionSubmitting) return;
+
     const { proposalId, decision } = decisionState;
     setActionError("");
 
     if (decision === "approve") {
       acceptProposal(proposalId, {
-        onSuccess: () => setDecisionState(null),
+        onSuccess: () => closeDecisionModal(),
         onError: (err) => {
           const message = err?.response?.data?.error?.message ?? "승인에 실패했습니다.";
           setActionError(message);
-          setDecisionState(null);
         },
       });
-    } else {
-      rejectProposal(proposalId, {
-        onSuccess: () => setDecisionState(null),
-        onError: (err) => {
-          const message = err?.response?.data?.error?.message ?? "거절에 실패했습니다.";
-          setActionError(message);
-          setDecisionState(null);
-        },
-      });
+      return;
     }
+
+    rejectProposal(proposalId, {
+      onSuccess: () => closeDecisionModal(),
+      onError: (err) => {
+        const message = err?.response?.data?.error?.message ?? "거절에 실패했습니다.";
+        setActionError(message);
+      },
+    });
   };
 
   if (isPending) {
@@ -132,13 +141,11 @@ export default function MySaleDetailPage() {
         목록으로
       </button>
 
-      {/* 카드 제목 */}
       <div className="mb-[40px]">
         <h1 className="text-[32px] font-bold text-white tablet:text-[40px]">{sale.name}</h1>
         <div className="mt-[20px] h-[1px] bg-gray-400" />
       </div>
 
-      {/* 상단: 이미지 + 판매 정보 */}
       <div
         className="
           flex flex-col gap-[32px]
@@ -146,7 +153,6 @@ export default function MySaleDetailPage() {
           desktop:gap-[80px]
         "
       >
-        {/* 좌측: 카드 이미지 */}
         <div className="relative w-full shrink-0 tablet:w-[342px] desktop:w-[960px]">
           <div
             className="
@@ -166,9 +172,7 @@ export default function MySaleDetailPage() {
           </div>
         </div>
 
-        {/* 우측: 판매 정보 */}
         <div className="flex flex-1 flex-col">
-          {/* 등급 / 장르 / 판매자 닉네임 */}
           <div className="flex items-center gap-[10px]">
             <GradeBadge grade={sale.grade} size="md" />
             <span className="h-[14px] w-[1px] bg-gray-400" />
@@ -190,7 +194,6 @@ export default function MySaleDetailPage() {
 
           <div className="my-[20px] h-[1px] bg-gray-400" />
 
-          {/* 가격 / 수량 */}
           <dl className="space-y-[10px]">
             <div className="flex items-center justify-between">
               <dt className="text-[18px] text-gray-300">가격</dt>
@@ -241,7 +244,6 @@ export default function MySaleDetailPage() {
             </>
           )}
 
-          {/* 수정하기 / 판매 내리기 버튼 */}
           {isOnSale && (
             <div className="mt-[40px] flex flex-col gap-[20px]">
               <Button
@@ -263,11 +265,12 @@ export default function MySaleDetailPage() {
             </div>
           )}
 
-          {actionError && <p className="mt-[12px] text-[13px] text-red">{actionError}</p>}
+          {actionError && !decisionState && (
+            <p className="mt-[12px] text-[13px] text-red">{actionError}</p>
+          )}
         </div>
       </div>
 
-      {/* 교환 제시 목록 */}
       {isOnSale && (
         <section className="mt-[80px]">
           <div className="mb-[40px]">
@@ -307,22 +310,24 @@ export default function MySaleDetailPage() {
                   <ExchangeCard
                     key={proposal.id}
                     card={cardItem}
-                    onAccept={() =>
+                    onAccept={() => {
+                      setActionError("");
                       setDecisionState({
                         proposalId: proposal.id,
                         decision: "approve",
                         cardName: offeredCard.name,
                         grade: offeredCard.grade,
-                      })
-                    }
-                    onReject={() =>
+                      });
+                    }}
+                    onReject={() => {
+                      setActionError("");
                       setDecisionState({
                         proposalId: proposal.id,
                         decision: "reject",
                         cardName: offeredCard.name,
                         grade: offeredCard.grade,
-                      })
-                    }
+                      });
+                    }}
                   />
                 );
               })}
@@ -331,7 +336,6 @@ export default function MySaleDetailPage() {
         </section>
       )}
 
-      {/* 수정하기 모달 */}
       <SaleEditModal
         key={sale?.saleId}
         isOpen={editOpen}
@@ -341,7 +345,6 @@ export default function MySaleDetailPage() {
         isSubmitting={isModifying}
       />
 
-      {/* 판매 내리기 모달 */}
       <SaleTakeDownModal
         isOpen={takeDownOpen}
         onClose={() => setTakeDownOpen(false)}
@@ -349,14 +352,15 @@ export default function MySaleDetailPage() {
         isLoading={isCanceling}
       />
 
-      {/* 승인/거절 모달 */}
       <ExchangeDecisionModal
         isOpen={Boolean(decisionState)}
-        onClose={() => setDecisionState(null)}
+        onClose={closeDecisionModal}
         onConfirm={handleDecisionConfirm}
         decision={decisionState?.decision ?? "reject"}
         cardName={decisionState?.cardName ?? ""}
         grade={decisionState?.grade ?? "COMMON"}
+        errorMessage={actionError}
+        isSubmitting={isDecisionSubmitting}
       />
     </main>
   );
