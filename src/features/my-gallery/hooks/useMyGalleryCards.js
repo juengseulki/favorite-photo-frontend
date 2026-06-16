@@ -3,7 +3,7 @@
 import { useEffect, useRef } from "react";
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/providers/AuthProvider";
-import { getMyGalleryCards } from "@/lib/api/galleryApi";
+import { getMyGalleryCards, getPhotoCardStatus } from "@/lib/api/galleryApi";
 import { QUERY_KEYS } from "@/lib/constants/queryKeys";
 import { formatGalleryCards } from "../utils/formatGalleryCards";
 
@@ -60,6 +60,12 @@ export function useMyGalleryCards({ limit, isMobile, page, grade, genre, keyword
     ? (infiniteQuery.data?.pages[0]?.gradeCount ?? [])
     : (pageQuery.data?.gradeCount ?? []);
 
+  const createStatusQuery = useQuery({
+    queryKey: [QUERY_KEYS.GALLERY.MY_CARD_STATUS],
+    queryFn: getPhotoCardStatus,
+    enabled: !isLoading && !!user,
+  });
+
   useEffect(() => {
     if (!isMobile) return;
     if (!observerRef.current) return;
@@ -86,5 +92,6 @@ export function useMyGalleryCards({ limit, isMobile, page, grade, genre, keyword
     meta,
     grades,
     observerRef,
+    createStatus: createStatusQuery.data,
   };
 }

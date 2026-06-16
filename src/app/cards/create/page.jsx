@@ -24,6 +24,42 @@ export default function CreatePhotoCard() {
   const [errors, setErrors] = useState({});
   const [touched, setTouched] = useState({});
 
+  const validateForm = () => {
+    const newErrors = {};
+
+    if (!name.trim()) {
+      newErrors.name = ERROR_MESSAGES.CARD_NAME_REQUIRED;
+    }
+
+    if (!imageFile) {
+      newErrors.imageFile = ERROR_MESSAGES.CARD_IMAGE_REQUIRED;
+    }
+
+    if (!grade) {
+      newErrors.grade = ERROR_MESSAGES.CARD_GRADE_REQUIRED;
+    }
+
+    if (!genre) {
+      newErrors.genre = ERROR_MESSAGES.CARD_GENRE_REQUIRED;
+    }
+
+    if (!initialPrice) {
+      newErrors.initialPrice = ERROR_MESSAGES.CARD_PRICE_REQUIRED;
+    }
+
+    if (!totalQuantity) {
+      newErrors.totalQuantity = ERROR_MESSAGES.CARD_QUANTITY_REQUIRED;
+    }
+
+    if (!description) {
+      newErrors.description = ERROR_MESSAGES.CARD_DESCRIPTION_REQUIRED;
+    }
+
+    setErrors(newErrors);
+
+    return Object.keys(newErrors).length === 0;
+  };
+
   const validateField = (field, value) => {
     if (field === "name" && !value.trim()) return ERROR_MESSAGES.CARD_NAME_REQUIRED;
     if (field === "imageFile" && !value) return ERROR_MESSAGES.CARD_IMAGE_REQUIRED;
@@ -199,22 +235,40 @@ export default function CreatePhotoCard() {
             className="tablet:hidden"
             size="sm"
             label="총 발행량"
-            placeholder="총 발행량을 입력해주세요"
+            placeholder="총 발행량을 입력해주세요 (최대 10장)"
             value={totalQuantity}
-            onChange={(e) =>
-              handleChange("totalQuantity", e.target.value.replace(/\D/g, ""), setTotalQuantity)
-            }
+            onChange={(e) => {
+              const value = e.target.value.replace(/\D/g, "");
+
+              if (!value) {
+                handleChange("totalQuantity", "", setTotalQuantity);
+                return;
+              }
+
+              const quantity = Math.min(Number(value), 10);
+
+              handleChange("totalQuantity", String(quantity), setTotalQuantity);
+            }}
             onBlur={() => handleBlur("totalQuantity", totalQuantity)}
           />
 
           <Input
             className="hidden tablet:flex"
             label="총 발행량"
-            placeholder="총 발행량을 입력해주세요"
+            placeholder="총 발행량을 입력해주세요 (최대 10장)"
             value={totalQuantity}
-            onChange={(e) =>
-              handleChange("totalQuantity", e.target.value.replace(/\D/g, ""), setTotalQuantity)
-            }
+            onChange={(e) => {
+              const value = e.target.value.replace(/\D/g, "");
+
+              if (!value) {
+                handleChange("totalQuantity", "", setTotalQuantity);
+                return;
+              }
+
+              const quantity = Math.min(Number(value), 10);
+
+              handleChange("totalQuantity", String(quantity), setTotalQuantity);
+            }}
             onBlur={() => handleBlur("totalQuantity", totalQuantity)}
           />
 
@@ -267,6 +321,7 @@ export default function CreatePhotoCard() {
             size="create"
             type="submit"
             className="w-[345px] h-[55px] tablet:w-[440px] tablet:h-[60px]"
+            disabled={!isFormValid}
           >
             생성하기
           </Button>

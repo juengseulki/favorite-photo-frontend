@@ -14,3 +14,9 @@ export async function postPhotoCards(formData) {
 
   return response.data.data;
 }
+
+export async function getPhotoCardStatus() {
+  const response = await axiosInstance.get(API_ROUTES.GALLERY.MY_CARD_STATUS);
+
+  return response.data.data;
+}
