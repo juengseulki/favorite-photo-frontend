@@ -46,6 +46,7 @@ export default function CreatePhotoCard() {
   };
 
   const handleChange = (field, value, setter) => {
+    console.log(value);
     setter(value);
 
     if (touched[field]) {
@@ -174,7 +175,9 @@ export default function CreatePhotoCard() {
             label="가격"
             placeholder="가격을 입력해 주세요"
             value={initialPrice}
-            onChange={(e) => handleChange("initialPrice", e.target.value, setInitialPrice)}
+            onChange={(e) =>
+              handleChange("initialPrice", e.target.value.replace(/\D/g, ""), setInitialPrice)
+            }
             onBlur={() => handleBlur("initialPrice", initialPrice)}
           />
           <Input
@@ -182,7 +185,9 @@ export default function CreatePhotoCard() {
             label="가격"
             placeholder="가격을 입력해 주세요"
             value={initialPrice}
-            onChange={(e) => handleChange("initialPrice", e.target.value, setInitialPrice)}
+            onChange={(e) =>
+              handleChange("initialPrice", e.target.value.replace(/\D/g, ""), setInitialPrice)
+            }
             onBlur={() => handleBlur("initialPrice", initialPrice)}
           />
 
@@ -196,7 +201,9 @@ export default function CreatePhotoCard() {
             label="총 발행량"
             placeholder="총 발행량을 입력해주세요"
             value={totalQuantity}
-            onChange={(e) => handleChange("totalQuantity", e.target.value, setTotalQuantity)}
+            onChange={(e) =>
+              handleChange("totalQuantity", e.target.value.replace(/\D/g, ""), setTotalQuantity)
+            }
             onBlur={() => handleBlur("totalQuantity", totalQuantity)}
           />
 
@@ -205,7 +212,9 @@ export default function CreatePhotoCard() {
             label="총 발행량"
             placeholder="총 발행량을 입력해주세요"
             value={totalQuantity}
-            onChange={(e) => handleChange("totalQuantity", e.target.value, setTotalQuantity)}
+            onChange={(e) =>
+              handleChange("totalQuantity", e.target.value.replace(/\D/g, ""), setTotalQuantity)
+            }
             onBlur={() => handleBlur("totalQuantity", totalQuantity)}
           />
 
