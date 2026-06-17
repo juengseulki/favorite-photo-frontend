@@ -37,31 +37,11 @@ const MyShopClient = () => {
   const items = data.items || [];
   const meta = data.meta;
 
-  //각 Grade별 개수
-  const grades = [
-    {
-      grade: "COMMON",
-      count: items.filter((item) => item.grade === "COMMON").length,
-    },
-    {
-      grade: "RARE",
-      count: items.filter((item) => item.grade === "RARE").length,
-    },
-    {
-      grade: "SUPER_RARE",
-      count: items.filter((item) => item.grade === "SUPER_RARE").length,
-    },
-    {
-      grade: "LEGENDARY",
-      count: items.filter((item) => item.grade === "LEGENDARY").length,
-    },
-  ];
-
   return (
     <div className="mx-auto w-full max-w-[1840px] px-[15px] tablet:px-[20px] desktop:px-[220px] ">
       <div className="flex flex-col gap-[15px] tablet:gap-[40px] ">
         <MyShopHeader />
-        <MyShopGradeSummary meta={meta} grades={grades} />
+        <MyShopGradeSummary meta={meta} />
         <div className="border-t border-gray-400">
           <MyShopFilterBar
             grade={grade}

@@ -1,7 +1,7 @@
 import { GradeChip } from "@/components/common/Grade";
 import { useAuth } from "@/providers/AuthProvider";
 
-const MyShopGradeSummary = ({ meta = {}, grades = [] }) => {
+const MyShopGradeSummary = ({ meta = {} }) => {
   let { user } = useAuth();
 
   //TODO: 나중에 가능하다면 다른 파일로 분리하기
@@ -10,6 +10,8 @@ const MyShopGradeSummary = ({ meta = {}, grades = [] }) => {
     TABLET: "md",
     DESKTOP: "lg",
   };
+
+  const grades = meta.gradeStats;
 
   return (
     <div className="flex flex-col gap-[15px] tablet:gap-[20px]">
