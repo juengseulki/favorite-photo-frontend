@@ -34,3 +34,15 @@ export async function cancelSale(saleId) {
 
   return response.data?.data ?? response.data;
 }
+
+export async function createSale({ data }) {
+  const response = await axiosInstance.post(API_ROUTES.SALES.BASE, {
+    photoCardId: data.photoCardId,
+    price: data.price,
+    quantity: data.quantity,
+    exchangeGrade: data?.exchangeGrade,
+    exchangeGenre: data?.exchangeGenre,
+    exchangeDescription: data?.exchangeDescription,
+  });
+  return response.data;
+}
