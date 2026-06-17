@@ -14,5 +14,5 @@ export async function getMyShopCards({
   const response = await axiosInstance.get(
     `${API_ROUTES.SALES.MY}?keyword=${keyword}&grade=${grade}&genre=${genre}&tradeType=${tradeType}&isSoldOut=${isSoldOut}&page=${page}&limit=${limit}&sort=${sort}`,
   );
-  return response.data;
+  return response.data.data;
 }
