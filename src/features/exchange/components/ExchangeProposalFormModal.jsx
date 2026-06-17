@@ -17,7 +17,10 @@ export default function ExchangeProposalFormModal({
 }) {
   const [message, setMessage] = useState("");
 
-  const normalizedCard = useMemo(() => normalizeExchangeCard(card), [card]);
+  const normalizedCard = useMemo(() => {
+    if (!card) return null;
+    return normalizeExchangeCard(card);
+  }, [card]);
 
   const handleClose = () => {
     setMessage("");

@@ -1,6 +1,8 @@
 ﻿import { EXCHANGE_FILTER_ALL } from "@/lib/constants/exchangeOptions";
 
 export function normalizeExchangeCard(card = {}) {
+  if (!card) return null;
+
   const cardCopyId =
     card.cardCopyId ??
     card.offeredCardCopyId ??
