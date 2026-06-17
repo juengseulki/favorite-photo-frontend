@@ -40,9 +40,9 @@ export async function createSale({ data }) {
     photoCardId: data.photoCardId,
     price: data.price,
     quantity: data.quantity,
-    exchangeGrade: data?.exchangeGrade,
-    exchangeGenre: data?.exchangeGenre,
-    exchangeDescription: data?.exchangeDescription,
+    exchangeGrade: data?.grade,
+    exchangeGenre: data?.genre,
+    exchangeDescription: data?.description,
   });
   return response.data;
 }
