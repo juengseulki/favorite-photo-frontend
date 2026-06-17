@@ -18,6 +18,7 @@ export const API_ROUTES = {
 
   GALLERY: {
     MY_CARDS: "/me/cards",
+    MY_CARD_STATUS: "/me/cards/status",
   },
 
   MARKET: {
