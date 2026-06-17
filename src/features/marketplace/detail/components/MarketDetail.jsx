@@ -14,6 +14,8 @@ import { useSentExchangeProposals } from "@/hooks/useSentExchangeProposals";
 import { useCancelExchangeProposal } from "@/hooks/useCancelExchangeProposal";
 import { normalizeExchangeCard } from "@/lib/utils/exchangeMappers";
 
+import { notFound } from "next/navigation";
+
 import { useMarketDetail } from "../hooks/useMarketDetail";
 import MarketDetailImage from "./MarketDetailImage";
 import MarketDetailInfo from "./MarketDetailInfo";
@@ -23,7 +25,7 @@ import MyExchangeProposalList from "@/features/exchange/components/MyExchangePro
 
 export default function MarketDetail() {
   const { saleId } = useParams();
-  const { data: sale, isLoading, isError } = useMarketDetail(saleId);
+  const { data: sale, isLoading, isError, error } = useMarketDetail(saleId);
 
   const [isExchangeModalOpen, setIsExchangeModalOpen] = useState(false);
   const [isProposalModalOpen, setIsProposalModalOpen] = useState(false);
@@ -68,11 +70,16 @@ export default function MarketDetail() {
 
   if (isLoading) return null;
 
-  if (isError || !sale) {
+  if (isError) {
+    if (error?.response?.status === 404) notFound();
     return (
-      <main className="min-h-screen bg-black text-white">상세 정보를 불러오지 못했습니다.</main>
+      <main className="flex min-h-screen items-center justify-center bg-black">
+        <p className="text-[14px] text-gray-300">상세 정보를 불러오지 못했습니다.</p>
+      </main>
     );
   }
+
+  if (!sale) return null;
 
   const exchange = {
     description: sale.exchangeDescription ?? sale.exchange?.description ?? "",
