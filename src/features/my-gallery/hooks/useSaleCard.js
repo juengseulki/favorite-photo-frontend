@@ -7,7 +7,7 @@ export function useSaleCard() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
-  const handleSubmit = async ({ formData }) => {
+  const handleSubmit = async (formData) => {
     setIsSubmitting(true);
     try {
       await createSale({ data: formData });
