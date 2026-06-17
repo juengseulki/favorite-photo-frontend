@@ -1,7 +1,10 @@
 import { PhotoCard } from "@/components/common/Card";
 import { SaleExchangeFormModal } from "@/features/exchange";
+import { useSaleCard } from "../hooks/useSaleCard";
 
 export default function GalleryGrid({ cards, selectedCard, setSelectedCard }) {
+  const { handleSubmit, isSubmitting, errorMessage } = useSaleCard();
+
   return (
     <>
       <div
@@ -33,6 +36,9 @@ export default function GalleryGrid({ cards, selectedCard, setSelectedCard }) {
           isOpen={true}
           onClose={() => setSelectedCard(null)}
           card={selectedCard}
+          onSubmit={handleSubmit}
+          isSubmitting={isSubmitting}
+          errorMessage={errorMessage}
         />
       )}
     </>

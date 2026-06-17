@@ -104,7 +104,7 @@ export default function SaleExchangeFormModal({
     }
 
     setDescriptionError("");
-    onSubmit?.({ ...formValues, description: trimmedDescription });
+    onSubmit?.({ ...formValues, description: trimmedDescription, photoCardId: card.photoCardId });
   };
 
   return (
