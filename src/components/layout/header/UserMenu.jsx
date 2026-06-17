@@ -4,12 +4,10 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { ROUTES } from "@/lib/constants/routes";
 import NotificationButton from "@/features/notifications/components/NotificationButton";
-import Button from "@/components/common/Button";
-import PointModal from "@/features/point/components/randomBoxModal";
 
 export default function UserMenu({ user, onLogout }) {
   const [isOpen, setIsOpen] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+
   const menuRef = useRef(null);
 
   useEffect(() => {
@@ -33,10 +31,6 @@ export default function UserMenu({ user, onLogout }) {
       <span className="text-[14px] font-bold text-gray-200">
         {(user.point ?? 0).toLocaleString()} P
       </span>
-
-      <Button size="sm" onClick={() => setIsModalOpen(true)}>
-        무료 포인트
-      </Button>
 
       <NotificationButton />
 
@@ -93,7 +87,6 @@ export default function UserMenu({ user, onLogout }) {
           </nav>
         </div>
       )}
-      <PointModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </div>
   );
 }

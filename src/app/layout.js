@@ -2,6 +2,7 @@ import QueryProvider from "@/providers/QueryProvider";
 import { AuthProvider } from "@/providers/AuthProvider";
 import Header from "@/components/layout/Header";
 import "./globals.css";
+import RandomPoint from "@/components/common/RandomPoint.jsx";
 
 export const metadata = {
   title: "최애의 포토",
@@ -16,6 +17,7 @@ export default function RootLayout({ children }) {
           <AuthProvider>
             <Header />
             <main className="min-h-[calc(100vh-128px)]">{children}</main>
+            <RandomPoint />
           </AuthProvider>
         </QueryProvider>
       </body>
