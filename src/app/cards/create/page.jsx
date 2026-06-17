@@ -9,7 +9,7 @@ import FileInput from "@/components/common/FileInput";
 import useCreatePhotoCardForm from "@/features/cards/hooks/useCreatePhotoCardForm";
 
 export default function CreatePhotoCard() {
-  const { values, errors, handleChange, handleBlur, handleSubmit, isFormValid } =
+  const { values, errors, handleChange, handleBlur, handleSubmit, isFormValid, isSubmitting } =
     useCreatePhotoCardForm();
 
   return (
@@ -203,15 +203,15 @@ export default function CreatePhotoCard() {
             size="create"
             type="submit"
             className="w-[345px] h-[55px] tablet:w-[440px] tablet:h-[60px]"
-            disabled={!isFormValid}
+            disabled={!isFormValid || isSubmitting}
           >
-            생성하기
+            {isSubmitting ? "생성 중..." : "생성하기"}
           </Button>
         </div>
 
         <div className="hidden tablet:block">
-          <Button size="create" type="submit" disabled={!isFormValid}>
-            생성하기
+          <Button size="create" type="submit" disabled={!isFormValid || isSubmitting}>
+            {isSubmitting ? "생성 중..." : "생성하기"}
           </Button>
         </div>
       </form>

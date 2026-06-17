@@ -20,6 +20,7 @@ export default function useCreatePhotoCardForm() {
 
   const [errors, setErrors] = useState({});
   const [touched, setTouched] = useState({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const validateForm = () => {
     const newErrors = {};
@@ -104,7 +105,11 @@ export default function useCreatePhotoCardForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    if (isSubmitting) return;
+
     if (!validateForm()) return;
+
+    setIsSubmitting(true);
 
     const formData = new FormData();
 
@@ -131,5 +136,6 @@ export default function useCreatePhotoCardForm() {
     handleBlur,
     handleSubmit,
     isFormValid,
+    isSubmitting,
   };
 }
