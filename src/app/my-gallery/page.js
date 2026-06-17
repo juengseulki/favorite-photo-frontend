@@ -20,7 +20,7 @@ export default function MyGalleryPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedCard, setSelectedCard] = useState(null);
 
-  const { cards, meta, grades, observerRef } = useMyGalleryCards({
+  const { cards, meta, grades, observerRef, createStatus } = useMyGalleryCards({
     limit,
     isMobile,
     page,
@@ -46,7 +46,7 @@ export default function MyGalleryPage() {
 
   return (
     <div className="mx-auto max-w-[1920px] px-[20px] desktop:px-[220px]">
-      <GalleryHeader />
+      <GalleryHeader createStatus={createStatus} />
 
       <GallerySummary meta={meta} grades={grades} />
 

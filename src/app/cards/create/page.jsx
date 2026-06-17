@@ -4,82 +4,13 @@ import Button from "@/components/common/Button";
 import Dropdown from "@/components/common/Dropdown";
 import Input from "@/components/common/Input";
 import Textarea from "@/components/common/Textarea";
-import { useState } from "react";
 import { GRADE_OPTIONS, GENRE_OPTIONS } from "@/lib/constants/galleryOptions";
-import { postPhotoCards } from "@/lib/api/galleryApi";
 import FileInput from "@/components/common/FileInput";
-import { useRouter } from "next/navigation";
-import { ERROR_MESSAGES } from "@/lib/constants";
+import useCreatePhotoCardForm from "@/features/cards/hooks/useCreatePhotoCardForm";
 
 export default function CreatePhotoCard() {
-  const router = useRouter();
-
-  const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
-  const [imageFile, setImageFile] = useState(null);
-  const [grade, setGrade] = useState("");
-  const [genre, setGenre] = useState("");
-  const [initialPrice, setInitialPrice] = useState("");
-  const [totalQuantity, setTotalQuantity] = useState("");
-  const [errors, setErrors] = useState({});
-
-  const validateForm = () => {
-    const newErrors = {};
-
-    if (!name.trim()) {
-      newErrors.name = ERROR_MESSAGES.CARD_NAME_REQUIRED;
-    }
-
-    if (!imageFile) {
-      newErrors.imageFile = ERROR_MESSAGES.CARD_IMAGE_REQUIRED;
-    }
-
-    if (!grade) {
-      newErrors.grade = ERROR_MESSAGES.CARD_GRADE_REQUIRED;
-    }
-
-    if (!genre) {
-      newErrors.genre = ERROR_MESSAGES.CARD_GENRE_REQUIRED;
-    }
-
-    if (!initialPrice) {
-      newErrors.initialPrice = ERROR_MESSAGES.CARD_PRICE_REQUIRED;
-    }
-
-    if (!totalQuantity) {
-      newErrors.totalQuantity = ERROR_MESSAGES.CARD_QUANTITY_REQUIRED;
-    }
-
-    if (!description) {
-      newErrors.description = ERROR_MESSAGES.CARD_DESCRIPTION_REQUIRED;
-    }
-
-    setErrors(newErrors);
-
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    if (!validateForm()) return;
-
-    const formData = new FormData();
-
-    formData.append("name", name);
-    formData.append("description", description);
-    formData.append("grade", grade);
-    formData.append("genre", genre);
-    formData.append("initialPrice", initialPrice);
-    formData.append("totalQuantity", totalQuantity);
-    formData.append("image", imageFile);
-    try {
-      await postPhotoCards(formData);
-      router.push("/my-gallery");
-    } catch (error) {
-      console.error(error);
-    }
-  };
+  const { values, errors, handleChange, handleBlur, handleSubmit, isFormValid, isSubmitting } =
+    useCreatePhotoCardForm();
 
   return (
     <div className="mx-auto max-w-[1920px] px-[20px] tablet:px-[60px] desktop:px-[220px] gap-[80px]">
@@ -98,16 +29,18 @@ export default function CreatePhotoCard() {
             size="sm"
             label="포토카드 이름"
             placeholder="포토카드 이름을 입력해주세요"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
+            value={values.name}
+            onChange={(e) => handleChange("name", e.target.value)}
+            onBlur={() => handleBlur("name", values.name)}
           />
 
           <Input
             className="hidden tablet:flex"
             label="포토카드 이름"
             placeholder="포토카드 이름을 입력해주세요"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
+            value={values.name}
+            onChange={(e) => handleChange("name", e.target.value)}
+            onBlur={() => handleBlur("name", values.name)}
           />
 
           {errors.name && <p className="text-[16px] text-red">{errors.name}</p>}
@@ -120,8 +53,8 @@ export default function CreatePhotoCard() {
             label="등급"
             placeholder="등급을 선택해 주세요"
             options={GRADE_OPTIONS}
-            value={grade}
-            onChange={setGrade}
+            value={values.grade}
+            onChange={(value) => handleChange("grade", value)}
           />
 
           <Dropdown
@@ -129,8 +62,8 @@ export default function CreatePhotoCard() {
             label="등급"
             placeholder="등급을 선택해 주세요"
             options={GRADE_OPTIONS}
-            value={grade}
-            onChange={setGrade}
+            value={values.grade}
+            onChange={(value) => handleChange("grade", value)}
           />
 
           {errors.grade && <p className="text-[16px] text-red">{errors.grade}</p>}
@@ -143,8 +76,8 @@ export default function CreatePhotoCard() {
             label="장르"
             placeholder="장르를 선택해 주세요"
             options={GENRE_OPTIONS}
-            value={genre}
-            onChange={setGenre}
+            value={values.genre}
+            onChange={(value) => handleChange("genre", value)}
           />
 
           <Dropdown
@@ -152,8 +85,8 @@ export default function CreatePhotoCard() {
             label="장르"
             placeholder="장르를 선택해 주세요"
             options={GENRE_OPTIONS}
-            value={genre}
-            onChange={setGenre}
+            value={values.genre}
+            onChange={(value) => handleChange("genre", value)}
           />
 
           {errors.genre && <p className="text-[16px] text-red">{errors.genre}</p>}
@@ -165,15 +98,17 @@ export default function CreatePhotoCard() {
             size="sm"
             label="가격"
             placeholder="가격을 입력해 주세요"
-            value={initialPrice}
-            onChange={(e) => setInitialPrice(e.target.value)}
+            value={values.initialPrice}
+            onChange={(e) => handleChange("initialPrice", e.target.value.replace(/\D/g, ""))}
+            onBlur={() => handleBlur("initialPrice", values.initialPrice)}
           />
           <Input
             className="hidden tablet:flex"
             label="가격"
             placeholder="가격을 입력해 주세요"
-            value={initialPrice}
-            onChange={(e) => setInitialPrice(e.target.value)}
+            value={values.initialPrice}
+            onChange={(e) => handleChange("initialPrice", e.target.value.replace(/\D/g, ""))}
+            onBlur={() => handleBlur("initialPrice", values.initialPrice)}
           />
 
           {errors.initialPrice && <p className="text-[16px] text-red">{errors.initialPrice}</p>}
@@ -184,17 +119,39 @@ export default function CreatePhotoCard() {
             className="tablet:hidden"
             size="sm"
             label="총 발행량"
-            placeholder="총 발행량을 입력해주세요"
-            value={totalQuantity}
-            onChange={(e) => setTotalQuantity(e.target.value)}
+            placeholder="총 발행량을 입력해주세요 (최대 10장)"
+            value={values.totalQuantity}
+            onChange={(e) => {
+              const value = e.target.value.replace(/\D/g, "");
+
+              if (!value) {
+                handleChange("totalQuantity", "");
+                return;
+              }
+
+              const quantity = Math.min(Number(value), 10);
+              handleChange("totalQuantity", String(quantity));
+            }}
+            onBlur={() => handleBlur("totalQuantity", values.totalQuantity)}
           />
 
           <Input
             className="hidden tablet:flex"
             label="총 발행량"
-            placeholder="총 발행량을 입력해주세요"
-            value={totalQuantity}
-            onChange={(e) => setTotalQuantity(e.target.value)}
+            placeholder="총 발행량을 입력해주세요 (최대 10장)"
+            value={values.totalQuantity}
+            onChange={(e) => {
+              const value = e.target.value.replace(/\D/g, "");
+
+              if (!value) {
+                handleChange("totalQuantity", "");
+                return;
+              }
+
+              const quantity = Math.min(Number(value), 10);
+              handleChange("totalQuantity", String(quantity));
+            }}
+            onBlur={() => handleBlur("totalQuantity", values.totalQuantity)}
           />
 
           {errors.totalQuantity && <p className="text-[16px] text-red">{errors.totalQuantity}</p>}
@@ -205,7 +162,7 @@ export default function CreatePhotoCard() {
             size="sm"
             label="사진 업로드"
             onChange={(file) => {
-              setImageFile(file);
+              handleChange("imageFile", file);
             }}
           />
 
@@ -213,7 +170,7 @@ export default function CreatePhotoCard() {
             className="hidden tablet:flex"
             label="사진 업로드"
             onChange={(file) => {
-              setImageFile(file);
+              handleChange("imageFile", file);
             }}
           />
 
@@ -225,16 +182,18 @@ export default function CreatePhotoCard() {
               size="sm"
               label="포토카드 설명"
               placeholder="카드 설명을 입력해 주세요"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
+              value={values.description}
+              onChange={(e) => handleChange("description", e.target.value)}
+              onBlur={() => handleBlur("description", values.description)}
             />
           </div>
           <div className="hidden tablet:block">
             <Textarea
               label="포토카드 설명"
               placeholder="카드 설명을 입력해 주세요"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
+              value={values.description}
+              onChange={(e) => handleChange("description", e.target.value)}
+              onBlur={() => handleBlur("description", values.description)}
             />
           </div>
           {errors.description && <p className="text-[16px] text-red">{errors.description}</p>}
@@ -244,14 +203,15 @@ export default function CreatePhotoCard() {
             size="create"
             type="submit"
             className="w-[345px] h-[55px] tablet:w-[440px] tablet:h-[60px]"
+            disabled={!isFormValid || isSubmitting}
           >
-            생성하기
+            {isSubmitting ? "생성 중..." : "생성하기"}
           </Button>
         </div>
 
         <div className="hidden tablet:block">
-          <Button size="create" type="submit">
-            생성하기
+          <Button size="create" type="submit" disabled={!isFormValid || isSubmitting}>
+            {isSubmitting ? "생성 중..." : "생성하기"}
           </Button>
         </div>
       </form>

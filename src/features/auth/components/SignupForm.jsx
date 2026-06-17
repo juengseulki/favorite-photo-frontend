@@ -86,9 +86,9 @@ function SignupFormContent() {
       const code = err.response?.data?.error?.code;
       const message = err.response?.data?.error?.message;
 
-      if (code === "EMAIL_CONFLICT") {
+      if (code === "EMAIL_ALREADY_EXISTS") {
         setErrors({ email: message });
-      } else if (code === "NICKNAME_CONFLICT") {
+      } else if (code === "NICKNAME_ALREADY_EXISTS") {
         setErrors({ nickname: message });
       } else {
         setErrors({ general: message || ERROR_MESSAGES.SIGNUP_FAILED });
