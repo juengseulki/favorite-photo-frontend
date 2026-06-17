@@ -3,9 +3,14 @@
 import PointModal from "@/features/point/components/randomBoxModal";
 import Image from "next/image";
 import { useState } from "react";
+import { useAuth } from "@/providers/AuthProvider";
 
 export default function RandomPoint() {
+  const { user } = useAuth();
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  if (!user) return null;
+
   return (
     <>
       <button
