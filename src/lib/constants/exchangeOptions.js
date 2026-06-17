@@ -1,4 +1,4 @@
-export const EXCHANGE_GRADE_OPTIONS = [
+﻿export const EXCHANGE_GRADE_OPTIONS = [
   { label: "COMMON", value: "COMMON" },
   { label: "RARE", value: "RARE" },
   { label: "SUPER RARE", value: "SUPER_RARE" },
@@ -6,11 +6,15 @@ export const EXCHANGE_GRADE_OPTIONS = [
 ];
 
 export const EXCHANGE_GENRE_OPTIONS = [
-  { label: "풍경", value: "LANDSCAPE" },
-  { label: "인물", value: "PORTRAIT" },
-  { label: "여행", value: "TRAVEL" },
-  { label: "동물", value: "ANIMAL" },
-  { label: "도시", value: "CITY" },
+  { label: "앨범", value: "ALBUM" },
+  { label: "특전", value: "SPECIAL" },
+  { label: "팬싸", value: "FAN_SIGN" },
+  { label: "시즌그리팅", value: "SEASON_GREETING" },
+  { label: "팬미팅", value: "FAN_MEETING" },
+  { label: "콘서트", value: "CONCERT" },
+  { label: "MD", value: "MD" },
+  { label: "콜라보", value: "COLLAB" },
+  { label: "팬클럽", value: "FANCLUB" },
   { label: "기타", value: "ETC" },
 ];
 
