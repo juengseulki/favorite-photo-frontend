@@ -4,6 +4,7 @@ import { useState } from "react";
 import { postPhotoCards } from "@/lib/api/galleryApi";
 import { ERROR_MESSAGES } from "@/lib/constants";
 import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 
 export default function useCreatePhotoCardForm() {
   const router = useRouter();
@@ -125,7 +126,17 @@ export default function useCreatePhotoCardForm() {
       await postPhotoCards(formData);
       router.push("/my-gallery");
     } catch (error) {
-      console.error(error);
+      const code = error.response?.data?.code;
+      const message = error.response?.data?.message;
+
+      if (code === "CARD_CREATE_LIMIT_EXCEEDED" || code === "CREATE_LIMIT_EXCEEDED") {
+        toast.error(ERROR_MESSAGES.CARD_CREATE_LIMIT_EXCEEDED);
+        return;
+      }
+
+      toast.error(message ?? ERROR_MESSAGES.CARD_CREATE_FAILED);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
