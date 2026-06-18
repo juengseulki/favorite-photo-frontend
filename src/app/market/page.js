@@ -56,15 +56,17 @@ export default function MarketPage() {
     setIsLoginModalOpen(true);
   };
 
-  const handleCardClick = (saleId) => {
-    const detailUrl = ROUTES.MARKET_DETAIL(saleId);
+  const handleCardClick = (card) => {
+    const saleId = card.saleId ?? card.id;
 
-    if (!user) {
-      openLoginModal(detailUrl);
+    if (!saleId) return;
+
+    if (card.sellerId === user?.id) {
+      router.push(ROUTES.MY_SHOP_DETAIL(saleId));
       return;
     }
 
-    router.push(detailUrl);
+    router.push(ROUTES.MARKET_DETAIL(saleId));
   };
 
   const handleSellClick = () => {

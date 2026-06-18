@@ -4,6 +4,7 @@ import Header from "@/components/layout/Header";
 import "./globals.css";
 import RandomPoint from "@/components/common/RandomPoint.jsx";
 import RandomPointModalGate from "@/features/point/components/RandomPointModalGate";
+import ToastProvider from "@/providers/ToastProvider";
 
 export const metadata = {
   title: "최애의 포토",
@@ -16,6 +17,7 @@ export default function RootLayout({ children }) {
       <body className="min-h-screen bg-gray-50 text-gray-900">
         <QueryProvider>
           <AuthProvider>
+            <ToastProvider />
             <Header />
             <RandomPointModalGate />
             <main className="min-h-[calc(100vh-128px)]">{children}</main>

@@ -28,6 +28,8 @@ export const ERROR_MESSAGES = {
   CARD_PRICE_REQUIRED: "가격을 입력해 주세요.",
   CARD_QUANTITY_REQUIRED: "수량을 입력해 주세요.",
   CARD_DESCRIPTION_REQUIRED: "설명을 입력해 주세요.",
+  CARD_CREATE_LIMIT_EXCEEDED: "이번달 모든 생성 기회를 소진했어요.",
+  CARD_CREATE_FAILED: "포토카드 생성에 실패했습니다.",
 
   // 판매
   SALE_CREATE_FAILED: "판매 등록에 실패했습니다.",
