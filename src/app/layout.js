@@ -3,6 +3,7 @@ import { AuthProvider } from "@/providers/AuthProvider";
 import Header from "@/components/layout/Header";
 import "./globals.css";
 import RandomPoint from "@/components/common/RandomPoint.jsx";
+import RandomPointModalGate from "@/features/point/components/RandomPointModalGate";
 
 export const metadata = {
   title: "최애의 포토",
@@ -16,6 +17,7 @@ export default function RootLayout({ children }) {
         <QueryProvider>
           <AuthProvider>
             <Header />
+            <RandomPointModalGate />
             <main className="min-h-[calc(100vh-128px)]">{children}</main>
             <RandomPoint />
           </AuthProvider>
