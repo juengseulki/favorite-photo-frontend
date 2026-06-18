@@ -152,6 +152,8 @@ export default function MarketDetail() {
           genre={genre}
           onGenreChange={setGenre}
           isLoading={isExchangeCardsLoading}
+          expectedGrade={exchange.grade}
+          expectedGenre={exchange.genre}
         />
 
         <ExchangeProposalFormModal

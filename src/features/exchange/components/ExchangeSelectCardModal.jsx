@@ -28,6 +28,8 @@ export default function ExchangeSelectCardModal({
   emptyMessage = "교환 가능한 포토카드가 없습니다.",
   helperText = "",
   confirmDisabledReason = "",
+  expectedGrade = "",
+  expectedGenre = "",
 }) {
   const [selectionError, setSelectionError] = useState("");
 
@@ -48,6 +50,14 @@ export default function ExchangeSelectCardModal({
 
     if (!selectedCard) {
       setSelectionError("교환할 포토카드를 선택해 주세요.");
+      return;
+    }
+
+    const hasGradeMismatch = expectedGrade && selectedCard.grade !== expectedGrade;
+    const hasGenreMismatch = expectedGenre && selectedCard.genre !== expectedGenre;
+
+    if (hasGradeMismatch || hasGenreMismatch) {
+      setSelectionError("판매자가 희망하는 교환 등급/장르를 확인해 주세요.");
       return;
     }
 
