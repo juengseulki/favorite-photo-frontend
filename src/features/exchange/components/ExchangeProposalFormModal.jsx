@@ -39,8 +39,15 @@ export default function ExchangeProposalFormModal({
   if (!normalizedCard?.id) return null;
 
   return (
-    <Modal isOpen={isOpen} title="" size="form" onClose={handleClose} bodyClassName="mt-0">
-      <div className="mx-auto w-full max-w-[940px] space-y-6 px-4 tablet:px-6 desktop:space-y-8 desktop:px-0">
+    <Modal
+      isOpen={isOpen}
+      title=""
+      size="form"
+      onClose={handleClose}
+      bodyClassName="mt-0"
+      sheetOnTablet
+    >
+      <div className="mx-auto w-full max-w-[940px] space-y-6 px-2 tablet:px-4 desktop:space-y-8 desktop:px-0">
         <div>
           <span className="font-brand text-[18px] font-bold text-white desktop:text-[20px]">
             포토카드 교환하기
@@ -51,16 +58,18 @@ export default function ExchangeProposalFormModal({
           </h2>
         </div>
 
-        <div className="grid grid-cols-1 gap-6 desktop:grid-cols-[440px_1fr] desktop:gap-[40px]">
-          <PhotoCard card={normalizedCard} />
+        <div className="grid grid-cols-1 gap-6 tablet:grid-cols-[320px_minmax(0,1fr)] tablet:gap-6 desktop:grid-cols-[440px_1fr] desktop:gap-[40px]">
+          <div className="w-full max-w-[320px] shrink-0 desktop:max-w-none">
+            <PhotoCard card={normalizedCard} />
+          </div>
 
-          <div className="flex flex-col">
+          <div className="flex min-w-0 flex-col">
             <Textarea
               label="교환 제시 내용"
               placeholder="내용을 입력해 주세요"
               value={message}
               onChange={(event) => setMessage(event.target.value)}
-              textareaClassName="h-[160px] w-full tablet:h-[180px]"
+              textareaClassName="h-[160px] w-full tablet:h-[140px] desktop:h-[180px]"
             />
 
             <div className="mt-6 flex flex-col gap-3 tablet:flex-row desktop:mt-[40px] desktop:gap-[40px]">
