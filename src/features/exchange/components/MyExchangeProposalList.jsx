@@ -29,7 +29,9 @@ export default function MyExchangeProposalList({
   onCancel,
   cancelingProposalId = null,
 }) {
-  if (!proposals.length) return null;
+  const pendingProposals = proposals.filter((proposal) => proposal.status === "PENDING");
+
+  if (!pendingProposals.length) return null;
 
   return (
     <section className="mt-[80px]">
@@ -38,11 +40,10 @@ export default function MyExchangeProposalList({
       </h2>
 
       <div className="mt-[40px] grid grid-cols-3 gap-[24px]">
-        {proposals.map((proposal) => {
+        {pendingProposals.map((proposal) => {
           const card = mapProposalToCard(proposal);
           if (!card) return null;
 
-          const isPending = proposal.status === "PENDING";
           const isCanceling = cancelingProposalId === proposal.id;
 
           return (
@@ -58,17 +59,15 @@ export default function MyExchangeProposalList({
                 )}
               </div>
 
-              {isPending && (
-                <Button
-                  variant="secondary"
-                  size="full"
-                  className="h-[52px] text-[16px]"
-                  onClick={() => onCancel?.(proposal)}
-                  disabled={isCanceling}
-                >
-                  {isCanceling ? "취소 중..." : "취소하기"}
-                </Button>
-              )}
+              <Button
+                variant="secondary"
+                size="full"
+                className="h-[52px] text-[16px]"
+                onClick={() => onCancel?.(proposal)}
+                disabled={isCanceling}
+              >
+                {isCanceling ? "취소 중..." : "취소하기"}
+              </Button>
             </div>
           );
         })}

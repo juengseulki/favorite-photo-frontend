@@ -28,6 +28,8 @@ export default function ExchangeSelectCardModal({
   emptyMessage = "교환 가능한 포토카드가 없습니다.",
   helperText = "",
   confirmDisabledReason = "",
+  expectedGrade = "",
+  expectedGenre = "",
 }) {
   const [selectionError, setSelectionError] = useState("");
 
@@ -51,6 +53,14 @@ export default function ExchangeSelectCardModal({
       return;
     }
 
+    const hasGradeMismatch = expectedGrade && selectedCard.grade !== expectedGrade;
+    const hasGenreMismatch = expectedGenre && selectedCard.genre !== expectedGenre;
+
+    if (hasGradeMismatch || hasGenreMismatch) {
+      setSelectionError("판매자가 희망하는 교환 등급/장르를 확인해 주세요.");
+      return;
+    }
+
     setSelectionError("");
     onConfirm?.(selectedCard);
   };
@@ -63,27 +73,39 @@ export default function ExchangeSelectCardModal({
       onClose={onClose}
       bodyClassName="mt-0"
       actions={
-        <div className="flex w-full justify-center gap-[80px] px-[80px]">
-          <Button variant="secondary" size="lg" className="flex-1" onClick={onClose}>
+        <div className="flex w-full flex-col gap-3 px-4 tablet:flex-row tablet:justify-center tablet:gap-4 tablet:px-6 desktop:gap-[40px] desktop:px-[80px]">
+          <Button
+            variant="secondary"
+            size="lg"
+            className="w-full tablet:max-w-[240px] desktop:flex-1 desktop:max-w-none"
+            onClick={onClose}
+          >
             취소하기
           </Button>
 
-          <Button size="lg" className="flex-1" onClick={handleConfirm} disabled={isDisabled}>
+          <Button
+            size="lg"
+            className="w-full tablet:max-w-[240px] desktop:flex-1 desktop:max-w-none"
+            onClick={handleConfirm}
+            disabled={isDisabled}
+          >
             선택하기
           </Button>
         </div>
       }
     >
-      <div className="mx-auto w-[940px] space-y-8">
+      <div className="mx-auto w-full max-w-[940px] space-y-6 px-4 tablet:px-6 desktop:space-y-8 desktop:px-0">
         <div>
-          <span className="font-brand text-[20px] font-bold text-white">마이갤러리</span>
+          <span className="font-brand text-[18px] font-bold text-white desktop:text-[20px]">
+            마이갤러리
+          </span>
 
-          <h2 className="font-brand mt-[12px] text-[40px] font-bold text-white">
+          <h2 className="font-brand mt-[12px] text-[28px] font-bold text-white tablet:text-[32px] desktop:text-[40px]">
             포토카드 교환하기
           </h2>
         </div>
 
-        <div className="flex flex-col gap-4 border-t border-gray-400 pt-[20px] desktop:flex-row desktop:items-end">
+        <div className="flex flex-col gap-3 border-t border-gray-400 pt-[20px] desktop:flex-row desktop:items-end desktop:gap-4">
           <Input
             size="searchLg"
             variant="search"

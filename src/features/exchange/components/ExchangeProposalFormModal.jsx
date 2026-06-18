@@ -40,16 +40,18 @@ export default function ExchangeProposalFormModal({
 
   return (
     <Modal isOpen={isOpen} title="" size="form" onClose={handleClose} bodyClassName="mt-0">
-      <div className="mx-auto w-[940px] space-y-8">
+      <div className="mx-auto w-full max-w-[940px] space-y-6 px-4 tablet:px-6 desktop:space-y-8 desktop:px-0">
         <div>
-          <span className="font-brand text-[20px] font-bold text-white">포토카드 교환하기</span>
+          <span className="font-brand text-[18px] font-bold text-white desktop:text-[20px]">
+            포토카드 교환하기
+          </span>
 
-          <h2 className="font-brand mt-3 border-b border-gray-400 pb-6 text-[40px] font-bold text-white">
+          <h2 className="font-brand mt-3 border-b border-gray-400 pb-4 text-[28px] font-bold text-white tablet:text-[32px] desktop:pb-6 desktop:text-[40px]">
             {normalizedCard.name}
           </h2>
         </div>
 
-        <div className="grid grid-cols-[440px_1fr] gap-[40px]">
+        <div className="grid grid-cols-1 gap-6 desktop:grid-cols-[440px_1fr] desktop:gap-[40px]">
           <PhotoCard card={normalizedCard} />
 
           <div className="flex flex-col">
@@ -58,15 +60,20 @@ export default function ExchangeProposalFormModal({
               placeholder="내용을 입력해 주세요"
               value={message}
               onChange={(event) => setMessage(event.target.value)}
-              textareaClassName="h-[180px] w-full"
+              textareaClassName="h-[160px] w-full tablet:h-[180px]"
             />
 
-            <div className="mt-[40px] flex gap-[40px]">
-              <Button variant="secondary" size="exchange" onClick={handleClose}>
+            <div className="mt-6 flex flex-col gap-3 tablet:flex-row desktop:mt-[40px] desktop:gap-[40px]">
+              <Button variant="secondary" size="exchange" className="w-full" onClick={handleClose}>
                 취소하기
               </Button>
 
-              <Button size="exchange" onClick={handleSubmit} disabled={isSubmitting}>
+              <Button
+                size="exchange"
+                className="w-full"
+                onClick={handleSubmit}
+                disabled={isSubmitting}
+              >
                 {isSubmitting ? "교환 중..." : "교환하기"}
               </Button>
             </div>
