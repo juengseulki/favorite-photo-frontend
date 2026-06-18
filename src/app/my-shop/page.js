@@ -1,3 +1,4 @@
+import ProtectedRoute from "@/components/common/ProtectedRoute";
 import MyShopClient from "./page.client";
 
 export const metadata = {
@@ -7,7 +8,11 @@ export const metadata = {
 };
 
 const MyShopPage = () => {
-  return <MyShopClient />;
+  return (
+    <ProtectedRoute>
+      <MyShopClient />
+    </ProtectedRoute>
+  );
 };
 
 export default MyShopPage;

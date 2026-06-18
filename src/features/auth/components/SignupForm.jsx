@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { useState, Suspense } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { ROUTES } from "@/lib/constants/routes";
 import { createUser } from "@/lib/api/authApi";
@@ -15,9 +15,11 @@ import { ERROR_MESSAGES } from "@/lib/constants/errorMessages";
 function SignupFormContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { login } = useAuth();
+
+  const { user, isLoading: authLoading, login } = useAuth();
 
   const redirectUrl = searchParams.get("redirect") ?? ROUTES.HOME;
+
   const loginHref =
     redirectUrl !== ROUTES.HOME
       ? `${ROUTES.LOGIN}?redirect=${encodeURIComponent(redirectUrl)}`
@@ -33,6 +35,12 @@ function SignupFormContent() {
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showPasswordConfirm, setShowPasswordConfirm] = useState(false);
+
+  useEffect(() => {
+    if (!authLoading && user) {
+      router.replace(ROUTES.HOME);
+    }
+  }, [authLoading, user, router]);
 
   const handleChange = (field) => (e) => {
     setForm((prev) => ({ ...prev, [field]: e.target.value }));
@@ -97,6 +105,10 @@ function SignupFormContent() {
       setIsLoading(false);
     }
   };
+
+  if (authLoading) {
+    return null;
+  }
 
   return (
     <form
@@ -189,7 +201,7 @@ function SignupFormContent() {
 
       <p className="text-center text-[14px] text-white tablet:text-[16px]">
         이미 최애의포토 회원이신가요?{" "}
-        <Link href={loginHref} className="text-[#EFFF04] underline">
+        <Link href={loginHref} prefetch={false} className="!text-main underline">
           로그인하기
         </Link>
       </p>

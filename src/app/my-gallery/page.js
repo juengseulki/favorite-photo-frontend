@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import ProtectedRoute from "@/components/common/ProtectedRoute";
 import Pagination from "@/components/common/Pagination";
 import useResponsiveLimit from "@/hooks/useResponsiveLimit";
 import GalleryHeader from "@/features/my-gallery/components/GalleryHeader";
@@ -45,42 +46,44 @@ export default function MyGalleryPage() {
   };
 
   return (
-    <div className="mx-auto max-w-[1920px] px-[20px] desktop:px-[220px]">
-      <GalleryHeader createStatus={createStatus} />
+    <ProtectedRoute>
+      <div className="mx-auto max-w-[1920px] px-[20px] desktop:px-[220px]">
+        <GalleryHeader createStatus={createStatus} />
 
-      <GallerySummary meta={meta} grades={grades} />
+        <GallerySummary meta={meta} grades={grades} />
 
-      <GalleryFilterBar
-        grade={grade}
-        genre={genre}
-        keyword={keyword}
-        onGradeChange={handleGradeChange}
-        onGenreChange={handleGenreChange}
-        onKeywordChange={handleKeywordChange}
-        onOpenFilter={() => setIsModalOpen(true)}
-      />
+        <GalleryFilterBar
+          grade={grade}
+          genre={genre}
+          keyword={keyword}
+          onGradeChange={handleGradeChange}
+          onGenreChange={handleGenreChange}
+          onKeywordChange={handleKeywordChange}
+          onOpenFilter={() => setIsModalOpen(true)}
+        />
 
-      <GalleryGrid cards={cards} selectedCard={selectedCard} setSelectedCard={setSelectedCard} />
+        <GalleryGrid cards={cards} selectedCard={selectedCard} setSelectedCard={setSelectedCard} />
 
-      <div ref={observerRef} className="h-[1px] tablet:hidden" />
+        <div ref={observerRef} className="h-[1px] tablet:hidden" />
 
-      <div className="hidden tablet:block">
-        <Pagination
-          page={page}
-          totalCount={meta?.totalCount ?? 0}
-          pageSize={limit}
-          onPageChange={setPage}
+        <div className="hidden tablet:block">
+          <Pagination
+            page={page}
+            totalCount={meta?.totalCount ?? 0}
+            pageSize={limit}
+            onPageChange={setPage}
+          />
+        </div>
+
+        <GalleryFilterModal
+          isOpen={isModalOpen}
+          grade={grade}
+          genre={genre}
+          onClose={() => setIsModalOpen(false)}
+          onGradeChange={handleGradeChange}
+          onGenreChange={handleGenreChange}
         />
       </div>
-
-      <GalleryFilterModal
-        isOpen={isModalOpen}
-        grade={grade}
-        genre={genre}
-        onClose={() => setIsModalOpen(false)}
-        onGradeChange={handleGradeChange}
-        onGenreChange={handleGenreChange}
-      />
-    </div>
+    </ProtectedRoute>
   );
 }
