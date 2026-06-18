@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { createPortal } from "react-dom";
 import { useEffect } from "react";
@@ -10,13 +10,10 @@ const SIZE_CLASSES = {
   point: "w-[345px] tablet:w-[600px] desktop:w-[1034px]",
   pointResult: "w-[345px] tablet:w-[600px] desktop:w-[455px]",
   exchange: "w-[345px] tablet:w-[744px] desktop:h-[1000px] desktop:w-[1160px]",
-
   purchase: "h-[291px] w-[345px] tablet:h-[290px] tablet:w-[400px]",
   purchaseResult: "h-screen w-screen max-h-screen border-0",
-
   bottomSheet:
     "fixed bottom-0 left-0 right-0 max-h-[90vh] w-full rounded-b-none rounded-t-[16px] tablet:left-1/2 tablet:right-auto tablet:w-[744px] tablet:-translate-x-1/2 desktop:static desktop:w-[1160px] desktop:translate-x-0 desktop:rounded-[2px]",
-
   mobileFullPage:
     "fixed inset-0 h-screen max-h-screen w-full rounded-none border-0 tablet:bottom-0 tablet:left-1/2 tablet:right-auto tablet:top-auto tablet:h-auto tablet:max-h-[90vh] tablet:w-[744px] tablet:-translate-x-1/2 tablet:rounded-b-none tablet:rounded-t-[16px] desktop:static desktop:h-auto desktop:w-[1160px] desktop:translate-x-0 desktop:rounded-[2px] desktop:border",
 };
@@ -37,6 +34,7 @@ export default function Modal({
   size = "default",
   className = "",
   bodyClassName = "",
+  sheetOnTablet = false,
 }) {
   const isSheetSize = SHEET_SIZES.includes(size);
   const isNoScroll = NO_SCROLL_SIZES.includes(size);
@@ -60,29 +58,54 @@ export default function Modal({
 
   if (!isOpen) return null;
 
+  const overlayClassName = sheetOnTablet
+    ? "fixed inset-0 z-50 flex items-center justify-center bg-black/75 px-[15px] tablet:items-end desktop:items-center"
+    : `fixed inset-0 z-50 flex bg-black/75 ${
+        isSheetSize
+          ? "items-end justify-center px-0 tablet:px-0 desktop:items-center desktop:px-[15px]"
+          : "items-center justify-center px-[15px]"
+      }`;
+
+  const sectionClassName = sheetOnTablet
+    ? `
+        relative
+        max-h-[90vh]
+        overflow-y-auto
+        rounded-[2px]
+        border border-gray-400
+        bg-gray-500
+        px-6 py-8
+        text-white
+        tablet:rounded-b-none
+        tablet:px-8
+        tablet:pb-10
+        tablet:pt-6
+        desktop:rounded-[2px]
+        desktop:px-10
+        desktop:py-8
+        ${SIZE_CLASSES[size]}
+        ${className}
+      `
+    : `
+        relative
+        ${isNoScroll ? "overflow-hidden" : "max-h-[90vh] overflow-y-auto"}
+        border border-gray-400
+        bg-gray-500
+        text-white
+        ${isSheetSize ? "px-5 py-8 tablet:px-10 desktop:px-10" : "max-h-[90vh] rounded-[2px] px-6 py-8 tablet:px-10 desktop:px-10"}
+        ${SIZE_CLASSES[size]}
+        ${className}
+      `;
+
   return createPortal(
-    <div
-      className={`
-        fixed inset-0 z-50 flex bg-black/75
-        ${isSheetSize ? "items-end justify-center px-0 tablet:px-0 desktop:items-center desktop:px-[15px]" : "items-center justify-center px-[15px]"}
-      `}
-    >
-      <section
-        role="dialog"
-        aria-modal="true"
-        className={`
-          relative
-          ${isNoScroll ? "overflow-hidden" : "max-h-[90vh] overflow-y-auto"}
-          border border-gray-400
-          bg-gray-500
-          text-white
+    <div className={overlayClassName}>
+      <section role="dialog" aria-modal="true" className={sectionClassName}>
+        {sheetOnTablet && (
+          <div className="mb-4 hidden justify-center tablet:flex desktop:hidden">
+            <div className="h-[4px] w-[56px] rounded-full bg-gray-300" />
+          </div>
+        )}
 
-          ${isSheetSize ? "px-5 py-8 tablet:px-10 desktop:px-10" : "max-h-[90vh] rounded-[2px] px-6 py-8 tablet:px-10 desktop:px-10"}
-
-          ${SIZE_CLASSES[size]}
-          ${className}
-        `}
-      >
         <button
           type="button"
           onClick={onClose}
