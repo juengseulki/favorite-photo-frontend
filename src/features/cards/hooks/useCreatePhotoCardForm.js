@@ -7,8 +7,6 @@ import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 
 export default function useCreatePhotoCardForm() {
-  const router = useRouter();
-
   const [values, setValues] = useState({
     name: "",
     description: "",
@@ -22,6 +20,7 @@ export default function useCreatePhotoCardForm() {
   const [errors, setErrors] = useState({});
   const [touched, setTouched] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [createPhotoCardResult, setCreatePhotoCardResult] = useState(null);
 
   const validateForm = () => {
     const newErrors = {};
@@ -124,7 +123,7 @@ export default function useCreatePhotoCardForm() {
 
     try {
       await postPhotoCards(formData);
-      router.push("/my-gallery");
+      setCreatePhotoCardResult("success");
     } catch (error) {
       const code = error.response?.data?.code;
       const message = error.response?.data?.message;
@@ -148,5 +147,7 @@ export default function useCreatePhotoCardForm() {
     handleSubmit,
     isFormValid,
     isSubmitting,
+    createPhotoCardResult,
+    setCreatePhotoCardResult,
   };
 }
