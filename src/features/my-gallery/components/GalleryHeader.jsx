@@ -17,7 +17,6 @@ export default function GalleryHeader({ createStatus }) {
   const year = createStatus.year;
   const month = createStatus.month;
 
-  console.log(createStatus);
   return (
     <>
       <div className="border-b-2 border-gray-100 pb-[20px]">

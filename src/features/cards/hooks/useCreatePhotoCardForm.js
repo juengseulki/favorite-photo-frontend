@@ -123,7 +123,6 @@ export default function useCreatePhotoCardForm() {
       await postPhotoCards(formData);
       setCreatePhotoCardResult("success");
     } catch (error) {
-      console.error(error);
       setCreatePhotoCardResult("fail");
     } finally {
       setIsSubmitting(false);

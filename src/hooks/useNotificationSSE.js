@@ -19,10 +19,6 @@ export default function useNotificationSSE({ enabled = true } = {}) {
       withCredentials: true,
     });
 
-    eventSource.addEventListener("connected", () => {
-      console.log("SSE 알림 연결 성공");
-    });
-
     eventSource.addEventListener("notification", (event) => {
       const notification = JSON.parse(event.data);
 
@@ -45,8 +41,7 @@ export default function useNotificationSSE({ enabled = true } = {}) {
       });
     });
 
-    eventSource.onerror = (error) => {
-      console.error("SSE 알림 연결 오류", error);
+    eventSource.onerror = () => {
       eventSource.close();
     };
 
