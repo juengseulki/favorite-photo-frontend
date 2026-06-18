@@ -33,11 +33,11 @@ export const GENRE_OPTIONS = [
     value: "CONCERT",
   },
   {
-    label: "굿즈",
+    label: "MD",
     value: "MD",
   },
   {
-    label: "클럽",
+    label: "콜라보",
     value: "COLLAB",
   },
   {
