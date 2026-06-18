@@ -56,7 +56,7 @@ export default function Header() {
             <Image src="/img/icons/alarm_default.png" alt="" width={22} height={22} />
           </button>
         ) : (
-          <Link href={ROUTES.LOGIN} className="text-[12px] text-gray-200">
+          <Link href={ROUTES.LOGIN} prefetch={false} className="text-[12px] text-gray-200">
             로그인
           </Link>
         )}

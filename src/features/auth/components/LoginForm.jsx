@@ -27,9 +27,11 @@ function OAuthErrorAlert({ onError }) {
 function LoginFormContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { login } = useAuth();
+
+  const { user, isLoading: authLoading, login } = useAuth();
 
   const redirectUrl = searchParams.get("redirect") ?? ROUTES.HOME;
+
   const signupHref =
     redirectUrl !== ROUTES.HOME
       ? `${ROUTES.SIGNUP}?redirect=${encodeURIComponent(redirectUrl)}`
@@ -41,14 +43,23 @@ function LoginFormContent() {
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
+  useEffect(() => {
+    if (!authLoading && user) {
+      router.replace(ROUTES.HOME);
+    }
+  }, [authLoading, user, router]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     setError("");
     setIsLoading(true);
 
     try {
       const res = await loginUser({ email, password });
+
       login(res.data.data);
+
       router.replace(redirectUrl);
     } catch (err) {
       setError(err.response?.data?.error?.message || ERROR_MESSAGES.LOGIN_FAILED_GENERIC);
@@ -56,6 +67,10 @@ function LoginFormContent() {
       setIsLoading(false);
     }
   };
+
+  if (authLoading) {
+    return null;
+  }
 
   return (
     <form
@@ -84,11 +99,7 @@ function LoginFormContent() {
         value={password}
         onChange={(e) => setPassword(e.target.value)}
         icon={
-          <button
-            type="button"
-            onClick={() => setShowPassword((prev) => !prev)}
-            aria-label={showPassword ? "비밀번호 숨기기" : "비밀번호 보기"}
-          >
+          <button type="button" onClick={() => setShowPassword((prev) => !prev)}>
             <Image
               src={showPassword ? "/img/icons/visible.png" : "/img/icons/invisible.png"}
               alt=""
@@ -110,7 +121,7 @@ function LoginFormContent() {
 
       <p className="text-center text-[14px] text-white tablet:text-[16px]">
         최애의 포토가 처음이신가요?{" "}
-        <Link href={signupHref} className="text-[#EFFF04] underline">
+        <Link href={signupHref} prefetch={false} className="!text-main underline">
           회원가입하기
         </Link>
       </p>
