@@ -20,11 +20,16 @@ export default function PhotoCard({ card: item, revealStatus = false }) {
         <div className={`${card.image} relative`}>
           <Image src={imageSrc} alt={item.name} fill className="object-cover" />
           {item.status === "SOLD_OUT" ? (
-            <div className="w-full h-full bg-black bg-opacity-30 absolute inset-0">
-              <Image src="/img/icons/soldout.png" alt="품절 아이콘" fill />
+            <div className="w-full h-full bg-black/80 absolute top-0 left-0 ">
+              <Image
+                src="/img/icons/soldout.png"
+                alt="품절 아이콘"
+                fill
+                className="object-contain"
+              />
             </div>
           ) : (
-            <div className="px-[10px] py-[4px] bg-black bg-opacity-5 rounded-sm absolute top-[10px] left-[10px]">
+            <div className="px-[10px] py-[4px] bg-black/70 rounded-sm absolute top-[10px] left-[10px]">
               {item.status === "ON_SALE" && (
                 <div className="text-[16px] font-normal text-white ">판매 중</div>
               )}
@@ -36,18 +41,19 @@ export default function PhotoCard({ card: item, revealStatus = false }) {
         </div>
       )}
       {/*추후, 위 품절 로직과 합쳐야 합니다.*/}
-      <div className={card.image}>
-        <Image
-          src={imageSrc}
-          alt={item.name}
-          fill
-          className={`object-cover ${item.isSoldOut ? "brightness-[0.45] blur-[1px]" : ""}`}
-        />
-        {item.isSoldOut && (
-          <div className="absolute inset-0 flex items-center justify-center">
-            <span
-              style={{ transform: "rotate(-24deg)" }}
-              className="
+      {!revealStatus && (
+        <div className={card.image}>
+          <Image
+            src={imageSrc}
+            alt={item.name}
+            fill
+            className={`object-cover ${item.isSoldOut ? "brightness-[0.45] blur-[1px]" : ""}`}
+          />
+          {item.isSoldOut && (
+            <div className="absolute inset-0 flex items-center justify-center">
+              <span
+                style={{ transform: "rotate(-24deg)" }}
+                className="
                 flex h-[74px] w-[74px]
                 items-center justify-center rounded-full
                 border-[3px] border-red
@@ -56,14 +62,15 @@ export default function PhotoCard({ card: item, revealStatus = false }) {
                 tablet:h-[110px] tablet:w-[110px] tablet:border-[4px] tablet:text-[26px]
                 desktop:h-[124px] desktop:w-[124px] desktop:text-[30px]
               "
-            >
-              SOLD
-              <br />
-              OUT
-            </span>
-          </div>
-        )}
-      </div>
+              >
+                SOLD
+                <br />
+                OUT
+              </span>
+            </div>
+          )}
+        </div>
+      )}
       <h3 className={card.title}>{item.name}</h3>
       <div className={card.metaWrap}>
         <div className={card.metaInner}>
