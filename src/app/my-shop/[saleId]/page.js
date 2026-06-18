@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 import Image from "next/image";
@@ -29,13 +29,22 @@ export default function MySaleDetailPage() {
 
   const { mutate: cancelSale, isPending: isCanceling } = useCancelSale(numericSaleId);
   const { mutate: modifySale, isPending: isModifying } = useModifySale(numericSaleId);
-  const { mutate: acceptProposal } = useAcceptExchangeProposal(numericSaleId);
-  const { mutate: rejectProposal } = useRejectExchangeProposal();
+  const { mutate: acceptProposal, isPending: isAccepting } =
+    useAcceptExchangeProposal(numericSaleId);
+  const { mutate: rejectProposal, isPending: isRejecting } =
+    useRejectExchangeProposal(numericSaleId);
 
   const [editOpen, setEditOpen] = useState(false);
   const [takeDownOpen, setTakeDownOpen] = useState(false);
   const [decisionState, setDecisionState] = useState(null);
   const [actionError, setActionError] = useState("");
+
+  const isDecisionSubmitting = isAccepting || isRejecting;
+
+  const closeDecisionModal = () => {
+    setDecisionState(null);
+    setActionError("");
+  };
 
   const handleTakeDown = () => {
     setActionError("");
@@ -61,29 +70,29 @@ export default function MySaleDetailPage() {
   };
 
   const handleDecisionConfirm = () => {
-    if (!decisionState) return;
+    if (!decisionState || isDecisionSubmitting) return;
+
     const { proposalId, decision } = decisionState;
     setActionError("");
 
     if (decision === "approve") {
       acceptProposal(proposalId, {
-        onSuccess: () => setDecisionState(null),
+        onSuccess: () => closeDecisionModal(),
         onError: (err) => {
           const message = err?.response?.data?.error?.message ?? "승인에 실패했습니다.";
           setActionError(message);
-          setDecisionState(null);
         },
       });
-    } else {
-      rejectProposal(proposalId, {
-        onSuccess: () => setDecisionState(null),
-        onError: (err) => {
-          const message = err?.response?.data?.error?.message ?? "거절에 실패했습니다.";
-          setActionError(message);
-          setDecisionState(null);
-        },
-      });
+      return;
     }
+
+    rejectProposal(proposalId, {
+      onSuccess: () => closeDecisionModal(),
+      onError: (err) => {
+        const message = err?.response?.data?.error?.message ?? "거절에 실패했습니다.";
+        setActionError(message);
+      },
+    });
   };
 
   if (isPending) {
@@ -108,7 +117,7 @@ export default function MySaleDetailPage() {
 
   const hasExchange = sale.exchangeGrade || sale.exchangeGenre || sale.exchangeDescription;
   const isOnSale = sale.status === "ON_SALE";
-  const pendingProposals = proposals.filter((p) => p.status === "PENDING");
+  const pendingProposals = proposals.filter((proposal) => proposal.status === "PENDING");
 
   return (
     <main
@@ -147,7 +156,7 @@ export default function MySaleDetailPage() {
         "
       >
         {/* 좌측: 카드 이미지 */}
-        <div className="relative shrink-0 w-full tablet:w-[342px] desktop:w-[960px]">
+        <div className="relative w-full shrink-0 tablet:w-[342px] desktop:w-[960px]">
           <div
             className="
               relative aspect-[4/3] w-full
@@ -168,7 +177,7 @@ export default function MySaleDetailPage() {
 
         {/* 우측: 판매 정보 */}
         <div className="flex flex-1 flex-col">
-          {/* 등급 · 장르 · 판매자 닉네임 */}
+          {/* 등급 / 장르 / 판매자 닉네임 */}
           <div className="flex items-center gap-[10px]">
             <GradeBadge grade={sale.grade} size="md" />
             <span className="h-[14px] w-[1px] bg-gray-400" />
@@ -190,7 +199,7 @@ export default function MySaleDetailPage() {
 
           <div className="my-[20px] h-[1px] bg-gray-400" />
 
-          {/* 가격 · 수량 */}
+          {/* 가격 / 수량 */}
           <dl className="space-y-[10px]">
             <div className="flex items-center justify-between">
               <dt className="text-[18px] text-gray-300">가격</dt>
@@ -215,8 +224,8 @@ export default function MySaleDetailPage() {
                     alt=""
                     width={28}
                     height={28}
-                    onError={(e) => {
-                      e.currentTarget.style.display = "none";
+                    onError={(event) => {
+                      event.currentTarget.style.display = "none";
                     }}
                   />
                   <h2 className="text-[24px] font-bold text-white">교환 희망 정보</h2>
@@ -263,7 +272,9 @@ export default function MySaleDetailPage() {
             </div>
           )}
 
-          {actionError && <p className="mt-[12px] text-[13px] text-red">{actionError}</p>}
+          {actionError && !decisionState && (
+            <p className="mt-[12px] text-[13px] text-red">{actionError}</p>
+          )}
         </div>
       </div>
 
@@ -307,22 +318,24 @@ export default function MySaleDetailPage() {
                   <ExchangeCard
                     key={proposal.id}
                     card={cardItem}
-                    onAccept={() =>
+                    onAccept={() => {
+                      setActionError("");
                       setDecisionState({
                         proposalId: proposal.id,
                         decision: "approve",
                         cardName: offeredCard.name,
                         grade: offeredCard.grade,
-                      })
-                    }
-                    onReject={() =>
+                      });
+                    }}
+                    onReject={() => {
+                      setActionError("");
                       setDecisionState({
                         proposalId: proposal.id,
                         decision: "reject",
                         cardName: offeredCard.name,
                         grade: offeredCard.grade,
-                      })
-                    }
+                      });
+                    }}
                   />
                 );
               })}
@@ -352,11 +365,13 @@ export default function MySaleDetailPage() {
       {/* 승인/거절 모달 */}
       <ExchangeDecisionModal
         isOpen={Boolean(decisionState)}
-        onClose={() => setDecisionState(null)}
+        onClose={closeDecisionModal}
         onConfirm={handleDecisionConfirm}
         decision={decisionState?.decision ?? "reject"}
         cardName={decisionState?.cardName ?? ""}
         grade={decisionState?.grade ?? "COMMON"}
+        errorMessage={actionError}
+        isSubmitting={isDecisionSubmitting}
       />
     </main>
   );

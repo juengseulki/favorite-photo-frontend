@@ -1,4 +1,4 @@
-import Image from "next/image";
+﻿import Image from "next/image";
 import GradeBadge from "@/components/common/Grade/GradeBadge";
 import Button from "@/components/common/Button";
 import { card } from "./cardStyles";
@@ -23,12 +23,12 @@ export default function ExchangeCard({ card: item, onReject, onAccept }) {
 
             <span className={`${card.divider} hidden tablet:block`} />
 
-            <span className={card.purchaseTextDesktop}>{item.price} P 에 구매</span>
+            <span className={card.purchaseTextDesktop}>{item.price} P에 구매</span>
           </div>
 
           <span className={card.nickname}>{item.creator.nickname}</span>
 
-          <span className={card.purchaseTextMobile}>{item.price} P 에 구매</span>
+          <span className={card.purchaseTextMobile}>{item.price} P에 구매</span>
         </div>
       </div>
 

@@ -1,30 +1,12 @@
-"use client";
+﻿"use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 
 import Button from "@/components/common/Button";
 import { PhotoCard } from "@/components/common/Card";
 import Modal from "@/components/common/Modal";
 import Textarea from "@/components/common/Textarea";
-
-function normalizePhotoCard(card) {
-  if (!card) return null;
-
-  return {
-    ...card,
-    id: card.id ?? card.cardCopyId ?? card.photoCardId,
-    name: card.name ?? card.photoCard?.name ?? "포토카드",
-    imageUrl: card.imageUrl ?? card.photoCard?.imageUrl ?? "/img/images/img1.png",
-    grade: card.grade ?? card.photoCard?.grade ?? "COMMON",
-    genre: card.genre ?? card.photoCard?.genre ?? "기타",
-    price: card.price ?? card.initialPrice ?? card.photoCard?.initialPrice ?? 0,
-    count: card.count ?? card.quantity ?? 1,
-    creator: card.creator ??
-      card.photoCard?.creator ?? {
-        nickname: card.creatorNickname ?? card.ownerNickname ?? card.nickname ?? "알 수 없음",
-      },
-  };
-}
+import { normalizeExchangeCard } from "@/lib/utils/exchangeMappers";
 
 export default function ExchangeProposalFormModal({
   isOpen,
@@ -35,7 +17,10 @@ export default function ExchangeProposalFormModal({
 }) {
   const [message, setMessage] = useState("");
 
-  const normalizedCard = normalizePhotoCard(card);
+  const normalizedCard = useMemo(() => {
+    if (!card) return null;
+    return normalizeExchangeCard(card);
+  }, [card]);
 
   const handleClose = () => {
     setMessage("");
@@ -47,11 +32,11 @@ export default function ExchangeProposalFormModal({
 
     onSubmit?.({
       card: normalizedCard,
-      message,
+      message: message.trim(),
     });
   };
 
-  if (!normalizedCard) return null;
+  if (!normalizedCard?.id) return null;
 
   return (
     <Modal isOpen={isOpen} title="" size="form" onClose={handleClose} bodyClassName="mt-0">

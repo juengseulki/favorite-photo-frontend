@@ -10,7 +10,11 @@ export function useExchangeCards(filters = {}, options = {}) {
     queryFn: async () => {
       const data = await fetchExchangeCards(filters);
       const cards = Array.isArray(data?.items) ? data.items : Array.isArray(data) ? data : [];
-      return cards.map(normalizeExchangeCard);
+
+      return cards
+        .map(normalizeExchangeCard)
+        .filter((card) => Boolean(card.cardCopyId))
+        .filter((card) => Number(card.count ?? 0) > 0);
     },
     staleTime: 1000 * 30,
     ...options,

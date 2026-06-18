@@ -1,17 +1,16 @@
 "use client";
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { createExchangeSale } from "@/lib/api/exchangeApi";
-
-const EXCHANGE_SALES_QUERY_KEY = ["exchange-sales"];
+import { createExchangeProposal } from "@/lib/api/exchangeApi";
+import { QUERY_KEYS } from "@/lib/constants/queryKeys";
 
 export function useCreateExchangeSale(options = {}) {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: createExchangeSale,
+    mutationFn: createExchangeProposal,
     onSuccess: async (data, variables, context) => {
-      await queryClient.invalidateQueries({ queryKey: EXCHANGE_SALES_QUERY_KEY });
+      await queryClient.invalidateQueries({ queryKey: QUERY_KEYS.EXCHANGES.ROOT });
       await options.onSuccess?.(data, variables, context);
     },
     onError: options.onError,

@@ -34,7 +34,7 @@ export default function GalleryHeader({ createStatus }) {
         </div>
       </div>
 
-      <div className="fixed bottom-0 left-0 z-50 w-full bg-black px-[20px] pb-[16px] pt-[12px] tablet:hidden">
+      <div className="fixed bottom-0 left-0 z-10 w-full bg-black px-[20px] pb-[16px] pt-[12px] tablet:hidden">
         <Button size="full" onClick={handleCreateCard} disabled={!canCreate}>
           {year}년 {month}월 포토카드 생성하기 ({remainingCount}/{limitCount})
         </Button>

@@ -1,7 +1,6 @@
-"use client";
+﻿"use client";
 
 import { useMemo, useState } from "react";
-import { useMutation, useQuery } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
 
 import {
@@ -9,8 +8,13 @@ import {
   ExchangeSelectCardModal,
   ExchangeProposalResultModal,
 } from "@/features/exchange";
-import { createExchangeProposal, fetchExchangeCards } from "@/lib/api/exchangeApi";
-import { QUERY_KEYS } from "@/lib/constants/queryKeys";
+import { useExchangeCards } from "@/hooks/useExchangeCards";
+import { useCreateExchangeSale } from "@/hooks/useCreateExchangeSale";
+import { useSentExchangeProposals } from "@/hooks/useSentExchangeProposals";
+import { useCancelExchangeProposal } from "@/hooks/useCancelExchangeProposal";
+import { normalizeExchangeCard } from "@/lib/utils/exchangeMappers";
+
+import { notFound } from "next/navigation";
 
 import { useMarketDetail } from "../hooks/useMarketDetail";
 import MarketDetailImage from "./MarketDetailImage";
@@ -21,7 +25,7 @@ import MyExchangeProposalList from "@/features/exchange/components/MyExchangePro
 
 export default function MarketDetail() {
   const { saleId } = useParams();
-  const { data: sale, isLoading, isError } = useMarketDetail(saleId);
+  const { data: sale, isLoading, isError, error } = useMarketDetail(saleId);
 
   const [isExchangeModalOpen, setIsExchangeModalOpen] = useState(false);
   const [isProposalModalOpen, setIsProposalModalOpen] = useState(false);
@@ -34,32 +38,25 @@ export default function MarketDetail() {
   const [genre, setGenre] = useState("");
 
   const [proposalResult, setProposalResult] = useState(null);
-  const [myProposalCards, setMyProposalCards] = useState([]);
+  const [cancelingProposalId, setCancelingProposalId] = useState(null);
 
-  const filters = useMemo(() => ({ keyword }), [keyword]);
+  const filters = useMemo(() => ({ keyword, grade, genre }), [keyword, grade, genre]);
+  const { data: exchangeCards = [], isLoading: isExchangeCardsLoading } = useExchangeCards(
+    filters,
+    { enabled: isExchangeModalOpen },
+  );
 
-  const { data: exchangeCards = [], isLoading: isExchangeCardsLoading } = useQuery({
-    queryKey: [...QUERY_KEYS.GALLERY.MY_CARDS(filters), "exchange-select"],
-    queryFn: () => fetchExchangeCards(filters),
-    enabled: isExchangeModalOpen,
-  });
+  const { data: sentProposals = [] } = useSentExchangeProposals(saleId);
 
-  const exchangeCardList = Array.isArray(exchangeCards)
-    ? exchangeCards
-    : (exchangeCards?.cards ??
-      exchangeCards?.items ??
-      exchangeCards?.list ??
-      exchangeCards?.data ??
-      []);
+  const exchangeCardList = useMemo(
+    () => (Array.isArray(exchangeCards) ? exchangeCards.map(normalizeExchangeCard) : []),
+    [exchangeCards],
+  );
 
-  const { mutate: createProposal, isPending } = useMutation({
-    mutationFn: createExchangeProposal,
-    onSuccess: (_, variables) => {
+  const { mutate: createProposal, isPending } = useCreateExchangeSale({
+    onSuccess: () => {
       setIsProposalModalOpen(false);
       setProposalResult("success");
-
-      setMyProposalCards((prev) => [...prev, selectedExchangeCard]);
-
       setSelectedExchangeCard(null);
       setSelectedCardId(null);
     },
@@ -69,13 +66,20 @@ export default function MarketDetail() {
     },
   });
 
+  const { mutate: cancelProposal } = useCancelExchangeProposal(saleId);
+
   if (isLoading) return null;
 
-  if (isError || !sale) {
+  if (isError) {
+    if (error?.response?.status === 404) notFound();
     return (
-      <main className="min-h-screen bg-black text-white">상세 정보를 불러오지 못했습니다.</main>
+      <main className="flex min-h-screen items-center justify-center bg-black">
+        <p className="text-[14px] text-gray-300">상세 정보를 불러오지 못했습니다.</p>
+      </main>
     );
   }
+
+  if (!sale) return null;
 
   const exchange = {
     description: sale.exchangeDescription ?? sale.exchange?.description ?? "",
@@ -83,10 +87,11 @@ export default function MarketDetail() {
     genre: sale.exchangeGenre ?? sale.exchange?.genre ?? "",
   };
 
-  const handleSelectCard = (Card) => {
-    if (!Card) return;
+  const handleSelectCard = (card) => {
+    if (!card) return;
 
-    setSelectedExchangeCard(Card);
+    const normalizedCard = normalizeExchangeCard(card);
+    setSelectedExchangeCard(normalizedCard);
     setIsExchangeModalOpen(false);
     setIsProposalModalOpen(true);
   };
@@ -98,6 +103,17 @@ export default function MarketDetail() {
       saleId: Number(saleId),
       offeredCardCopyId: card.cardCopyId ?? card.id,
       description: message,
+    });
+  };
+
+  const handleCancelProposal = (proposal) => {
+    if (!proposal?.id) return;
+
+    setCancelingProposalId(proposal.id);
+    cancelProposal(proposal.id, {
+      onSettled: () => {
+        setCancelingProposalId(null);
+      },
     });
   };
 
@@ -146,7 +162,11 @@ export default function MarketDetail() {
           isSubmitting={isPending}
         />
 
-        <MyExchangeProposalList cards={myProposalCards} />
+        <MyExchangeProposalList
+          proposals={sentProposals}
+          onCancel={handleCancelProposal}
+          cancelingProposalId={cancelingProposalId}
+        />
 
         <ExchangeProposalResultModal
           isOpen={!!proposalResult}

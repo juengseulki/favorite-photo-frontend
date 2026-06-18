@@ -12,7 +12,8 @@ import MobileMenu from "./header/MobileMenu";
 
 export default function Header() {
   const router = useRouter();
-  const { user, isLoading, logout } = useAuth();
+  const { user, logout } = useAuth();
+
   const [isOpen, setIsOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -29,7 +30,7 @@ export default function Header() {
           <Image src="/img/logos/logo.png" alt="최애의 포토" width={138} height={28} priority />
         </Link>
 
-        {!isLoading && (user ? <UserMenu user={user} onLogout={handleLogout} /> : <GuestMenu />)}
+        {user ? <UserMenu user={user} onLogout={handleLogout} /> : <GuestMenu />}
       </div>
 
       <div className="flex h-full items-center justify-between px-5 tablet:hidden">
@@ -46,7 +47,7 @@ export default function Header() {
           <Image src="/img/logos/logo.png" alt="최애의 포토" width={92} height={18} priority />
         </Link>
 
-        {!isLoading && user ? (
+        {user ? (
           <button
             type="button"
             aria-label="알림"

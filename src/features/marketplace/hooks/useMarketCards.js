@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery } from "@tanstack/react-query";
 
 import { getMarketCards } from "@/lib/api/marketApi";
 import { QUERY_KEYS } from "@/lib/constants/queryKeys";
@@ -11,10 +11,9 @@ import { normalizeMarketCard } from "@/lib/utils/marketMappers";
 export function useMarketCards({ limit }) {
   const [gradeState, setGradeState] = useState("");
   const [genreState, setGenreState] = useState("");
+  const [saleStatusState, setSaleStatusState] = useState("");
   const [sortState, setSortState] = useState("latest");
   const [keywordState, setKeywordState] = useState("");
-  const [cursor, setCursor] = useState();
-  const [cursorHistory, setCursorHistory] = useState([]);
 
   const filters = useMemo(
     () => ({
@@ -22,17 +21,18 @@ export function useMarketCards({ limit }) {
       keyword: keywordState.trim(),
       grade: gradeState,
       genre: genreState,
+      saleStatus: saleStatusState,
       sort: sortState,
     }),
-    [genreState, gradeState, keywordState, limit, sortState],
+    [genreState, gradeState, keywordState, limit, saleStatusState, sortState],
   );
 
-  const { data, isPending } = useQuery({
-    queryKey: QUERY_KEYS.MARKET.LIST({ ...filters, cursor }),
-    queryFn: async () => {
+  const { data, isPending, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery({
+    queryKey: QUERY_KEYS.MARKET.LIST(filters),
+    queryFn: async ({ pageParam }) => {
       const result = await getMarketCards({
         ...filters,
-        cursor,
+        cursor: pageParam,
       });
 
       const cards = Array.isArray(result?.cards) ? result.cards : [];
@@ -42,64 +42,29 @@ export function useMarketCards({ limit }) {
         cards: cards.map(normalizeMarketCard),
       };
     },
+    initialPageParam: undefined,
+    getNextPageParam: (lastPage) => lastPage?.nextCursor ?? undefined,
     staleTime: QUERY_STALE_TIME.MEDIUM,
     retry: false,
   });
 
-  const resetPagination = () => {
-    setCursor(undefined);
-    setCursorHistory([]);
-  };
-
-  const setGrade = (value) => {
-    setGradeState(value);
-    resetPagination();
-  };
-
-  const setGenre = (value) => {
-    setGenreState(value);
-    resetPagination();
-  };
-
-  const setSort = (value) => {
-    setSortState(value);
-    resetPagination();
-  };
-
-  const setKeyword = (value) => {
-    setKeywordState(value);
-    resetPagination();
-  };
-
-  const handlePrevPage = () => {
-    setCursorHistory((prev) => {
-      const nextHistory = prev.slice(0, -1);
-      setCursor(nextHistory.at(-1));
-      return nextHistory;
-    });
-  };
-
-  const handleNextPage = () => {
-    if (!data?.nextCursor) return;
-
-    setCursorHistory((prev) => [...prev, data.nextCursor]);
-    setCursor(data.nextCursor);
-  };
-
   return {
-    cards: data?.cards ?? [],
+    cards: data?.pages.flatMap((page) => page.cards ?? []) ?? [],
+    counts: data?.pages[0]?.counts,
     data,
     isPending,
-    page: cursorHistory.length + 1,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
     grade: gradeState,
     genre: genreState,
+    saleStatus: saleStatusState,
     sort: sortState,
     keyword: keywordState,
-    setGrade,
-    setGenre,
-    setSort,
-    setKeyword,
-    handlePrevPage,
-    handleNextPage,
+    setGrade: setGradeState,
+    setGenre: setGenreState,
+    setSaleStatus: setSaleStatusState,
+    setSort: setSortState,
+    setKeyword: setKeywordState,
   };
 }
