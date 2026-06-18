@@ -53,16 +53,15 @@ export default function Header() {
         </Link>
 
         {user ? (
-          <button
-            type="button"
-            aria-label="알림"
+          <Link
+            href={ROUTES.Notification}
             className="flex h-6 w-6 items-center justify-center relative"
           >
             <Image src="/img/icons/alarm_default.png" alt="" width={22} height={22} />
             {hasUnread && (
               <span className="absolute right-0 top-0 h-[8px] w-[8px] rounded-full bg-red" />
             )}
-          </button>
+          </Link>
         ) : (
           <Link href={ROUTES.LOGIN} prefetch={false} className="text-[12px] text-gray-200">
             로그인
