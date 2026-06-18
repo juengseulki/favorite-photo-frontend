@@ -8,10 +8,24 @@ import Textarea from "@/components/common/Textarea";
 import { GRADE_OPTIONS, GENRE_OPTIONS } from "@/lib/constants/galleryOptions";
 import FileInput from "@/components/common/FileInput";
 import useCreatePhotoCardForm from "@/features/cards/hooks/useCreatePhotoCardForm";
+import PhotoCardCreateModal from "@/features/cards/components/PhotoCardCreateModal";
+import { useRouter } from "next/navigation";
+import { ROUTES } from "@/lib/constants/routes";
 
 export default function CreatePhotoCard() {
-  const { values, errors, handleChange, handleBlur, handleSubmit, isFormValid, isSubmitting } =
-    useCreatePhotoCardForm();
+  const router = useRouter();
+
+  const {
+    values,
+    errors,
+    handleChange,
+    handleBlur,
+    handleSubmit,
+    isFormValid,
+    isSubmitting,
+    createPhotoCardResult,
+    setCreatePhotoCardResult,
+  } = useCreatePhotoCardForm();
 
   return (
     <ProtectedRoute>
@@ -225,6 +239,14 @@ export default function CreatePhotoCard() {
           </div>
         </form>
       </div>
+      <PhotoCardCreateModal
+        isOpen={!!createPhotoCardResult}
+        isSuccess={createPhotoCardResult === "success"}
+        onClose={() => setCreatePhotoCardResult(null)}
+        onConfirm={() => router.push(ROUTES.MY_GALLERY)}
+        cardName={values.name}
+        grade={values.grade}
+      />
     </ProtectedRoute>
   );
 }

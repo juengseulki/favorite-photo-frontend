@@ -25,7 +25,27 @@ export const GENRE_OPTIONS = [
     value: "SEASON_GREETING",
   },
   {
+    label: "팬미팅",
+    value: "FAN_MEETING",
+  },
+  {
     label: "콘서트",
     value: "CONCERT",
+  },
+  {
+    label: "MD",
+    value: "MD",
+  },
+  {
+    label: "콜라보",
+    value: "COLLAB",
+  },
+  {
+    label: "팬클럽",
+    value: "FANCLUB",
+  },
+  {
+    label: "기타",
+    value: "ETC",
   },
 ];
