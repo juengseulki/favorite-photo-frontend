@@ -9,6 +9,7 @@ import { useAuth } from "@/providers/AuthProvider";
 import GuestMenu from "./header/GuestMenu";
 import UserMenu from "./header/UserMenu";
 import MobileMenu from "./header/MobileMenu";
+import { useNotifications } from "@/features/notifications/hooks/useNotifications";
 
 export default function Header() {
   const router = useRouter();
@@ -22,6 +23,10 @@ export default function Header() {
     setIsOpen(false);
     router.push(ROUTES.LOGIN);
   };
+
+  const { data } = useNotifications();
+  const notifications = Array.isArray(data) ? data : [];
+  const hasUnread = notifications.some((notification) => notification.isRead === false);
 
   return (
     <header className="relative h-[60px] bg-black tablet:h-[80px]">
@@ -51,9 +56,12 @@ export default function Header() {
           <button
             type="button"
             aria-label="알림"
-            className="flex h-6 w-6 items-center justify-center"
+            className="flex h-6 w-6 items-center justify-center relative"
           >
             <Image src="/img/icons/alarm_default.png" alt="" width={22} height={22} />
+            {hasUnread && (
+              <span className="absolute right-0 top-0 h-[8px] w-[8px] rounded-full bg-red" />
+            )}
           </button>
         ) : (
           <Link href={ROUTES.LOGIN} prefetch={false} className="text-[12px] text-gray-200">
