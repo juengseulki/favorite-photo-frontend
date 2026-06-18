@@ -21,7 +21,7 @@ export default function GalleryHeader({ createStatus }) {
     <>
       <div className="border-b-2 border-gray-100 pb-[20px]">
         <div className="flex items-center justify-between">
-          <span className="text-[24px] font-bold tracking-[-0.03em] tablet:text-[32px] desktop:text-[62px]">
+          <span className="font-brand text-[24px] font-bold tracking-[-0.03em] tablet:text-[32px] desktop:text-[62px]">
             마이갤러리
           </span>
 

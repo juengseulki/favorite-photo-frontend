@@ -13,16 +13,20 @@ export default function MarketGrid({ cards, isPending, onCardClick }) {
         </div>
       ) : (
         <div className="grid grid-cols-2 justify-items-center gap-x-[5px] gap-y-[20px] tablet:gap-x-[10px] tablet:gap-y-[20px] desktop:grid-cols-3 desktop:justify-items-start desktop:gap-x-[80px] desktop:gap-y-[80px]">
-          {cards.map((card) => (
-            <button
-              key={card.saleId}
-              type="button"
-              onClick={() => onCardClick(card.saleId)}
-              className="text-left"
-            >
-              <PhotoCard card={card} />
-            </button>
-          ))}
+          {cards.map((card) => {
+            const saleId = card.saleId ?? card.id;
+
+            return (
+              <button
+                key={saleId}
+                type="button"
+                onClick={() => onCardClick(card)}
+                className="text-left"
+              >
+                <PhotoCard card={card} />
+              </button>
+            );
+          })}
         </div>
       )}
     </section>

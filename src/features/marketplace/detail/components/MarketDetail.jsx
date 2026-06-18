@@ -3,6 +3,8 @@
 import { useMemo, useState } from "react";
 import { useParams, useRouter, notFound } from "next/navigation";
 import Image from "next/image";
+import Link from "next/link";
+import { ROUTES } from "@/lib/constants/routes";
 
 import {
   ExchangeProposalFormModal,
@@ -149,9 +151,12 @@ export default function MarketDetail() {
       </header>
 
       <div className="mx-auto w-full px-[15px] pb-[80px] pt-[20px] tablet:px-[20px] tablet:pb-[100px] tablet:pt-[40px] desktop:w-[1480px] desktop:px-0 desktop:pb-[60px] desktop:pt-[124px]">
-        <p className="font-brand mb-[20px] hidden text-[14px] text-gray-300 tablet:block desktop:mb-[60px] desktop:text-[24px]">
+        <Link
+          href={ROUTES.MARKET}
+          className="font-brand mb-[20px] hidden text-[14px] text-gray-300 tablet:block desktop:mb-[60px] desktop:text-[24px]"
+        >
           마켓플레이스
-        </p>
+        </Link>
 
         <h2 className="border-b border-gray-200 pt-[10px] pb-[10px] text-[24px] font-bold leading-none tablet:text-[32px] tablet:pt-[20px] tablet:pb-[20px] desktop:pb-[20px] desktop:text-[40px]">
           {sale.name}
