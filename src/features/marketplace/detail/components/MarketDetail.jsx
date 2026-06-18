@@ -148,7 +148,7 @@ export default function MarketDetail() {
         <div className="h-[22px] w-[22px] shrink-0" />
       </header>
 
-      <div className="mx-auto w-full px-[15px] pb-[80px] pt-[20px] tablet:px-[20px] tablet:pb-[100px] tablet:pt-[40px] desktop:w-[1480px] desktop:px-0 desktop:pb-[40px] desktop:pt-[60px]">
+      <div className="mx-auto w-full px-[15px] pb-[80px] pt-[20px] tablet:px-[20px] tablet:pb-[100px] tablet:pt-[40px] desktop:w-[1480px] desktop:px-0 desktop:pb-[60px] desktop:pt-[124px]">
         <p className="font-brand mb-[20px] hidden text-[14px] text-gray-300 tablet:block desktop:mb-[60px] desktop:text-[24px]">
           마켓플레이스
         </p>
