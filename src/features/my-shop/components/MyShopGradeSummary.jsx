@@ -2,38 +2,49 @@ import { GradeChip } from "@/components/common/Grade";
 import { useAuth } from "@/providers/AuthProvider";
 
 const MyShopGradeSummary = ({ meta = {} }) => {
-  let { user } = useAuth();
+  const { user } = useAuth();
 
-  //TODO: 나중에 가능하다면 다른 파일로 분리하기
   const SIZE = {
     MOBILE: "sm",
     TABLET: "md",
     DESKTOP: "lg",
   };
 
-  const grades = meta.gradeStats;
+  const grades = meta.gradeStats ?? [];
 
   return (
     <div className="flex flex-col gap-[15px] tablet:gap-[20px]">
-      <div className="flex gap-[5px]">
-        <div className="text-white text-[20px] font-bold">
+      <div className="flex items-center gap-[5px] whitespace-nowrap">
+        <div className="text-[14px] font-bold leading-none desktop:text-[24px]">
           {user?.nickname || "user"}님이 보유한 카드
         </div>
-        <div className="text-gray-300 text-[18px] font-normal">({meta.totalCount || "0"}장)</div>
+
+        <div className="text-[12px] font-normal leading-none text-gray-300 desktop:text-[20px]">
+          ({meta.totalCount || "0"}장)
+        </div>
       </div>
-      <div className="overflow-x-auto tablet:hidden flex gap-[10px]">
+
+      <div className="flex gap-[10px] overflow-x-auto tablet:hidden">
         {grades.map(({ grade, count }) => (
-          <GradeChip key={grade} grade={grade} count={count} size={SIZE.MOBILE} />
+          <div key={grade} className="shrink-0 whitespace-nowrap">
+            <GradeChip grade={grade} count={count} size={SIZE.MOBILE} />
+          </div>
         ))}
       </div>
-      <div className="hidden tablet:flex desktop:hidden gap-[10px]">
+
+      <div className="hidden gap-[10px] tablet:flex desktop:hidden">
         {grades.map(({ grade, count }) => (
-          <GradeChip key={grade} grade={grade} count={count} size={SIZE.TABLET} />
+          <div key={grade} className="shrink-0 whitespace-nowrap">
+            <GradeChip grade={grade} count={count} size={SIZE.TABLET} />
+          </div>
         ))}
       </div>
-      <div className="hidden desktop:flex  gap-[20px]">
+
+      <div className="hidden gap-[20px] desktop:flex">
         {grades.map(({ grade, count }) => (
-          <GradeChip key={grade} grade={grade} count={count} size={SIZE.DESKTOP} />
+          <div key={grade} className="shrink-0 whitespace-nowrap">
+            <GradeChip grade={grade} count={count} size={SIZE.DESKTOP} />
+          </div>
         ))}
       </div>
     </div>
