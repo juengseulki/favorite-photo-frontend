@@ -94,3 +94,13 @@ a {
 .animate-flow {
   animation: flow 45s linear infinite;
 }
+
+/* 스크롤바 숨김 */
+.scroll-hidden {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scroll-hidden::-webkit-scrollbar {
+  display: none;
+}

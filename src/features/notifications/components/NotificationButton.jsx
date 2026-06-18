@@ -26,7 +26,7 @@ export default function NotificationButton() {
         )}
       </button>
 
-      {isOpen && <NotificationDropdown />}
+      {isOpen && <NotificationDropdown setIsOpen={setIsOpen} />}
     </div>
   );
 }
