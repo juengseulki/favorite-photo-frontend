@@ -1,9 +1,13 @@
 import { PhotoCard } from "@/components/common/Card";
 import { SaleExchangeFormModal } from "@/features/exchange";
 import { useSaleCard } from "../hooks/useSaleCard";
+import Modal from "@/components/common/Modal";
+import { useState } from "react";
+import Button from "@/components/common/Button";
 
 export default function GalleryGrid({ cards, selectedCard, setSelectedCard }) {
   const { handleSubmit, isSubmitting, errorMessage } = useSaleCard();
+  const [saleSuccessModal, setSaleSuccessModal] = useState(false);
 
   return (
     <>
@@ -36,11 +40,32 @@ export default function GalleryGrid({ cards, selectedCard, setSelectedCard }) {
           isOpen={true}
           onClose={() => setSelectedCard(null)}
           card={selectedCard}
-          onSubmit={handleSubmit}
+          onSubmit={(data) => {
+            handleSubmit(data);
+            setSaleSuccessModal(true);
+          }}
           isSubmitting={isSubmitting}
           errorMessage={errorMessage}
         />
       )}
+      <Modal
+        isOpen={saleSuccessModal}
+        onClose={() => {
+          setSaleSuccessModal(false);
+          setSelectedCard(null);
+        }}
+        title="판매가 등록되었습니다!"
+        actions={
+          <Button
+            onClick={() => {
+              setSaleSuccessModal(false);
+              setSelectedCard(null);
+            }}
+          >
+            확인
+          </Button>
+        }
+      ></Modal>
     </>
   );
 }
