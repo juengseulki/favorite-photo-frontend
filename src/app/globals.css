@@ -97,10 +97,10 @@ a {
 
 /* 스크롤바 숨김 */
 .scroll-hidden {
-  -ms-overflow-style: none; /* IE, Edge */
-  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 
 .scroll-hidden::-webkit-scrollbar {
-  display: none; /* Chrome, Safari */
+  display: none;
 }
