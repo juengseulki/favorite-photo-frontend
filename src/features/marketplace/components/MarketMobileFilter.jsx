@@ -1,22 +1,12 @@
 import Image from "next/image";
-
 import Dropdown from "@/components/common/Dropdown";
+import { withOptionCounts } from "@/features/marketplace/utils/withOptionCounts";
 import {
   MARKET_GENRE_OPTIONS,
   MARKET_GRADE_OPTIONS,
   MARKET_SALE_STATUS_OPTIONS,
   MARKET_SORT_OPTIONS,
 } from "@/lib/constants/marketOptions";
-
-const withOptionCounts = (options, counts = {}) =>
-  options.map((option) =>
-    option.value
-      ? {
-          ...option,
-          label: `${option.label} ${counts[option.value] ?? 0}`,
-        }
-      : option,
-  );
 
 function FilterControls({
   grade,
