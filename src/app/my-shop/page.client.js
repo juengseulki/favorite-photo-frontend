@@ -7,6 +7,8 @@ import MyShopGradeSummary from "@/features/my-shop/components/MyShopGradeSummary
 import MyShopHeader from "@/features/my-shop/components/MyShopHeader";
 import MyShopPagination from "@/features/my-shop/components/MyShopPagination";
 import { useMyShopCards } from "@/features/my-shop/hooks/useMyShopCards";
+import { useMyShopInfiniteCards } from "@/features/my-shop/hooks/useMyShopInfiniteCards";
+import { useIntersectionObserver } from "@/hooks/useIntersectionObserver";
 import useResponsiveLimit from "@/hooks/useResponsiveLimit";
 import { useState } from "react";
 
@@ -33,12 +35,28 @@ const MyShopClient = () => {
     limit,
   });
 
-  if (isLoading) return <div>로딩 중..</div>;
+  //----무한 스크롤----
+  const {
+    data: mobileDatas,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    isLoading: isLoadingMobile,
+  } = useMyShopInfiniteCards({ keyword, grade, genre, tradeType, isSoldOut, limit });
+  const bottomRef = useIntersectionObserver({
+    onIntersect: fetchNextPage,
+    hasNextPage,
+    isLoading: isFetchingNextPage,
+    isMobile,
+  });
+
+  if (isLoading || isLoadingMobile) return <div>로딩 중..</div>;
   if (isError) return <div>데이터를 가져오던 중 에러가 발생했습니다.</div>;
 
   //items를 가져온 뒤에 접근.
+  const mobileItems = mobileDatas?.pages.flatMap((page) => page.items) || [];
   const items = data.items || [];
-  const meta = data.meta;
+  const meta = data.meta; //이건 모바일이어도 똑같으니까.
 
   return (
     <div className="mx-auto w-full max-w-[1840px] px-[15px] tablet:px-[20px] desktop:px-[220px] ">
@@ -61,10 +79,11 @@ const MyShopClient = () => {
             onKeywordChange={setKeyword}
           />
         </div>
-
-        <MyShopCards cards={items} />
+        {isMobile ? <MyShopCards cards={mobileItems} /> : <MyShopCards cards={items} />}
         {isMobile ? (
-          <div />
+          <div ref={bottomRef} className="flex justify-center text-gray-400">
+            {isFetchingNextPage && <div>카드를 불러오는 중...</div>}
+          </div>
         ) : (
           <MyShopPagination page={page} meta={meta} limit={limit} setPage={setPage} />
         )}
