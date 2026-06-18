@@ -21,6 +21,7 @@ export default function Modal({
   size = "default",
   className = "",
   bodyClassName = "",
+  sheetOnTablet = false,
 }) {
   useEffect(() => {
     if (!isOpen) return;
@@ -40,26 +41,54 @@ export default function Modal({
 
   if (!isOpen) return null;
 
+  const overlayClassName = sheetOnTablet
+    ? "fixed inset-0 z-50 flex items-center justify-center bg-black/75 px-[15px] tablet:items-end desktop:items-center"
+    : "fixed inset-0 z-50 flex items-center justify-center bg-black/75 px-[15px]";
+
+  const sectionClassName = sheetOnTablet
+    ? `
+      relative
+      max-h-[90vh]
+      overflow-y-auto
+      rounded-[2px]
+      border border-gray-400
+      bg-gray-500
+      px-6 py-8
+      text-white
+      tablet:rounded-b-none
+      tablet:px-8
+      tablet:pb-10
+      tablet:pt-6
+      desktop:rounded-[2px]
+      desktop:px-10
+      desktop:py-8
+      ${SIZE_CLASSES[size]}
+      ${className}
+    `
+    : `
+      relative
+      max-h-[90vh]
+      overflow-y-auto
+      rounded-[2px]
+      border border-gray-400
+      bg-gray-500
+      px-6 py-8
+      text-white
+      tablet:px-10
+      desktop:px-10
+      ${SIZE_CLASSES[size]}
+      ${className}
+    `;
+
   return createPortal(
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 px-[15px]">
-      <section
-        role="dialog"
-        aria-modal="true"
-        className={`
-          relative
-          max-h-[90vh]
-          overflow-y-auto
-          rounded-[2px]
-          border border-gray-400
-          bg-gray-500
-          px-6 py-8
-          text-white
-          tablet:px-10
-          desktop:px-10
-          ${SIZE_CLASSES[size]}
-          ${className}
-        `}
-      >
+    <div className={overlayClassName}>
+      <section role="dialog" aria-modal="true" className={sectionClassName}>
+        {sheetOnTablet && (
+          <div className="mb-4 hidden justify-center tablet:flex desktop:hidden">
+            <div className="h-[4px] w-[56px] rounded-full bg-gray-300" />
+          </div>
+        )}
+
         <button
           type="button"
           onClick={onClose}
