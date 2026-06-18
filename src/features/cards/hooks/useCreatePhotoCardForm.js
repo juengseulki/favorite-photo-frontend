@@ -3,11 +3,8 @@
 import { useState } from "react";
 import { postPhotoCards } from "@/lib/api/galleryApi";
 import { ERROR_MESSAGES } from "@/lib/constants";
-import { useRouter } from "next/navigation";
 
 export default function useCreatePhotoCardForm() {
-  const router = useRouter();
-
   const [values, setValues] = useState({
     name: "",
     description: "",
@@ -21,6 +18,7 @@ export default function useCreatePhotoCardForm() {
   const [errors, setErrors] = useState({});
   const [touched, setTouched] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [createPhotoCardResult, setCreatePhotoCardResult] = useState(null);
 
   const validateForm = () => {
     const newErrors = {};
@@ -123,9 +121,11 @@ export default function useCreatePhotoCardForm() {
 
     try {
       await postPhotoCards(formData);
-      router.push("/my-gallery");
+      setCreatePhotoCardResult("success");
     } catch (error) {
-      console.error(error);
+      setCreatePhotoCardResult("fail");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -137,5 +137,7 @@ export default function useCreatePhotoCardForm() {
     handleSubmit,
     isFormValid,
     isSubmitting,
+    createPhotoCardResult,
+    setCreatePhotoCardResult,
   };
 }
