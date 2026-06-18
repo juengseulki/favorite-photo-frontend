@@ -77,7 +77,7 @@ export default function MarketPage() {
   };
 
   return (
-    <main className="mx-auto max-w-[1920px] px-[20px] py-[30px] tablet:px-[40px] tablet:py-[50px] desktop:px-[220px]">
+    <main className="mx-auto max-w-[1920px] px-[15px] pb-[110px] pt-[30px] tablet:px-[20px] tablet:py-[50px] desktop:px-[220px]">
       <MarketHeader onSellClick={handleSellClick} />
 
       <MarketFilterBar
