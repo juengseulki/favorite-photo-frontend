@@ -7,16 +7,19 @@ import MyShopGradeSummary from "@/features/my-shop/components/MyShopGradeSummary
 import MyShopHeader from "@/features/my-shop/components/MyShopHeader";
 import MyShopPagination from "@/features/my-shop/components/MyShopPagination";
 import { useMyShopCards } from "@/features/my-shop/hooks/useMyShopCards";
+import useResponsiveLimit from "@/hooks/useResponsiveLimit";
 import { useState } from "react";
 
 const MyShopClient = () => {
+  const { limit, isMobile } = useResponsiveLimit(); //데스크톱 15개, 태블릿 & 모바일 16개
+
   const [keyword, setKeyword] = useState("");
   const [grade, setGrade] = useState("");
   const [genre, setGenre] = useState("");
   const [tradeType, setTradeType] = useState("");
   const [isSoldOut, setIsSoldOut] = useState("");
   const [page, setPage] = useState(1);
-  const [limit, setLimit] = useState(16); //데스크톱 15개, 태블릿 & 모바일 16개
+  //const [limit, setLimit] = useState(16);
 
   const [openFilter, setOpenFilter] = useState(false);
 
@@ -60,7 +63,11 @@ const MyShopClient = () => {
         </div>
 
         <MyShopCards cards={items} />
-        <MyShopPagination page={page} meta={meta} limit={limit} setPage={setPage} />
+        {isMobile ? (
+          <div />
+        ) : (
+          <MyShopPagination page={page} meta={meta} limit={limit} setPage={setPage} />
+        )}
       </div>
       {openFilter && (
         <MyShopFilterModal
