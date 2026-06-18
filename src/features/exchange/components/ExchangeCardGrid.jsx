@@ -21,7 +21,11 @@ export default function ExchangeCardGrid({
   }
 
   return (
-    <div className={`grid grid-cols-2 gap-x-[20px] gap-y-[40px] ${disabled ? "opacity-60" : ""}`}>
+    <div
+      className={`grid grid-cols-1 justify-items-center gap-x-[20px] gap-y-[24px] desktop:grid-cols-2 desktop:gap-y-[40px] ${
+        disabled ? "opacity-60" : ""
+      }`}
+    >
       {cards.map((card) => {
         const normalizedCard = normalizeExchangeCard(card);
         const selected = selectedCardId === normalizedCard.id;
@@ -31,12 +35,16 @@ export default function ExchangeCardGrid({
             key={normalizedCard.id}
             type="button"
             disabled={disabled}
-            className={`w-fit text-left transition ${
+            className={`flex w-full justify-center text-left transition ${
               disabled ? "cursor-not-allowed" : "hover:brightness-90"
             }`}
             onClick={() => onSelect?.(normalizedCard)}
           >
-            <div className={selected ? "border border-main bg-black p-[1px]" : ""}>
+            <div
+              className={
+                selected ? "inline-block border border-main bg-black p-[1px]" : "inline-block"
+              }
+            >
               <PhotoCard card={normalizedCard} />
             </div>
           </button>

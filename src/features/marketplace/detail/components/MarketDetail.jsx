@@ -1,29 +1,30 @@
 ﻿"use client";
 
 import { useMemo, useState } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter, notFound } from "next/navigation";
+import Image from "next/image";
 
 import {
   ExchangeProposalFormModal,
   ExchangeSelectCardModal,
   ExchangeProposalResultModal,
 } from "@/features/exchange";
+import MyExchangeProposalList from "@/features/exchange/components/MyExchangeProposalList";
+
 import { useExchangeCards } from "@/hooks/useExchangeCards";
 import { useCreateExchangeSale } from "@/hooks/useCreateExchangeSale";
 import { useSentExchangeProposals } from "@/hooks/useSentExchangeProposals";
 import { useCancelExchangeProposal } from "@/hooks/useCancelExchangeProposal";
-import { normalizeExchangeCard } from "@/lib/utils/exchangeMappers";
 
-import { notFound } from "next/navigation";
+import { normalizeExchangeCard } from "@/lib/utils/exchangeMappers";
 
 import { useMarketDetail } from "../hooks/useMarketDetail";
 import MarketDetailImage from "./MarketDetailImage";
 import MarketDetailInfo from "./MarketDetailInfo";
 import ExchangeInfo from "./ExchangeInfo";
 
-import MyExchangeProposalList from "@/features/exchange/components/MyExchangeProposalList";
-
 export default function MarketDetail() {
+  const router = useRouter();
   const { saleId } = useParams();
   const { data: sale, isLoading, isError, error } = useMarketDetail(saleId);
 
@@ -41,6 +42,7 @@ export default function MarketDetail() {
   const [cancelingProposalId, setCancelingProposalId] = useState(null);
 
   const filters = useMemo(() => ({ keyword, grade, genre }), [keyword, grade, genre]);
+
   const { data: exchangeCards = [], isLoading: isExchangeCardsLoading } = useExchangeCards(
     filters,
     { enabled: isExchangeModalOpen },
@@ -72,6 +74,7 @@ export default function MarketDetail() {
 
   if (isError) {
     if (error?.response?.status === 404) notFound();
+
     return (
       <main className="flex min-h-screen items-center justify-center bg-black">
         <p className="text-[14px] text-gray-300">상세 정보를 불러오지 못했습니다.</p>
@@ -86,6 +89,8 @@ export default function MarketDetail() {
     grade: sale.exchangeGrade ?? sale.exchange?.grade ?? "",
     genre: sale.exchangeGenre ?? sale.exchange?.genre ?? "",
   };
+
+  const isSoldOut = sale.status === "SOLD_OUT" || sale.remainingQuantity === 0;
 
   const handleSelectCard = (card) => {
     if (!card) return;
@@ -119,17 +124,42 @@ export default function MarketDetail() {
 
   return (
     <main className="min-h-screen bg-black text-white">
-      <div className="mx-auto w-full px-[16px] pb-[80px] pt-[24px] desktop:w-[1480px] desktop:px-0 desktop:pb-[140px] desktop:pt-[124px]">
-        <p className="font-brand mb-[24px] text-[14px] text-gray-300 desktop:mb-[60px] desktop:text-[24px]">
+      {/* 모바일 전용 헤더 */}
+      <header className="flex h-[60px] items-center border-b border-gray-450 px-[15px] tablet:hidden">
+        <button
+          type="button"
+          onClick={() => router.back()}
+          className="flex h-[22px] w-[22px] shrink-0 items-center justify-center"
+          aria-label="뒤로가기"
+        >
+          <Image
+            src="/img/icons/back.png"
+            alt=""
+            width={22}
+            height={22}
+            className="h-[22px] w-[22px] object-contain"
+          />
+        </button>
+
+        <h1 className="font-brand flex-1 text-center text-[16px] font-bold text-white">
+          마켓플레이스
+        </h1>
+
+        <div className="h-[22px] w-[22px] shrink-0" />
+      </header>
+
+      <div className="mx-auto w-full px-[15px] pb-[80px] pt-[20px] tablet:px-[20px] tablet:pb-[100px] tablet:pt-[40px] desktop:w-[1480px] desktop:px-0 desktop:pb-[60px] desktop:pt-[124px]">
+        <p className="font-brand mb-[20px] hidden text-[14px] text-gray-300 tablet:block desktop:mb-[60px] desktop:text-[24px]">
           마켓플레이스
         </p>
 
-        <h1 className="border-b border-gray-200 pb-[10px] text-[20px] font-bold leading-none desktop:pb-[20px] desktop:text-[40px]">
+        <h2 className="border-b border-gray-200 pt-[10px] pb-[10px] text-[24px] font-bold leading-none tablet:text-[32px] tablet:pt-[20px] tablet:pb-[20px] desktop:pb-[20px] desktop:text-[40px]">
           {sale.name}
-        </h1>
+        </h2>
 
-        <section className="mt-[20px] flex flex-col gap-[20px] desktop:mt-[70px] desktop:flex-row desktop:gap-[80px]">
-          <MarketDetailImage imageUrl={sale.imageUrl} name={sale.name} />
+        <section className="mt-[15px] flex flex-col gap-[20px] tablet:mt-[20px] tablet:flex-row tablet:gap-[20px] desktop:mt-[70px] desktop:gap-[80px]">
+          <MarketDetailImage imageUrl={sale.imageUrl} name={sale.name} isSoldOut={isSoldOut} />
+
           <MarketDetailInfo sale={sale} />
         </section>
 
@@ -152,6 +182,8 @@ export default function MarketDetail() {
           genre={genre}
           onGenreChange={setGenre}
           isLoading={isExchangeCardsLoading}
+          expectedGrade={exchange.grade}
+          expectedGenre={exchange.genre}
         />
 
         <ExchangeProposalFormModal

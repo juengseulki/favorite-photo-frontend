@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 
 import Modal from "@/components/common/Modal";
@@ -8,6 +8,7 @@ import useResponsiveLimit from "@/hooks/useResponsiveLimit";
 import { ROUTES } from "@/lib/constants/routes";
 import { useAuth } from "@/providers/AuthProvider";
 
+import useInfiniteScroll from "@/hooks/useInfiniteScroll";
 import MarketHeader from "@/features/marketplace/components/MarketHeader";
 import MarketFilterBar from "@/features/marketplace/components/MarketFilterBar";
 import MarketGrid from "@/features/marketplace/components/MarketGrid";
@@ -44,30 +45,11 @@ export default function MarketPage() {
     setKeyword,
   } = useMarketCards({ limit });
 
-  useEffect(() => {
-    const target = loadMoreRef.current;
-
-    if (!target) return;
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting && hasNextPage && !isPending && !isFetchingNextPage) {
-          fetchNextPage();
-        }
-      },
-      {
-        root: null,
-        rootMargin: "200px",
-        threshold: 0,
-      },
-    );
-
-    observer.observe(target);
-
-    return () => {
-      observer.disconnect();
-    };
-  }, [fetchNextPage, hasNextPage, isPending, isFetchingNextPage]);
+  useInfiniteScroll({
+    targetRef: loadMoreRef,
+    enabled: hasNextPage && !isPending && !isFetchingNextPage,
+    onIntersect: fetchNextPage,
+  });
 
   const openLoginModal = (redirectPath) => {
     setRedirectUrl(redirectPath);
@@ -95,7 +77,7 @@ export default function MarketPage() {
   };
 
   return (
-    <main className="mx-auto max-w-[1920px] px-[20px] py-[30px] tablet:px-[40px] tablet:py-[50px] desktop:px-[220px]">
+    <main className="mx-auto max-w-[1920px] px-[15px] pb-[110px] pt-[30px] tablet:px-[20px] tablet:py-[50px] desktop:px-[220px]">
       <MarketHeader onSellClick={handleSellClick} />
 
       <MarketFilterBar
