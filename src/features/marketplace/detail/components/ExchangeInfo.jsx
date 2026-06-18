@@ -10,7 +10,7 @@ export default function ExchangeInfo({ exchange, onOpenExchangeModal }) {
         <Button
           variant="primary"
           size="lg"
-          className="h-[55px] w-full rounded-[2px] text-[16px] font-bold desktop:h-[60px] desktop:w-[440px] desktop:text-[18px]"
+          className="hidden h-[60px] w-[440px] rounded-[2px] text-[18px] font-bold desktop:block"
           onClick={onOpenExchangeModal}
         >
           포토카드 교환하기
@@ -28,6 +28,15 @@ export default function ExchangeInfo({ exchange, onOpenExchangeModal }) {
 
         {exchange.genre && <span className="text-[24px] text-gray-300">{exchange.genre}</span>}
       </div>
+
+      <Button
+        variant="primary"
+        size="lg"
+        className="mt-[32px] h-[55px] w-full rounded-[2px] text-[16px] font-bold desktop:hidden"
+        onClick={onOpenExchangeModal}
+      >
+        포토카드 교환하기
+      </Button>
     </section>
   );
 }
