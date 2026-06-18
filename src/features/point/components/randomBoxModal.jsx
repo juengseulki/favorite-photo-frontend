@@ -95,7 +95,7 @@ export default function PointModal({ isOpen, onClose }) {
               </div>
             </section>
 
-            <section className="flex tablet:hidden justify-center">
+            <section className="flex justify-center">
               {selectedBox && (
                 <Button
                   size="point"
