@@ -1,32 +1,42 @@
 "use client";
 
 import { createContext, useContext, useEffect, useState } from "react";
-import { getMe, logoutUser, refreshToken } from "@/lib/api/authApi";
-import { clearAccessToken, setAccessToken } from "@/lib/api/axiosInstance";
+import { usePathname } from "next/navigation";
+
+import { getMe, logoutUser } from "@/lib/api/authApi";
+import { clearAccessToken, requestRefreshToken, setAccessToken } from "@/lib/api/axiosInstance";
 
 const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
+  const pathname = usePathname();
+
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  // 앱 최초 로드 시 쿠키의 refresh token으로 세션 복구
   useEffect(() => {
     const restoreSession = async () => {
+      if (pathname === "/login" || pathname === "/signup") {
+        setIsLoading(false);
+        return;
+      }
+
       try {
-        const refreshRes = await refreshToken();
-        setAccessToken(refreshRes.data.data.accessToken);
+        await requestRefreshToken();
+
         const meRes = await getMe();
+
         setUser(meRes.data.data.user);
       } catch {
-        // 세션 없음 — 비로그인 상태로 진행
+        clearAccessToken();
+        setUser(null);
       } finally {
         setIsLoading(false);
       }
     };
 
     restoreSession();
-  }, []);
+  }, [pathname]);
 
   const login = ({ user, accessToken }) => {
     setAccessToken(accessToken);
@@ -39,7 +49,6 @@ export function AuthProvider({ children }) {
     setUser(null);
   };
 
-  // 포인트 변동 시 헤더 잔액 즉시 갱신 (구매/판매/랜덤박스 파트에서 사용)
   const updatePoint = (newBalance) => {
     setUser((prev) => (prev ? { ...prev, point: newBalance } : null));
   };

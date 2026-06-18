@@ -1,9 +1,12 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useNotifications, useReadNotification } from "../hooks/useNotifications";
+import {
+  useNotifications,
+  useReadNotification,
+} from "@/features/notifications/hooks/useNotifications";
 
-export default function NotificationDropdown() {
+export default function NotificationPage() {
   const router = useRouter();
 
   const { data } = useNotifications();
@@ -54,18 +57,7 @@ export default function NotificationDropdown() {
   };
 
   return (
-    <div
-      className="
-        absolute
-        right-0
-        top-[40px]
-        z-50
-
-        w-[320px]
-        bg-gray-500
-        p-[20px]
-      "
-    >
+    <div>
       {notifications.length === 0 ? (
         <p className="text-[14px] text-gray-300">알림이 없습니다.</p>
       ) : (
@@ -74,7 +66,7 @@ export default function NotificationDropdown() {
             <li
               key={item.id}
               onClick={() => handleClick(item)}
-              className={`w-full text-left flex flex-col gap-[10px] ${item.isRead ? "opacity-50" : "opacity-100"} border-b border-[#3E3E3E] py-5`}
+              className={`w-full text-left flex flex-col gap-[10px] ${item.isRead ? "opacity-50" : "opacity-100"} border-b border-[#3E3E3E] p-5`}
             >
               <p className="text-[14px] text-white"> {item.content}</p>
               <p className="text-[12px] text-gray-300">{getTimeAgo(item.createdAt)}</p>

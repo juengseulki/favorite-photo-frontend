@@ -12,7 +12,7 @@ export default function MarketGrid({ cards, isPending, onCardClick }) {
           조건에 맞는 포토카드가 없습니다.
         </div>
       ) : (
-        <div className="grid grid-cols-2 gap-x-[20px] gap-y-[40px] desktop:grid-cols-3 desktop:gap-x-[90px] desktop:gap-y-[80px]">
+        <div className="grid grid-cols-2 justify-items-center gap-x-[5px] gap-y-[20px] tablet:gap-x-[10px] tablet:gap-y-[20px] desktop:grid-cols-3 desktop:justify-items-start desktop:gap-x-[80px] desktop:gap-y-[80px]">
           {cards.map((card) => (
             <button
               key={card.saleId}
