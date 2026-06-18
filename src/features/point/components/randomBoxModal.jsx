@@ -47,7 +47,7 @@ export default function PointModal({ isOpen, onClose }) {
               </p>
             </section>
 
-            <section className="flex justify-center text-[46px] font-normal mb-0">
+            <section className="flex justify-center text-[46px] font-normal">
               <div className="hidden desktop:flex justify-around w-full">
                 {BOXES_L.map((box) => (
                   <Image
