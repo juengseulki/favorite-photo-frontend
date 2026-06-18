@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useNotifications, useReadNotification } from "../hooks/useNotifications";
 
-export default function NotificationDropdown() {
+export default function NotificationDropdown({ setIsOpen }) {
   const router = useRouter();
 
   const { data } = useNotifications();
@@ -13,6 +13,8 @@ export default function NotificationDropdown() {
 
   const handleClick = (notification) => {
     mutate(notification.id);
+
+    setIsOpen(false);
 
     if (notification.linkUrl) {
       router.push(notification.linkUrl);
@@ -62,8 +64,12 @@ export default function NotificationDropdown() {
         z-50
 
         w-[320px]
+        max-h-[535px]
+        overflow-y-auto
         bg-gray-500
         p-[20px]
+
+        scroll-hidden
       "
     >
       {notifications.length === 0 ? (
