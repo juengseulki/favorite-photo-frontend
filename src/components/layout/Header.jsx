@@ -61,7 +61,7 @@ export default function Header() {
 
           {user ? (
             <Link
-              href={ROUTES.Notification}
+              href={ROUTES.NOTIFICATIONS}
               className="relative flex h-6 w-6 items-center justify-center"
               aria-label="알림"
             >

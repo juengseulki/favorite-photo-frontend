@@ -9,5 +9,5 @@ export const ROUTES = {
   MY_SHOP_DETAIL: (saleId) => `/my-shop/${saleId}`,
   CREATE_CARD: "/cards/create",
   LOGIN_REDIRECT: (redirectUrl) => `/login?redirect=${encodeURIComponent(redirectUrl)}`,
-  Notification: "/notification",
+  NOTIFICATIONS: "/notification",
 };
