@@ -47,7 +47,7 @@ export default function PointModal({ isOpen, onClose }) {
               </p>
             </section>
 
-            <section className="flex justify-center text-[46px] font-normal mb-0 tablet:mb-10">
+            <section className="flex justify-center text-[46px] font-normal">
               <div className="hidden desktop:flex justify-around w-full">
                 {BOXES_L.map((box) => (
                   <Image
@@ -95,7 +95,7 @@ export default function PointModal({ isOpen, onClose }) {
               </div>
             </section>
 
-            <section className="flex tablet:hidden justify-center">
+            <section className="flex justify-center">
               {selectedBox && (
                 <Button
                   size="point"
