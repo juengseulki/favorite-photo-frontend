@@ -280,8 +280,8 @@ export default function MySaleDetailPage() {
 
       {/* 교환 제시 목록 */}
       {isOnSale && (
-        <section className="mt-[80px]">
-          <div className="mb-[40px]">
+        <section className="mt-[56px] tablet:mt-[64px] desktop:mt-[80px]">
+          <div className="mb-[24px] tablet:mb-[32px] desktop:mb-[40px]">
             <h2 className="text-[32px] font-bold text-white tablet:text-[40px]">교환 제시 목록</h2>
             <div className="mt-[20px] h-[1px] bg-gray-400" />
           </div>
@@ -293,9 +293,10 @@ export default function MySaleDetailPage() {
           ) : (
             <div
               className="
-                grid gap-[20px]
+                grid grid-cols-1 gap-[16px]
                 grid-cols-1
-                tablet:grid-cols-2
+                justify-items-stretch
+                tablet:gap-[20px]
                 desktop:grid-cols-2
               "
             >
@@ -315,28 +316,32 @@ export default function MySaleDetailPage() {
                 };
 
                 return (
-                  <ExchangeCard
+                  <div
                     key={proposal.id}
-                    card={cardItem}
-                    onAccept={() => {
-                      setActionError("");
-                      setDecisionState({
-                        proposalId: proposal.id,
-                        decision: "approve",
-                        cardName: offeredCard.name,
-                        grade: offeredCard.grade,
-                      });
-                    }}
-                    onReject={() => {
-                      setActionError("");
-                      setDecisionState({
-                        proposalId: proposal.id,
-                        decision: "reject",
-                        cardName: offeredCard.name,
-                        grade: offeredCard.grade,
-                      });
-                    }}
-                  />
+                    className="flex w-full justify-center desktop:justify-start"
+                  >
+                    <ExchangeCard
+                      card={cardItem}
+                      onAccept={() => {
+                        setActionError("");
+                        setDecisionState({
+                          proposalId: proposal.id,
+                          decision: "approve",
+                          cardName: offeredCard.name,
+                          grade: offeredCard.grade,
+                        });
+                      }}
+                      onReject={() => {
+                        setActionError("");
+                        setDecisionState({
+                          proposalId: proposal.id,
+                          decision: "reject",
+                          cardName: offeredCard.name,
+                          grade: offeredCard.grade,
+                        });
+                      }}
+                    />
+                  </div>
                 );
               })}
             </div>
