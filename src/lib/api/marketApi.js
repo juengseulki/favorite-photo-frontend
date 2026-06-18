@@ -21,11 +21,6 @@ export async function getMarketCards(params = {}) {
   return response.data?.data ?? response.data;
 }
 
-export async function getMarketCardDetail(saleId) {
-  const response = await axiosInstance.get(API_ROUTES.MARKET.DETAIL(saleId));
-  return response.data?.data ?? response.data;
-}
-
 export async function purchaseMarketCards({ saleId, quantity }) {
   const response = await axiosInstance.post(API_ROUTES.MARKET.PURCHASE(saleId), { quantity });
   return response.data?.data ?? response.data;
