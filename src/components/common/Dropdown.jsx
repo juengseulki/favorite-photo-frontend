@@ -99,6 +99,7 @@ export default function Dropdown({
             border
             border-gray-400
             bg-gray-500
+            w-max 
             ${SIZE_CLASSES[size]}
           `}
         >
