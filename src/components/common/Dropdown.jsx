@@ -104,7 +104,7 @@ export default function Dropdown({
           `}
         >
           {options.map((option) => (
-            <li key={option.value}>
+            <li key={option.value} className="whitespace-nowrap">
               <button
                 type="button"
                 onClick={() => {
