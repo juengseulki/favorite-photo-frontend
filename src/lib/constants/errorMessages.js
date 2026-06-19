@@ -16,6 +16,7 @@ export const ERROR_MESSAGES = {
   NICKNAME_REQUIRED: "닉네임을 입력해 주세요.",
   NICKNAME_LENGTH: "닉네임은 2자 이상 12자 이하로 입력해 주세요.",
   PASSWORD_MIN_LENGTH: "비밀번호는 8자 이상 입력해 주세요.",
+  PASSWORD_ALPHANUMERIC: "비밀번호는 영문자와 숫자를 모두 포함해야 합니다.",
   PASSWORD_CONFIRM_REQUIRED: "비밀번호 확인을 입력해 주세요.",
   PASSWORD_NOT_MATCH: "비밀번호가 일치하지 않습니다.",
   SIGNUP_FAILED: "회원가입에 실패했습니다.",

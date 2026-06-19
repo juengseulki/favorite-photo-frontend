@@ -15,6 +15,7 @@ import SaleEditModal from "@/features/sales/components/SaleEditModal";
 import SaleTakeDownModal from "@/features/sales/components/SaleTakeDownModal";
 import ExchangeDecisionModal from "@/features/exchange/components/ExchangeDecisionModal";
 import ExchangeRequestCard from "@/features/exchange/components/ExchangeRequestCard";
+import ProtectedRoute from "@/components/common/ProtectedRoute";
 
 import toast from "react-hot-toast";
 import { ROUTES } from "@/lib/constants/routes";
@@ -127,169 +128,173 @@ export default function Page() {
   };
 
   return (
-    <div className={styles["onp-root"]}>
-      <div className={styles["onp-page"]}>
-        <main>
-          <p className="font-brand text-[10px] font-bold leading-none text-white desktop:text-[18px] mb-6">
-            마켓플레이스
-          </p>
-          <h1 className={styles["onp-title"]}>{sale.name}</h1>
-          <div className={`${styles["onp-rule"]} ${styles["onp-rule-strong"]}`} />
-
-          {/* 상세: 이미지 + 정보 */}
-          <div className={styles["onp-detail-grid"]}>
-            <div className={styles["onp-media"]}>
-              {sale.imageUrl && (
-                <Image
-                  src={sale.imageUrl}
-                  alt={sale.name}
-                  fill
-                  className="object-cover"
-                  style={{ borderRadius: "var(--r-img)" }}
-                />
-              )}
-            </div>
-
-            <div className={styles["onp-info"]}>
-              <div className={styles["onp-meta-row"]}>
-                <div className={styles["onp-meta-left"]}>
-                  <span className={styles["onp-rarity"]}>{sale.grade}</span>
-                  <span className={styles["onp-sep"]}>|</span>
-                  <span className={styles["onp-cat"]}>{sale.genre}</span>
-                </div>
-                <span className={styles["onp-seller"]}>{sale.sellerNickname}</span>
-              </div>
-
-              <p className={styles["onp-desc"]}>{sale.description}</p>
-
-              <div className={styles["onp-stats"]}>
-                <div className={styles["onp-stat-row"]}>
-                  <span className={styles["onp-stat-label"]}>가격</span>
-                  <span className={styles["onp-stat-value"]}>{sale.price?.toLocaleString()} P</span>
-                </div>
-                <div className={styles["onp-stat-row"]}>
-                  <span className={styles["onp-stat-label"]}>잔여</span>
-                  <span className={styles["onp-stat-value"]}>
-                    {remainingQuantity}
-                    <span className={styles["onp-stat-dim"]}> / {totalQuantity}</span>
-                  </span>
-                </div>
-              </div>
-
-              {hasExchangeWish && (
-                <>
-                  <div className={styles["onp-wish-head"]}>
-                    <SwapIcon />
-                    <span>교환 희망 정보</span>
-                  </div>
-                  <div className={styles["onp-rule"]} />
-
-                  <div className={`${styles["onp-meta-row"]} ${styles["onp-wish-meta"]}`}>
-                    <div className={styles["onp-meta-left"]}>
-                      {sale.exchangeGrade && (
-                        <span className={styles["onp-rarity"]}>{sale.exchangeGrade}</span>
-                      )}
-                      {sale.exchangeGrade && sale.exchangeGenre && (
-                        <span className={styles["onp-sep"]}>|</span>
-                      )}
-                      {sale.exchangeGenre && (
-                        <span className={styles["onp-cat"]}>{sale.exchangeGenre}</span>
-                      )}
-                    </div>
-                  </div>
-                  {sale.exchangeDescription && (
-                    <p className={styles["onp-desc"]}>{sale.exchangeDescription}</p>
-                  )}
-                </>
-              )}
-
-              <div className={styles["onp-actions"]}>
-                <button
-                  type="button"
-                  className={`${styles["onp-btn"]} ${styles["onp-btn-primary"]}`}
-                  onClick={() => setIsEditOpen(true)}
-                >
-                  수정하기
-                </button>
-                <button
-                  type="button"
-                  className={`${styles["onp-btn"]} ${styles["onp-btn-ghost"]}`}
-                  onClick={() => setIsTakeDownOpen(true)}
-                >
-                  판매 내리기
-                </button>
-              </div>
-            </div>
-          </div>
-
-          {/* 교환 제시 목록 */}
-          <section className={styles["onp-offers-section"]}>
-            <h2 className={`${styles["onp-title"]} ${styles["onp-title-sm"]}`}>교환 제시 목록</h2>
+    <ProtectedRoute>
+      <div className={styles["onp-root"]}>
+        <div className={styles["onp-page"]}>
+          <main>
+            <p className="font-brand text-[10px] font-bold leading-none text-white desktop:text-[18px] mb-6">
+              마켓플레이스
+            </p>
+            <h1 className={styles["onp-title"]}>{sale.name}</h1>
             <div className={`${styles["onp-rule"]} ${styles["onp-rule-strong"]}`} />
 
-            {proposals.length === 0 ? (
-              <p className={styles["onp-desc"]}>받은 교환 제시가 없습니다.</p>
-            ) : (
-              <div className={styles["onp-offers-grid"]}>
-                {proposals.map((proposal) => {
-                  const card = mapProposalToCard(proposal);
-                  if (!card) return null;
-                  const status = proposal.status?.toLowerCase() ?? "pending";
-                  return (
-                    <ExchangeRequestCard
-                      key={proposal.id}
-                      card={card}
-                      status={status}
-                      onAccept={() =>
-                        setDecisionModal({
-                          proposalId: proposal.id,
-                          decision: "approve",
-                          cardName: card.name,
-                          grade: card.grade,
-                        })
-                      }
-                      onReject={() =>
-                        setDecisionModal({
-                          proposalId: proposal.id,
-                          decision: "reject",
-                          cardName: card.name,
-                          grade: card.grade,
-                        })
-                      }
-                    />
-                  );
-                })}
+            {/* 상세: 이미지 + 정보 */}
+            <div className={styles["onp-detail-grid"]}>
+              <div className={styles["onp-media"]}>
+                {sale.imageUrl && (
+                  <Image
+                    src={sale.imageUrl}
+                    alt={sale.name}
+                    fill
+                    className="object-cover"
+                    style={{ borderRadius: "var(--r-img)" }}
+                  />
+                )}
               </div>
-            )}
-          </section>
-        </main>
+
+              <div className={styles["onp-info"]}>
+                <div className={styles["onp-meta-row"]}>
+                  <div className={styles["onp-meta-left"]}>
+                    <span className={styles["onp-rarity"]}>{sale.grade}</span>
+                    <span className={styles["onp-sep"]}>|</span>
+                    <span className={styles["onp-cat"]}>{sale.genre}</span>
+                  </div>
+                  <span className={styles["onp-seller"]}>{sale.sellerNickname}</span>
+                </div>
+
+                <p className={styles["onp-desc"]}>{sale.description}</p>
+
+                <div className={styles["onp-stats"]}>
+                  <div className={styles["onp-stat-row"]}>
+                    <span className={styles["onp-stat-label"]}>가격</span>
+                    <span className={styles["onp-stat-value"]}>
+                      {sale.price?.toLocaleString()} P
+                    </span>
+                  </div>
+                  <div className={styles["onp-stat-row"]}>
+                    <span className={styles["onp-stat-label"]}>잔여</span>
+                    <span className={styles["onp-stat-value"]}>
+                      {remainingQuantity}
+                      <span className={styles["onp-stat-dim"]}> / {totalQuantity}</span>
+                    </span>
+                  </div>
+                </div>
+
+                {hasExchangeWish && (
+                  <>
+                    <div className={styles["onp-wish-head"]}>
+                      <SwapIcon />
+                      <span>교환 희망 정보</span>
+                    </div>
+                    <div className={styles["onp-rule"]} />
+
+                    <div className={`${styles["onp-meta-row"]} ${styles["onp-wish-meta"]}`}>
+                      <div className={styles["onp-meta-left"]}>
+                        {sale.exchangeGrade && (
+                          <span className={styles["onp-rarity"]}>{sale.exchangeGrade}</span>
+                        )}
+                        {sale.exchangeGrade && sale.exchangeGenre && (
+                          <span className={styles["onp-sep"]}>|</span>
+                        )}
+                        {sale.exchangeGenre && (
+                          <span className={styles["onp-cat"]}>{sale.exchangeGenre}</span>
+                        )}
+                      </div>
+                    </div>
+                    {sale.exchangeDescription && (
+                      <p className={styles["onp-desc"]}>{sale.exchangeDescription}</p>
+                    )}
+                  </>
+                )}
+
+                <div className={styles["onp-actions"]}>
+                  <button
+                    type="button"
+                    className={`${styles["onp-btn"]} ${styles["onp-btn-primary"]}`}
+                    onClick={() => setIsEditOpen(true)}
+                  >
+                    수정하기
+                  </button>
+                  <button
+                    type="button"
+                    className={`${styles["onp-btn"]} ${styles["onp-btn-ghost"]}`}
+                    onClick={() => setIsTakeDownOpen(true)}
+                  >
+                    판매 내리기
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            {/* 교환 제시 목록 */}
+            <section className={styles["onp-offers-section"]}>
+              <h2 className={`${styles["onp-title"]} ${styles["onp-title-sm"]}`}>교환 제시 목록</h2>
+              <div className={`${styles["onp-rule"]} ${styles["onp-rule-strong"]}`} />
+
+              {proposals.length === 0 ? (
+                <p className={styles["onp-desc"]}>받은 교환 제시가 없습니다.</p>
+              ) : (
+                <div className={styles["onp-offers-grid"]}>
+                  {proposals.map((proposal) => {
+                    const card = mapProposalToCard(proposal);
+                    if (!card) return null;
+                    const status = proposal.status?.toLowerCase() ?? "pending";
+                    return (
+                      <ExchangeRequestCard
+                        key={proposal.id}
+                        card={card}
+                        status={status}
+                        onAccept={() =>
+                          setDecisionModal({
+                            proposalId: proposal.id,
+                            decision: "approve",
+                            cardName: card.name,
+                            grade: card.grade,
+                          })
+                        }
+                        onReject={() =>
+                          setDecisionModal({
+                            proposalId: proposal.id,
+                            decision: "reject",
+                            cardName: card.name,
+                            grade: card.grade,
+                          })
+                        }
+                      />
+                    );
+                  })}
+                </div>
+              )}
+            </section>
+          </main>
+        </div>
+
+        <SaleEditModal
+          key={sale?.id || "empty"}
+          isOpen={isEditOpen}
+          onClose={() => setIsEditOpen(false)}
+          onSubmit={handleEditSubmit}
+          sale={sale}
+          isSubmitting={isModifying}
+        />
+
+        <SaleTakeDownModal
+          isOpen={isTakeDownOpen}
+          onClose={() => setIsTakeDownOpen(false)}
+          onConfirm={handleTakeDown}
+          isLoading={isCanceling}
+        />
+
+        <ExchangeDecisionModal
+          isOpen={!!decisionModal}
+          onClose={() => setDecisionModal(null)}
+          onConfirm={handleDecisionConfirm}
+          decision={decisionModal?.decision}
+          cardName={decisionModal?.cardName}
+          grade={decisionModal?.grade}
+          isSubmitting={isAccepting || isRejecting}
+        />
       </div>
-
-      <SaleEditModal
-        key={sale?.id || "empty"}
-        isOpen={isEditOpen}
-        onClose={() => setIsEditOpen(false)}
-        onSubmit={handleEditSubmit}
-        sale={sale}
-        isSubmitting={isModifying}
-      />
-
-      <SaleTakeDownModal
-        isOpen={isTakeDownOpen}
-        onClose={() => setIsTakeDownOpen(false)}
-        onConfirm={handleTakeDown}
-        isLoading={isCanceling}
-      />
-
-      <ExchangeDecisionModal
-        isOpen={!!decisionModal}
-        onClose={() => setDecisionModal(null)}
-        onConfirm={handleDecisionConfirm}
-        decision={decisionModal?.decision}
-        cardName={decisionModal?.cardName}
-        grade={decisionModal?.grade}
-        isSubmitting={isAccepting || isRejecting}
-      />
-    </div>
+    </ProtectedRoute>
   );
 }
