@@ -11,7 +11,7 @@ const MyShopGradeSummary = ({ meta = {} }) => {
     DESKTOP: "lg",
   };
 
-  const grades = meta.gradeStats;
+  const grades = meta.gradeStats || []; //데이터가 들어오지 않아도, 빈 값으로 UI를 로드할 수 있도록 함.
 
   return (
     <div className="flex flex-col gap-[15px] tablet:gap-[20px]">
