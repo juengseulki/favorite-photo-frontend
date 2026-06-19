@@ -5,6 +5,7 @@ import "./globals.css";
 import RandomPoint from "@/components/common/RandomPoint.jsx";
 import RandomPointModalGate from "@/features/point/components/RandomPointModalGate";
 import ToastProvider from "@/providers/ToastProvider";
+import { Suspense } from "react";
 
 export const metadata = {
   title: "최애의 포토",
@@ -19,7 +20,9 @@ export default function RootLayout({ children }) {
           <AuthProvider>
             <ToastProvider />
             <Header />
-            <RandomPointModalGate />
+            <Suspense fallback={null}>
+              <RandomPointModalGate />
+            </Suspense>
             <main className="min-h-[calc(100vh-128px)]">{children}</main>
             <RandomPoint />
           </AuthProvider>
