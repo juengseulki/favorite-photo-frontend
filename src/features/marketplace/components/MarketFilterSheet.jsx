@@ -120,15 +120,6 @@ export default function MarketFilterSheet({
       className="fixed inset-0 z-50 tablet:hidden"
       style={{ fontFamily: '"Noto Sans KR", sans-serif' }}
     >
-      <button
-        type="button"
-        aria-label="필터 닫기"
-        className="absolute right-[30px] text-[40px] font-light text-[#5A5A5A]"
-        onClick={onClose}
-      >
-        x
-      </button>
-
       <section className="absolute bottom-0 left-0 right-0 h-[58vh] rounded-t-[24px] bg-gray-500 text-white">
         <header className="relative flex h-[72px] items-center justify-center">
           <h2 className="text-[24px] font-bold text-[#5A5A5A]">필터</h2>
