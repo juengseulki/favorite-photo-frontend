@@ -11,7 +11,7 @@ const MyShopGradeSummary = ({ meta = {} }) => {
     DESKTOP: "lg",
   };
 
-  const grades = meta.gradeStats;
+  const grades = meta.gradeStats || [];
 
   return (
     <div className="flex flex-col gap-[15px] tablet:gap-[20px]">

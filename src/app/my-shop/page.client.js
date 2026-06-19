@@ -50,13 +50,19 @@ const MyShopClient = () => {
     isMobile,
   });
 
-  if (isLoading || isLoadingMobile) return <div>로딩 중..</div>;
+  //if (isLoading || isLoadingMobile) return <div>로딩 중..</div>;
   if (isError) return <div>데이터를 가져오던 중 에러가 발생했습니다.</div>;
 
   //items를 가져온 뒤에 접근.
-  const mobileItems = mobileDatas?.pages.flatMap((page) => page.items) || [];
-  const items = data.items || [];
-  const meta = data.meta; //이건 모바일이어도 똑같으니까.
+  let mobileItems;
+  let items;
+  let meta;
+
+  if (data || mobileDatas) {
+    mobileItems = mobileDatas?.pages.flatMap((page) => page.items) || [];
+    items = data.items || [];
+    meta = data.meta; //이건 모바일이어도 똑같으니까.
+  }
 
   return (
     <div className="mx-auto w-full max-w-[1840px] px-[15px] tablet:px-[20px] desktop:px-[220px] ">
@@ -79,7 +85,13 @@ const MyShopClient = () => {
             onKeywordChange={setKeyword}
           />
         </div>
-        {isMobile ? <MyShopCards cards={mobileItems} /> : <MyShopCards cards={items} />}
+        {isLoading || isLoadingMobile ? (
+          <div>로딩 중..</div>
+        ) : isMobile ? (
+          <MyShopCards cards={mobileItems} />
+        ) : (
+          <MyShopCards cards={items} />
+        )}
         {isMobile ? (
           <div ref={bottomRef} className="flex justify-center text-gray-400">
             {isFetchingNextPage && <div>카드를 불러오는 중...</div>}
