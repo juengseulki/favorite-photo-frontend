@@ -3,7 +3,7 @@
 import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 
-import Modal from "@/components/common/Modal";
+import MarketFilterSheet from "@/features/marketplace/components/MarketFilterSheet";
 import useResponsiveLimit from "@/hooks/useResponsiveLimit";
 import { ROUTES } from "@/lib/constants/routes";
 import { useAuth } from "@/providers/AuthProvider";
@@ -29,6 +29,7 @@ export default function MarketPage() {
   const {
     cards,
     counts,
+    resultCounts,
     isPending,
     fetchNextPage,
     hasNextPage,
@@ -111,19 +112,18 @@ export default function MarketPage() {
         {isFetchingNextPage && <span className="text-[14px] text-gray-300">더 불러오는 중...</span>}
       </section>
 
-      <Modal isOpen={isFilterOpen} title="필터" onClose={() => setIsFilterOpen(false)}>
-        <div className="flex flex-col items-center gap-[12px]">
-          <MarketMobileFilter.FilterControls
-            grade={grade}
-            genre={genre}
-            saleStatus={saleStatus}
-            counts={counts}
-            onGradeChange={setGrade}
-            onGenreChange={setGenre}
-            onSaleStatusChange={setSaleStatus}
-          />
-        </div>
-      </Modal>
+      <MarketFilterSheet
+        isOpen={isFilterOpen}
+        onClose={() => setIsFilterOpen(false)}
+        grade={grade}
+        genre={genre}
+        saleStatus={saleStatus}
+        counts={counts}
+        resultCounts={resultCounts}
+        onGradeChange={setGrade}
+        onGenreChange={setGenre}
+        onSaleStatusChange={setSaleStatus}
+      />
 
       <LoginRequiredModal
         isOpen={isLoginModalOpen}
