@@ -53,16 +53,10 @@ const MyShopClient = () => {
   //if (isLoading || isLoadingMobile) return <div>로딩 중..</div>;
   if (isError) return <div>데이터를 가져오던 중 에러가 발생했습니다.</div>;
 
-  //items를 가져온 뒤에 접근.
-  let mobileItems;
-  let items;
-  let meta;
-
-  if (data || mobileDatas) {
-    mobileItems = mobileDatas?.pages.flatMap((page) => page.items) || [];
-    items = data.items || [];
-    meta = data.meta; //이건 모바일이어도 똑같으니까.
-  }
+  //data의 items, meta을 optional chaining으로 접근가능하도록 하여, 아직 data가 들어오지 않았을 때에도 접근 시에 오류가 나지 않도록 함.
+  const mobileItems = mobileDatas?.pages.flatMap((page) => page.items) || [];
+  const items = data?.items || [];
+  const meta = data?.meta; //이건 모바일이어도 똑같으니까.
 
   return (
     <div className="mx-auto w-full max-w-[1840px] px-[15px] tablet:px-[20px] desktop:px-[220px] ">
