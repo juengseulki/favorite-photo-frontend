@@ -24,7 +24,10 @@ export default function Header() {
   const showMobileHeaderPages = [ROUTES.HOME, ROUTES.MARKET];
   const shouldShowMobileHeader = showMobileHeaderPages.includes(pathname);
 
-  const { data } = useNotifications();
+  const { data } = useNotifications({
+    enabled: !!user,
+  });
+
   const notifications = Array.isArray(data) ? data : [];
   const hasUnread = notifications.some((notification) => notification.isRead === false);
 

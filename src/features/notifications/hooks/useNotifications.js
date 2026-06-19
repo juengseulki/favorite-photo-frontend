@@ -6,7 +6,7 @@ import {
   readNotification,
 } from "@/lib/api/notificationApi";
 
-export function useNotifications() {
+export function useNotifications(options = {}) {
   return useQuery({
     queryKey: QUERY_KEYS.NOTIFICATIONS.LIST(),
 
@@ -17,6 +17,7 @@ export function useNotifications() {
     },
 
     staleTime: 1000 * 30,
+    ...options,
   });
 }
 

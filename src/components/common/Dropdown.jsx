@@ -106,11 +106,12 @@ export default function Dropdown({
             border
             border-gray-400
             bg-gray-500
+            w-max 
             ${SIZE_CLASSES[size]}
           `}
         >
           {options.map((option) => (
-            <li key={option.value}>
+            <li key={option.value} className="whitespace-nowrap">
               <button
                 type="button"
                 onClick={() => {

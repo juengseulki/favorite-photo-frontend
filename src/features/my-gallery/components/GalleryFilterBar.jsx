@@ -32,23 +32,27 @@ export default function GalleryFilterBar({
         onChange={(e) => onKeywordChange(e.target.value)}
       />
 
-      <div className="hidden tablet:block">
+      <div className="hidden tablet:flex items-center">
         <Dropdown
           placeholder="등급"
-          size="sort"
+          size=""
           options={GRADE_OPTIONS}
           value={grade}
           onChange={onGradeChange}
+          iconSize={22}
+          buttonClassName="gap-[10px] border-none text-gray-200 font-bold h-[22px]"
         />
       </div>
 
-      <div className="hidden tablet:block">
+      <div className="hidden tablet:flex items-center">
         <Dropdown
           placeholder="장르"
-          size="sort"
+          size=""
           options={GENRE_OPTIONS}
           value={genre}
           onChange={onGenreChange}
+          iconSize={22}
+          buttonClassName="gap-[10px] border-none text-gray-200 font-bold h-[22px]"
         />
       </div>
     </div>
