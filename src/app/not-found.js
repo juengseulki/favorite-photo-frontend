@@ -1,3 +1,4 @@
+import Button from "@/components/common/Button";
 import Link from "next/link";
 
 export const metadata = {
@@ -22,18 +23,16 @@ export default function NotFound() {
       </p>
 
       <div className="mt-[8px] flex flex-col items-center gap-[12px] tablet:flex-row">
-        <Link
-          href="/market"
-          className="flex h-[56px] w-[220px] items-center justify-center rounded-[2px] bg-main text-[16px] font-bold text-black transition hover:brightness-90"
-        >
-          마켓플레이스 가기
-        </Link>
-        <Link
-          href="/"
-          className="flex h-[56px] w-[220px] items-center justify-center rounded-[2px] border border-gray-100 text-[16px] font-bold text-white transition hover:bg-gray-500"
-        >
-          홈으로 가기
-        </Link>
+        <Button variant="primary" className="!h-[56px] !w-[220px] !p-0 !text-[16px]">
+          <Link href="/market" className="flex h-full w-full items-center justify-center">
+            마켓플레이스 가기
+          </Link>
+        </Button>
+        <Button variant="secondary" className="!h-[56px] !w-[220px] !p-0 !text-[16px]">
+          <Link href="/" className="flex h-full w-full items-center justify-center">
+            홈으로 가기
+          </Link>
+        </Button>
       </div>
     </div>
   );
