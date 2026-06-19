@@ -9,6 +9,7 @@ const SIZE_CLASSES = {
   searchLg: "h-[50px] w-[320px]",
   searchMd: "h-[45px] w-[200px]",
   searchSm: "h-[45px] w-[345px]",
+  sale: "h-[45px] w-[202px] desktop:h-[50px] desktop:w-[245px]",
 };
 
 const LABEL_SIZE_CLASSES = {

@@ -16,6 +16,8 @@ const SIZE_CLASSES = {
     "fixed bottom-0 left-0 right-0 max-h-[90vh] w-full rounded-b-none rounded-t-[16px] tablet:left-1/2 tablet:right-auto tablet:w-[744px] tablet:-translate-x-1/2 desktop:static desktop:w-[1160px] desktop:translate-x-0 desktop:rounded-[2px]",
   mobileFullPage:
     "fixed inset-0 h-screen max-h-screen w-full rounded-none border-0 tablet:bottom-0 tablet:left-1/2 tablet:right-auto tablet:top-auto tablet:h-auto tablet:max-h-[90vh] tablet:w-[744px] tablet:-translate-x-1/2 tablet:rounded-b-none tablet:rounded-t-[16px] desktop:static desktop:h-auto desktop:w-[1160px] desktop:translate-x-0 desktop:rounded-[2px] desktop:border",
+  saleForm:
+    "h-screen w-screen max-h-screen overflow-y-auto rounded-none border-0 px-0 py-0 tablet:h-auto tablet:max-h-[90vh] tablet:w-[744px] tablet:rounded-[2px] tablet:border tablet:px-[40px] tablet:py-[50px] desktop:h-[1000px] desktop:w-[1160px] desktop:px-[120px] desktop:py-[80px]",
 };
 
 const SHEET_SIZES = ["bottomSheet", "mobileFullPage"];
