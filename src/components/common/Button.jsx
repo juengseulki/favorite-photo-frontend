@@ -83,6 +83,11 @@ export default function Button({
         h-[60px]
         w-[210px]
         text-[18px]`,
+
+    sale: `
+        h-[55px]
+        w-[165px]
+        text-[16px]`,
   };
 
   return (

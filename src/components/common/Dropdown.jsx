@@ -8,6 +8,11 @@ const SIZE_CLASSES = {
   md: "h-[55px] w-[440px]",
   sm: "h-[55px] w-[345px]",
   sort: "h-[50px] w-[180px]",
+
+  saleM: "h-[55px] w-[345px]",
+  saleT: "h-[55px] w-[342px]",
+  sale: "h-[60px] w-[440px]",
+  saleMd: "h-[45px] w-full",
 };
 
 const LABEL_SIZE_CLASSES = {
@@ -20,6 +25,8 @@ const ICON_SIZE = {
   md: 24,
   sm: 22,
   sort: 18,
+  sale: 24,
+  saleMd: 22,
 };
 
 export default function Dropdown({

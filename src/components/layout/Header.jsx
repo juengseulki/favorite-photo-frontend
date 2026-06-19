@@ -38,7 +38,9 @@ export default function Header() {
   };
 
   return (
-    <header className="relative h-0 bg-black tablet:h-[80px]">
+    <header
+      className={`relative bg-black ${shouldShowMobileHeader ? "h-[60px]" : "h-0"} tablet:h-[80px]`}
+    >
       <div className="hidden h-full items-center justify-between px-[60px] tablet:flex desktop:px-[220px]">
         <Link href={ROUTES.HOME}>
           <Image src="/img/logos/logo.png" alt="최애의 포토" width={138} height={28} priority />
