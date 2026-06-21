@@ -5,6 +5,7 @@ import Modal from "@/components/common/Modal";
 import { useState } from "react";
 import Button from "@/components/common/Button";
 import { useRouter } from "next/navigation";
+import SaleModal from "@/features/sales/components/SaleModal";
 
 export default function GalleryGrid({ cards, selectedCard, setSelectedCard }) {
   const { handleSubmit, isSubmitting, errorMessage } = useSaleCard();
@@ -22,6 +23,21 @@ export default function GalleryGrid({ cards, selectedCard, setSelectedCard }) {
     } else {
       setSaleFailureModal(true);
     }
+  };
+
+  const closeResultModal = () => {
+    setSaleSuccessModal(false);
+    setSelectedCard(null);
+  };
+  const confirmSuccessModal = () => {
+    setSaleFailureModal(false);
+    setSelectedCard(null);
+    router.push("/my-shop");
+  };
+  const confirmFailureModal = () => {
+    setSaleFailureModal(false);
+    setSelectedCard(null);
+    router.push("/market");
   };
 
   return (
@@ -60,32 +76,13 @@ export default function GalleryGrid({ cards, selectedCard, setSelectedCard }) {
           errorMessage={errorMessage}
         />
       )}
-      <SaleSuccessModal
-        isOpen={saleSuccessModal}
-        onClose={() => {
-          setSaleSuccessModal(false);
-          setSelectedCard(null);
-        }}
-        onConfirm={() => {
-          setSaleSuccessModal(false);
-          setSelectedCard(null);
-          router.push("/market");
-        }}
-        cardName={selectedCard?.name}
-        quantity={submittedQuantity}
-        grade={selectedCard?.grade}
-      />
-      <SaleFailureModal
-        isOpen={saleFailureModal}
-        onClose={() => {
-          setSaleFailureModal(false);
-          setSelectedCard(null);
-        }}
-        onConfirm={() => {
-          setSaleFailureModal(false);
-          setSelectedCard(null);
-          router.push("/market");
-        }}
+      <SaleModal
+        openSuccessModal={saleSuccessModal}
+        openFailureModal={saleFailureModal}
+        closeSuccessModal={closeResultModal}
+        closeFailureModal={closeResultModal}
+        confirmSuccessModal={confirmSuccessModal}
+        confirmFailureModal={confirmFailureModal}
         cardName={selectedCard?.name}
         quantity={submittedQuantity}
         grade={selectedCard?.grade}
