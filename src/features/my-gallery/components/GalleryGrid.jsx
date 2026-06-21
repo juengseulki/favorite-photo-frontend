@@ -25,10 +25,11 @@ export default function GalleryGrid({ cards, selectedCard, setSelectedCard }) {
 
   const closeResultModal = () => {
     setSaleSuccessModal(false);
+    setSaleFailureModal(false);
     setSelectedCard(null);
   };
   const confirmSuccessModal = () => {
-    setSaleFailureModal(false);
+    setSaleSuccessModal(false);
     setSelectedCard(null);
     router.push("/my-shop");
   };
