@@ -3,7 +3,7 @@ import { SaleExchangeFormModal, SaleFailureModal, SaleSuccessModal } from "@/fea
 import { useSaleCard } from "../hooks/useSaleCard";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import SaleResultModal from "@/features/sales/components/SaleModal";
+import SaleResultModal from "@/features/sales/components/SaleResultModal";
 
 export default function GalleryGrid({ cards, selectedCard, setSelectedCard }) {
   const { handleSubmit, isSubmitting, errorMessage } = useSaleCard();
