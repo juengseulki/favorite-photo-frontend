@@ -26,7 +26,6 @@ export default function MyShopFilterModal({
           value={grade}
           onChange={onGradeChange}
         />
-
         <Dropdown
           placeholder="장르"
           size="sort"
