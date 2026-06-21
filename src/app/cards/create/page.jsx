@@ -37,8 +37,6 @@ export default function CreatePhotoCard() {
     enabled: !isLoading && !!user,
   });
 
-  console.log(createStatusQuery.data);
-
   return (
     <ProtectedRoute>
       <div className="mx-auto max-w-[1920px] px-[20px] tablet:px-[60px] desktop:px-[220px] gap-[80px]">
