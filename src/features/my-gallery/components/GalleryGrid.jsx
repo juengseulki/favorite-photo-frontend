@@ -1,11 +1,9 @@
 import { PhotoCard } from "@/components/common/Card";
 import { SaleExchangeFormModal, SaleFailureModal, SaleSuccessModal } from "@/features/exchange";
 import { useSaleCard } from "../hooks/useSaleCard";
-import Modal from "@/components/common/Modal";
 import { useState } from "react";
-import Button from "@/components/common/Button";
 import { useRouter } from "next/navigation";
-import SaleModal from "@/features/sales/components/SaleModal";
+import SaleResultModal from "@/features/sales/components/SaleModal";
 
 export default function GalleryGrid({ cards, selectedCard, setSelectedCard }) {
   const { handleSubmit, isSubmitting, errorMessage } = useSaleCard();
@@ -76,7 +74,7 @@ export default function GalleryGrid({ cards, selectedCard, setSelectedCard }) {
           errorMessage={errorMessage}
         />
       )}
-      <SaleModal
+      <SaleResultModal
         openSuccessModal={saleSuccessModal}
         openFailureModal={saleFailureModal}
         closeSuccessModal={closeResultModal}

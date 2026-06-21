@@ -1,6 +1,6 @@
 import { SaleFailureModal, SaleSuccessModal } from "@/features/exchange";
 
-const SaleModal = ({
+const SaleResultModal = ({
   openSuccessModal,
   openFailureModal,
   closeSuccessModal,
@@ -33,4 +33,4 @@ const SaleModal = ({
   );
 };
 
-export default SaleModal;
+export default SaleResultModal;
