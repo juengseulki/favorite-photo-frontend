@@ -22,7 +22,8 @@ export const API_ROUTES = {
   },
 
   MARKET: {
-    BASE: "/market/cards",
+    CARDS: "/market/cards",
+    COUNTS: "/market/cards/counts",
     DETAIL: (saleId) => `/market/cards/${saleId}`,
     PURCHASE: (saleId) => `/market/cards/${saleId}/purchase`,
   },

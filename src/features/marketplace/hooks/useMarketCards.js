@@ -1,12 +1,21 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { useInfiniteQuery } from "@tanstack/react-query";
+import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 
-import { getMarketCards } from "@/lib/api/marketApi";
+import { getMarketCards, getMarketCounts } from "@/lib/api/marketApi";
 import { QUERY_KEYS } from "@/lib/constants/queryKeys";
 import { QUERY_STALE_TIME } from "@/lib/constants/queryOptions";
 import { normalizeMarketCard } from "@/lib/utils/marketMappers";
+
+const EMPTY_COUNTS = {
+  grades: {},
+  genres: {},
+  saleStatuses: {
+    onSale: 0,
+    soldOut: 0,
+  },
+};
 
 export function useMarketCards({ limit }) {
   const [gradeState, setGradeState] = useState("");
@@ -18,13 +27,23 @@ export function useMarketCards({ limit }) {
   const filters = useMemo(
     () => ({
       limit,
-      keyword: keywordState.trim(),
-      grade: gradeState,
-      genre: genreState,
-      saleStatus: saleStatusState,
       sort: sortState,
+      ...(keywordState.trim() && { keyword: keywordState.trim() }),
+      ...(gradeState && { grade: gradeState }),
+      ...(genreState && { genre: genreState }),
+      ...(saleStatusState && { saleStatus: saleStatusState }),
     }),
     [genreState, gradeState, keywordState, limit, saleStatusState, sortState],
+  );
+
+  const countFilters = useMemo(
+    () => ({
+      ...(keywordState.trim() && { keyword: keywordState.trim() }),
+      ...(gradeState && { grade: gradeState }),
+      ...(genreState && { genre: genreState }),
+      ...(saleStatusState && { saleStatus: saleStatusState }),
+    }),
+    [genreState, gradeState, keywordState, saleStatusState],
   );
 
   const { data, isPending, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery({
@@ -48,12 +67,17 @@ export function useMarketCards({ limit }) {
     retry: false,
   });
 
-  const currentCounts = data?.pages[0]?.counts;
+  const { data: counts = EMPTY_COUNTS } = useQuery({
+    queryKey: QUERY_KEYS.MARKET.COUNTS(countFilters),
+    queryFn: () => getMarketCounts(countFilters),
+    staleTime: QUERY_STALE_TIME.MEDIUM,
+    retry: false,
+  });
 
   return {
     cards: data?.pages.flatMap((page) => page.cards ?? []) ?? [],
-    counts: currentCounts,
-    resultCounts: currentCounts,
+    counts,
+    resultCounts: counts,
     data,
     isPending,
     fetchNextPage,

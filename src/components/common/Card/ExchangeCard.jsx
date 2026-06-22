@@ -50,7 +50,15 @@ export default function ExchangeCard({ card: item, onReject, onAccept }) {
             <span className={card.purchaseTextDesktop}>{item.price} P에 구매</span>
           </div>
 
-          <span className={card.nickname}>{item.creator.nickname}</span>
+          <span className={card.nickname}>
+            {item.ownerNickname ??
+              item.owner?.nickname ??
+              item.sellerNickname ??
+              item.seller?.nickname ??
+              item.creatorNickname ??
+              item.creator?.nickname ??
+              ""}
+          </span>
 
           <span className={card.purchaseTextMobile}>{item.price} P에 구매</span>
         </div>
