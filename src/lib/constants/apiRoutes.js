@@ -23,7 +23,6 @@ export const API_ROUTES = {
 
   MARKET: {
     CARDS: "/market/cards",
-    COUNTS: "/market/cards/counts",
     DETAIL: (saleId) => `/market/cards/${saleId}`,
     PURCHASE: (saleId) => `/market/cards/${saleId}/purchase`,
   },

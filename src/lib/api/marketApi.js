@@ -33,11 +33,3 @@ export const getMarketDetail = async (saleId) => {
 };
 
 export const purchaseCard = purchaseMarketCards;
-
-export const getMarketCounts = async (params) => {
-  const { data } = await axiosInstance.get(API_ROUTES.MARKET.COUNTS, {
-    params,
-  });
-
-  return data.data;
-};

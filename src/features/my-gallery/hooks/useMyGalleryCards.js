@@ -7,7 +7,15 @@ import { getMyGalleryCards, getPhotoCardStatus } from "@/lib/api/galleryApi";
 import { QUERY_KEYS } from "@/lib/constants/queryKeys";
 import { formatGalleryCards } from "../utils/formatGalleryCards";
 
-export function useMyGalleryCards({ limit, isMobile, page, grade, genre, keyword }) {
+export function useMyGalleryCards({
+  limit,
+  isMobile,
+  page,
+  grade,
+  genre,
+  keyword,
+  enabled = true,
+}) {
   const { isLoading, user } = useAuth();
   const observerRef = useRef(null);
 
@@ -28,7 +36,7 @@ export function useMyGalleryCards({ limit, isMobile, page, grade, genre, keyword
         ...commonParams,
         page,
       }),
-    enabled: !isLoading && !!user && !isMobile,
+    nabled: enabled && !isLoading && !!user && !isMobile,
   });
 
   const infiniteQuery = useInfiniteQuery({
@@ -45,7 +53,7 @@ export function useMyGalleryCards({ limit, isMobile, page, grade, genre, keyword
 
       return currentPage < totalPages ? currentPage + 1 : undefined;
     },
-    enabled: !isLoading && !!user && isMobile,
+    enabled: enabled && !isLoading && !!user && isMobile,
   });
 
   const rawCards = isMobile
@@ -63,7 +71,7 @@ export function useMyGalleryCards({ limit, isMobile, page, grade, genre, keyword
   const createStatusQuery = useQuery({
     queryKey: [QUERY_KEYS.GALLERY.MY_CARD_STATUS],
     queryFn: getPhotoCardStatus,
-    enabled: !isLoading && !!user,
+    enabled: enabled && !isLoading && !!user,
   });
 
   const isPending = isMobile ? infiniteQuery.isPending : pageQuery.isPending;
