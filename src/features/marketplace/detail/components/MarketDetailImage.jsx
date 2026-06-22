@@ -11,7 +11,7 @@ export default function MarketDetailImage({ imageUrl, name, isSoldOut = false })
 
         tablet:h-[257px] tablet:w-[342px]
 
-        desktop:h-[530px] desktop:w-[960px]
+        desktop:h-[720px] desktop:w-[960px]
       "
     >
       <Image

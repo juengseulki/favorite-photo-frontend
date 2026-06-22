@@ -1,7 +1,7 @@
 ﻿"use client";
 
 import { useMemo, useState } from "react";
-import { useParams, useRouter, notFound } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { ROUTES } from "@/lib/constants/routes";
@@ -77,14 +77,21 @@ export default function MarketDetail() {
 
   if (!isValidSaleId) notFound();
 
-  if (isLoading) return null;
-
   if (isError) {
-    if (error?.response?.status === 404) notFound();
+    const isNotFound = error?.response?.status === 404;
 
     return (
-      <main className="flex min-h-screen items-center justify-center bg-black">
-        <p className="text-[14px] text-gray-300">상세 정보를 불러오지 못했습니다.</p>
+      <main className="flex min-h-screen flex-col items-center justify-center gap-[20px] bg-black px-[20px] text-center">
+        <p className="text-[18px] font-bold text-white">
+          {isNotFound ? "존재하지 않는 판매글입니다." : "상세 정보를 불러오지 못했습니다."}
+        </p>
+
+        <Link
+          href={ROUTES.MARKET}
+          className="text-[14px] font-bold text-main underline underline-offset-4"
+        >
+          마켓플레이스로 돌아가기
+        </Link>
       </main>
     );
   }
