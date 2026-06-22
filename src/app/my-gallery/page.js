@@ -86,20 +86,6 @@ export default function MyGalleryPage() {
           />
         </div>
 
-        {/* <GalleryFilterSheet
-          isOpen={isModalOpen}
-          onClose={() => setIsModalOpen(false)}
-          grade={grade}
-          genre={genre}
-          counts={{
-            grades: gradeCounts,
-            genres: genreCounts,
-          }}
-          resultCount={resultCount}
-          onGradeChange={handleGradeChange}
-          onGenreChange={handleGenreChange}
-        /> */}
-
         <GalleryFilterSheet
           isOpen={isModalOpen}
           onClose={() => setIsModalOpen(false)}
