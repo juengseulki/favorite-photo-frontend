@@ -108,7 +108,7 @@ const MyShopClient = () => {
         onGenreChange={setGenre}
         onSaleStatusChange={setIsSoldOut}
         onTradeTypeChange={setTradeType}
-        count={meta?.counts}
+        counts={meta?.counts}
         resultCounts={meta?.resultCounts}
       />
     </div>
