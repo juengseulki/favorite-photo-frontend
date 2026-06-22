@@ -1,6 +1,7 @@
 ﻿"use client";
 
 import { useMemo, useState } from "react";
+import Image from "next/image";
 
 import Button from "@/components/common/Button";
 import { PhotoCard } from "@/components/common/Card";
@@ -12,6 +13,7 @@ export default function ExchangeProposalFormModal({
   isOpen,
   onClose,
   onSubmit,
+  onBack,
   card,
   isSubmitting = false,
 }) {
@@ -25,6 +27,11 @@ export default function ExchangeProposalFormModal({
   const handleClose = () => {
     setMessage("");
     onClose?.();
+  };
+
+  const handleBack = () => {
+    setMessage("");
+    onBack?.();
   };
 
   const handleSubmit = () => {
@@ -44,11 +51,54 @@ export default function ExchangeProposalFormModal({
       title=""
       size="form"
       onClose={handleClose}
-      bodyClassName="mt-0"
+      bodyClassName="mt-0 overflow-hidden"
       sheetOnTablet
     >
-      <div className="mx-auto w-full max-w-[940px] space-y-6 px-2 tablet:px-4 desktop:space-y-8 desktop:px-0">
+      <div
+        className="
+          mx-auto
+          max-h-[calc(100vh-180px)]
+          w-full
+          max-w-[940px]
+          space-y-6
+          overflow-y-auto
+          overflow-x-hidden
+          px-2
+          pr-[10px]
+
+          tablet:px-4
+
+          desktop:max-h-[680px]
+          desktop:space-y-8
+          desktop:px-0
+          desktop:pr-[12px]
+
+          [&::-webkit-scrollbar]:w-[6px]
+          [&::-webkit-scrollbar-thumb]:rounded-full
+          [&::-webkit-scrollbar-thumb]:bg-gray-300
+          [&::-webkit-scrollbar-track]:bg-transparent
+        "
+      >
         <div>
+          {onBack && (
+            <button
+              type="button"
+              onClick={handleBack}
+              className="
+                mb-[20px]
+                flex
+                h-[24px]
+                w-[24px]
+                cursor-pointer
+                items-center
+                justify-center
+              "
+              aria-label="카드 선택으로 돌아가기"
+            >
+              <Image src="/img/icons/back.png" alt="" width={22} height={22} />
+            </button>
+          )}
+
           <span className="font-brand text-[18px] font-bold text-white desktop:text-[20px]">
             포토카드 교환하기
           </span>

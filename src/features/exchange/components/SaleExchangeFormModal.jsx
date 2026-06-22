@@ -81,6 +81,7 @@ export default function SaleExchangeFormModal({
   isOpen,
   onClose,
   onSubmit,
+  onBack,
   card,
   defaultValues = EXCHANGE_FORM_DEFAULT_VALUES,
   isSubmitting = false,
@@ -141,6 +142,10 @@ export default function SaleExchangeFormModal({
     onSubmit?.({ ...formValues, description: trimmedDescription, photoCardId: card.photoCardId });
   };
 
+  const handleBack = () => {
+    onBack?.();
+  };
+
   return (
     <Modal
       isOpen={isOpen}
@@ -148,9 +153,10 @@ export default function SaleExchangeFormModal({
       size="saleForm"
       onClose={onClose}
       className="bg-gray-500 [&>button]:hidden tablet:[&>button]:block"
+      bodyClassName="mt-0 h-full"
     >
       {/* 모바일 전용 */}
-      <div className="tablet:hidden">
+      <div className="h-screen overflow-y-auto tablet:hidden">
         <div className="-mt-[35px] flex min-h-full w-full flex-col">
           <button
             type="button"
@@ -316,20 +322,16 @@ export default function SaleExchangeFormModal({
       <div
         className="
             hidden
+            h-full
+            overflow-y-auto
+            overflow-x-hidden
+            pr-[20px]
+
             tablet:mx-auto
             tablet:block
-
-            tablet:max-h-[720px]
             tablet:w-[684px]
-            tablet:overflow-y-auto
-            tablet:overflow-x-hidden
-            tablet:pr-[20px]
 
-            desktop:max-h-[840px]
             desktop:w-[940px]
-            desktop:overflow-y-auto
-            desktop:overflow-x-hidden
-            desktop:pr-[20px]
 
             [&::-webkit-scrollbar]:w-[6px]
             [&::-webkit-scrollbar-thumb]:rounded-full
@@ -337,6 +339,24 @@ export default function SaleExchangeFormModal({
             [&::-webkit-scrollbar-track]:bg-transparent
           "
       >
+        {onBack && (
+          <button
+            type="button"
+            onClick={handleBack}
+            className="
+                  mb-[20px]
+                  flex
+                  h-[24px]
+                  w-[24px]
+                  cursor-pointer
+                  items-center
+                  justify-center
+                "
+            aria-label="카드 선택으로 돌아가기"
+          >
+            <Image src="/img/icons/back.png" alt="" width={22} height={22} />
+          </button>
+        )}
         <p className="font-brand text-[14px] font-bold text-gray-300 desktop:text-[24px]">
           {subtitle}
         </p>

@@ -109,8 +109,6 @@ export default function MarketPage() {
     genre: saleGenre === "ALL" ? "" : saleGenre, //값이 ALL일 경우엔 전체 데이터가 불러와지도록 함.
     keyword: saleKeyword,
   });
-  console.log("grade", saleGrade);
-  console.log("genre", saleGenre);
 
   //카드 판매 등록하기 & 등록 결과 모달 띄우기
   const { handleSubmit, isSubmitting, errorMessage } = useSaleCard();
@@ -245,6 +243,10 @@ export default function MarketPage() {
         card={saleSelectedCard}
         isSubmitting={isSubmitting}
         errorMessage={errorMessage}
+        onBack={() => {
+          setIsSaleFormOpen(false);
+          setIsSelectCardOpen(true);
+        }}
       />
       <SaleResultModal
         openSuccessModal={saleSuccessModal}

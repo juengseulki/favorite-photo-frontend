@@ -94,20 +94,7 @@ export default function MarketDetail() {
     );
   }
 
-  if (!sale) {
-    return (
-      <main className="flex min-h-screen flex-col items-center justify-center gap-[20px] bg-black px-[20px] text-center">
-        <p className="text-[18px] font-bold text-white">존재하지 않는 판매글입니다.</p>
-
-        <Link
-          href={ROUTES.MARKET}
-          className="text-[14px] font-bold text-main underline underline-offset-4"
-        >
-          마켓플레이스로 돌아가기
-        </Link>
-      </main>
-    );
-  }
+  if (!sale) return null;
 
   const exchange = {
     description: sale.exchangeDescription ?? sale.exchange?.description ?? "",
@@ -172,12 +159,44 @@ export default function MarketDetail() {
         <div className="h-[22px] w-[22px] shrink-0" />
       </header>
 
-      <div className="mx-auto w-full px-[15px] pb-[80px] pt-[20px] tablet:px-[20px] tablet:pb-[100px] tablet:pt-[40px] desktop:w-[1480px] desktop:px-0 desktop:pb-[60px] desktop:pt-[124px]">
+      <div className="mx-auto w-full px-[15px] pb-[80px] pt-[20px] tablet:px-[20px] tablet:pb-[100px] tablet:pt-[40px] desktop:w-[1480px] desktop:px-0 desktop:pb-[60px] desktop:pt-[40px]">
         <Link
           href={ROUTES.MARKET}
-          className="font-brand mb-[20px] hidden cursor-pointer text-[14px] text-gray-300 transition hover:text-white tablet:block desktop:mb-[60px] desktop:text-[24px]"
+          className="
+              group
+              mb-[20px]
+              hidden
+              w-fit
+              cursor-pointer
+
+              font-brand
+              text-[14px]
+              text-gray-300
+
+              transition-all
+              duration-300
+
+              hover:-translate-x-1
+              hover:text-main
+
+              tablet:block
+
+              desktop:mb-[60px]
+              desktop:text-[24px]
+            "
         >
-          마켓플레이스
+          <span
+            className="
+                border-b
+                border-transparent
+                transition-colors
+                duration-300
+
+                group-hover:border-main
+              "
+          >
+            마켓플레이스
+          </span>
         </Link>
 
         <h2 className="border-b border-gray-200 pt-[10px] pb-[10px] text-[24px] font-bold leading-none tablet:text-[32px] tablet:pt-[20px] tablet:pb-[20px] desktop:pb-[20px] desktop:text-[40px]">
@@ -217,6 +236,10 @@ export default function MarketDetail() {
           card={selectedExchangeCard}
           onSubmit={handleSubmitProposal}
           isSubmitting={isPending}
+          onBack={() => {
+            setIsProposalModalOpen(false);
+            setIsExchangeModalOpen(true);
+          }}
         />
 
         <MyExchangeProposalList

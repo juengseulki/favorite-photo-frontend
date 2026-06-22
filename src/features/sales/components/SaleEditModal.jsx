@@ -46,6 +46,10 @@ export default function SaleEditModal({ isOpen, onClose, onSubmit, sale, isSubmi
       submitText="수정하기"
       loadingText="수정 중..."
       subtitle="수정하기"
+      onBack={() => {
+        setIsSaleFormOpen(false);
+        setIsSelectCardOpen(true);
+      }}
     />
   );
 }

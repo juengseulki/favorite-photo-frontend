@@ -1,82 +1,46 @@
 "use client";
 
+import Image from "next/image";
 import { useRouter } from "next/navigation";
-import {
-  useNotifications,
-  useReadNotification,
-} from "@/features/notifications/hooks/useNotifications";
 import ProtectedRoute from "@/components/common/ProtectedRoute";
+import NotificationList from "@/features/notifications/components/NotificationList";
 
 export default function NotificationPage() {
   const router = useRouter();
 
-  const { data } = useNotifications();
-  const notifications = Array.isArray(data) ? data : [];
-
-  const { mutate } = useReadNotification();
-
-  const handleClick = (notification) => {
-    mutate(notification.id);
-
-    if (notification.linkUrl) {
-      router.push(notification.linkUrl);
-    }
-  };
-
-  const getTimeAgo = (createdAt) => {
-    const now = new Date();
-    const created = new Date(createdAt);
-
-    const diff = Math.floor((now - created) / 1000);
-
-    if (diff < 60) {
-      return `${diff}초 전`;
-    }
-
-    const minutes = Math.floor(diff / 60);
-    if (minutes < 60) {
-      return `${minutes}분 전`;
-    }
-
-    const hours = Math.floor(minutes / 60);
-    if (hours < 24) {
-      return `${hours}시간 전`;
-    }
-
-    const days = Math.floor(hours / 24);
-    if (days < 30) {
-      return `${days}일 전`;
-    }
-
-    const months = Math.floor(days / 30);
-    if (months < 12) {
-      return `${months}개월 전`;
-    }
-
-    const years = Math.floor(months / 12);
-    return `${years}년 전`;
-  };
-
   return (
     <ProtectedRoute>
-      <div>
-        {notifications.length === 0 ? (
-          <p className="text-[14px] text-gray-300">알림이 없습니다.</p>
-        ) : (
-          <ul className="flex flex-col gap-[12px]">
-            {notifications.map((item) => (
-              <li
-                key={item.id}
-                onClick={() => handleClick(item)}
-                className={`w-full text-left flex flex-col gap-[10px] ${item.isRead ? "opacity-50" : "opacity-100"} border-b border-[#3E3E3E] p-5`}
-              >
-                <p className="text-[14px] text-white"> {item.content}</p>
-                <p className="text-[12px] text-gray-300">{getTimeAgo(item.createdAt)}</p>
-              </li>
-            ))}
-          </ul>
-        )}
-      </div>
+      <main className="min-h-screen bg-black px-[15px] pb-[80px] pt-[20px] tablet:px-[60px] tablet:pt-[50px] desktop:px-[220px]">
+        <section className="mx-auto max-w-[1040px]">
+          <button
+            type="button"
+            onClick={() => router.back()}
+            className="
+                mb-[30px]
+                flex
+                items-center
+                gap-[10px]
+                cursor-pointer
+                text-[16px]
+                text-white
+              "
+          >
+            <Image src="/img/icons/back.png" alt="" width={22} height={22} />
+
+            <span className="hidden tablet:block">이전으로</span>
+          </button>
+
+          <div className="border-b border-gray-200 pb-[20px]">
+            <h1 className="font-brand text-[32px] font-bold text-white tablet:text-[48px] desktop:text-[62px]">
+              알림
+            </h1>
+          </div>
+
+          <div className="mt-[20px]">
+            <NotificationList />
+          </div>
+        </section>
+      </main>
     </ProtectedRoute>
   );
 }
