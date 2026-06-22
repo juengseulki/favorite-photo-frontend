@@ -47,7 +47,7 @@ function QuantityField({ quantity, maxQuantity, onChange, isMobile = false }) {
         >
           <button
             type="button"
-            className="text-[18px] text-gray-300 desktop:text-[20px]"
+            className="cursor-pointer text-[18px] text-gray-300 desktop:text-[20px]"
             onClick={() => onChange(Math.max(1, quantity - 1))}
           >
             -
@@ -57,7 +57,7 @@ function QuantityField({ quantity, maxQuantity, onChange, isMobile = false }) {
 
           <button
             type="button"
-            className="text-[18px] text-gray-300 desktop:text-[20px]"
+            className="cursor-pointer text-[18px] text-gray-300 desktop:text-[20px]"
             onClick={() => onChange(Math.min(safeMaxQuantity, quantity + 1))}
           >
             +
@@ -85,6 +85,9 @@ export default function SaleExchangeFormModal({
   defaultValues = EXCHANGE_FORM_DEFAULT_VALUES,
   isSubmitting = false,
   errorMessage = "",
+  submitText = "판매하기",
+  loadingText = "판매 중...",
+  subtitle = "나의 포토카드 판매하기",
 }) {
   const [formValues, setFormValues] = useState(defaultValues);
   const [descriptionError, setDescriptionError] = useState("");
@@ -145,7 +148,6 @@ export default function SaleExchangeFormModal({
       size="saleForm"
       onClose={onClose}
       className="bg-gray-500 [&>button]:hidden tablet:[&>button]:block"
-      bodyClassName="mt-0"
     >
       {/* 모바일 전용 */}
       <div className="tablet:hidden">
@@ -166,7 +168,7 @@ export default function SaleExchangeFormModal({
           </button>
 
           <span className="absolute left-1/2 -translate-x-1/2 font-brand text-[16px] font-bold text-white">
-            나의 포토카드 판매하기
+            {subtitle}
           </span>
         </div>
 
@@ -187,9 +189,7 @@ export default function SaleExchangeFormModal({
           <div className="mt-[20px] flex items-center justify-between border-b border-gray-450 pb-[14px]">
             <div className="flex items-center gap-[8px]">
               <span className="text-[18px] font-bold text-main">{previewCard.grade}</span>
-
               <span className="text-gray-300">|</span>
-
               <span className="text-[16px] text-gray-300">{previewCard.genre}</span>
             </div>
 
@@ -198,7 +198,6 @@ export default function SaleExchangeFormModal({
             </span>
           </div>
 
-          {/* 판매 수량 */}
           <div className="mt-[30px] flex flex-col gap-[20px]">
             <div className="flex items-center justify-between">
               <span className="w-[90px] shrink-0 text-[16px] font-bold text-white">
@@ -240,7 +239,6 @@ export default function SaleExchangeFormModal({
               </div>
             </div>
 
-            {/* 가격 */}
             <div className="flex items-center justify-between">
               <span className="w-[90px] shrink-0 text-[16px] font-bold text-white">장당 가격</span>
 
@@ -254,7 +252,6 @@ export default function SaleExchangeFormModal({
             </div>
           </div>
 
-          {/* 교환 */}
           <section className="mt-[55px]">
             <h3 className="border-b border-gray-200 pb-[18px] text-[24px] font-bold text-white">
               교환 희망 정보
@@ -289,7 +286,14 @@ export default function SaleExchangeFormModal({
             </div>
           </section>
 
-          {/* 버튼 */}
+          {descriptionError && (
+            <p className="mt-3 text-[14px] font-medium text-red-500">{descriptionError}</p>
+          )}
+
+          {errorMessage && (
+            <p className="mt-4 text-[14px] font-medium text-red-500">{errorMessage}</p>
+          )}
+
           <div className="mt-[40px] flex w-full gap-[10px]">
             <Button variant="secondary" size="sale" className="flex-1" onClick={onClose}>
               취소하기
@@ -302,16 +306,39 @@ export default function SaleExchangeFormModal({
               onClick={handleSubmit}
               disabled={isSubmitting}
             >
-              {isSubmitting ? "판매 중..." : "판매하기"}
+              {isSubmitting ? loadingText : submitText}
             </Button>
           </div>
         </div>
       </div>
 
       {/* 태블릿/데스크탑 전용 */}
-      <div className="hidden tablet:mx-auto tablet:block tablet:w-[664px] desktop:w-[920px]">
+      <div
+        className="
+            hidden
+            tablet:mx-auto
+            tablet:block
+
+            tablet:max-h-[720px]
+            tablet:w-[684px]
+            tablet:overflow-y-auto
+            tablet:overflow-x-hidden
+            tablet:pr-[20px]
+
+            desktop:max-h-[840px]
+            desktop:w-[940px]
+            desktop:overflow-y-auto
+            desktop:overflow-x-hidden
+            desktop:pr-[20px]
+
+            [&::-webkit-scrollbar]:w-[6px]
+            [&::-webkit-scrollbar-thumb]:rounded-full
+            [&::-webkit-scrollbar-thumb]:bg-gray-300
+            [&::-webkit-scrollbar-track]:bg-transparent
+          "
+      >
         <p className="font-brand text-[14px] font-bold text-gray-300 desktop:text-[24px]">
-          나의 포토카드 판매하기
+          {subtitle}
         </p>
 
         <h2 className="mt-[8px] border-b border-gray-400 pb-[16px] text-[28px] font-bold leading-none text-white desktop:mt-[10px] desktop:pb-[20px] desktop:text-[40px]">
@@ -427,7 +454,7 @@ export default function SaleExchangeFormModal({
               onClick={handleSubmit}
               disabled={isSubmitting}
             >
-              {isSubmitting ? "판매 중..." : "판매하기"}
+              {isSubmitting ? loadingText : submitText}
             </Button>
           </div>
         </section>
