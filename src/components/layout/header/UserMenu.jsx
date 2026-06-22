@@ -43,6 +43,7 @@ export default function UserMenu({ user, onLogout }) {
           text-gray-200
           transition
           hover:text-main
+          cursor-pointer
         "
       >
         {user.nickname}
@@ -53,7 +54,7 @@ export default function UserMenu({ user, onLogout }) {
       <button
         type="button"
         onClick={onLogout}
-        className="text-[14px] text-gray-400 transition hover:text-gray-200"
+        className="text-[14px] text-gray-400 transition hover:text-gray-200 cursor-pointer"
       >
         로그아웃
       </button>

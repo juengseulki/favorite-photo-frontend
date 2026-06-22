@@ -50,21 +50,29 @@ function SignupFormContent() {
   const validate = () => {
     const next = {};
 
-    if (!form.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
+    if (!form.email.trim()) {
+      next.email = ERROR_MESSAGES.EMAIL_REQUIRED;
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
       next.email = ERROR_MESSAGES.INVALID_EMAIL;
     }
 
-    if (!form.nickname || form.nickname.length < 2 || form.nickname.length > 12) {
+    if (!form.nickname.trim()) {
+      next.nickname = ERROR_MESSAGES.NICKNAME_REQUIRED;
+    } else if (form.nickname.length < 2 || form.nickname.length > 12) {
       next.nickname = ERROR_MESSAGES.NICKNAME_LENGTH;
     }
 
-    if (form.password.length < 8) {
+    if (!form.password.trim()) {
+      next.password = ERROR_MESSAGES.PASSWORD_REQUIRED;
+    } else if (form.password.length < 8) {
       next.password = ERROR_MESSAGES.PASSWORD_MIN_LENGTH;
     } else if (!/^(?=.*[a-zA-Z])(?=.*\d)/.test(form.password)) {
       next.password = ERROR_MESSAGES.PASSWORD_ALPHANUMERIC;
     }
 
-    if (form.password !== form.passwordConfirm) {
+    if (!form.passwordConfirm.trim()) {
+      next.passwordConfirm = ERROR_MESSAGES.PASSWORD_CONFIRM_REQUIRED;
+    } else if (form.password !== form.passwordConfirm) {
       next.passwordConfirm = ERROR_MESSAGES.PASSWORD_NOT_MATCH;
     }
 
@@ -121,12 +129,10 @@ function SignupFormContent() {
         size="lg"
         inputClassName="!w-full"
         label="이메일"
-        type="email"
         placeholder="이메일을 입력해 주세요"
         value={form.email}
         onChange={handleChange("email")}
         error={errors.email}
-        required
       />
 
       <Input
@@ -138,7 +144,6 @@ function SignupFormContent() {
         value={form.nickname}
         onChange={handleChange("nickname")}
         error={errors.nickname}
-        required
       />
 
       <Input
@@ -164,7 +169,6 @@ function SignupFormContent() {
             />
           </button>
         }
-        required
       />
 
       <Input
@@ -190,7 +194,6 @@ function SignupFormContent() {
             />
           </button>
         }
-        required
       />
 
       {errors.general && <p className="-mt-[24px] text-[13px] text-[#FF483D]">{errors.general}</p>}

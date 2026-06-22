@@ -42,6 +42,8 @@ function LoginFormContent() {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [emailError, setEmailError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
 
   useEffect(() => {
     if (!authLoading && user) {
@@ -49,10 +51,39 @@ function LoginFormContent() {
     }
   }, [authLoading, user, router]);
 
+  const validateForm = () => {
+    setEmailError("");
+    setPasswordError("");
+
+    let isValid = true;
+
+    if (!email.trim()) {
+      setEmailError(ERROR_MESSAGES.EMAIL_REQUIRED);
+      isValid = false;
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      setEmailError(ERROR_MESSAGES.INVALID_EMAIL);
+      isValid = false;
+    }
+
+    if (!password.trim()) {
+      setPasswordError(ERROR_MESSAGES.PASSWORD_REQUIRED);
+      isValid = false;
+    }
+
+    return isValid;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     setError("");
+
+    const isValid = validateForm();
+
+    if (!isValid) {
+      return;
+    }
+
     setIsLoading(true);
 
     try {
@@ -62,7 +93,7 @@ function LoginFormContent() {
 
       router.replace(redirectUrl);
     } catch (err) {
-      setError(err.response?.data?.error?.message || ERROR_MESSAGES.LOGIN_FAILED_GENERIC);
+      setError(ERROR_MESSAGES.LOGIN_FAILED);
     } finally {
       setIsLoading(false);
     }
@@ -83,13 +114,11 @@ function LoginFormContent() {
         size="lg"
         inputClassName="!w-full"
         label="이메일"
-        type="email"
         placeholder="이메일을 입력해 주세요"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
-        required
+        error={emailError}
       />
-
       <Input
         size="lg"
         inputClassName="!w-full"
@@ -108,10 +137,10 @@ function LoginFormContent() {
             />
           </button>
         }
-        required
+        error={passwordError}
       />
 
-      {error && <p className="-mt-[24px] text-[13px] text-[#FF483D]">{error}</p>}
+      {error && <p className="text-red">{error}</p>}
 
       <Button variant="primary" type="submit" disabled={isLoading} className="!h-[60px] !w-full">
         {isLoading ? "로그인 중..." : "로그인"}
