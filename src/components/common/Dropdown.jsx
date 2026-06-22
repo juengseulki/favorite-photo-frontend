@@ -60,7 +60,7 @@ export default function Dropdown({
   }, []);
 
   return (
-    <div ref={dropdownRef} className={`relative flex flex-col gap-[10px] ${className}`}>
+    <div ref={dropdownRef} className={`relative flex flex-col gap-[10px] ${className} `}>
       {label && (
         <span className={`font-bold text-white ${LABEL_SIZE_CLASSES[labelSize]}`}>{label}</span>
       )}
@@ -79,6 +79,7 @@ export default function Dropdown({
           ${SIZE_CLASSES[size]}
           ${error ? "border-red" : "border-gray-200"}
           ${buttonClassName}
+          cursor-pointer
         `}
       >
         <span className={`${selected ? "text-white" : "text-gray-300"} shrink-0`}>
@@ -126,6 +127,7 @@ export default function Dropdown({
                   text-[14px]
                   text-white
                   hover:bg-gray-450
+                  cursor-pointer
                 "
               >
                 {option.label}

@@ -112,6 +112,8 @@ export default function Button({
         ${variants[variant]}
         ${sizes[size]}
         ${className}
+
+        cursor-pointer
       `}
       {...props}
     >
