@@ -15,6 +15,10 @@ import MarketGrid from "@/features/marketplace/components/MarketGrid";
 import MarketMobileFilter from "@/features/marketplace/components/MarketMobileFilter";
 import LoginRequiredModal from "@/features/marketplace/components/LoginRequiredModal";
 import { useMarketCards } from "@/features/marketplace/hooks/useMarketCards";
+import { ExchangeSelectCardModal, SaleExchangeFormModal } from "@/features/exchange";
+import SaleResultModal from "@/features/sales/components/SaleResultModal";
+import { useMyGalleryCards } from "@/features/my-gallery/hooks/useMyGalleryCards";
+import { useSaleCard } from "@/features/my-gallery/hooks/useSaleCard";
 
 export default function MarketPage() {
   const router = useRouter();
@@ -25,6 +29,18 @@ export default function MarketPage() {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [redirectUrl, setRedirectUrl] = useState("");
+
+  //Sale 모달
+  const [saleSelectCardModalOpen, setSaleSelectCardModalOpen] = useState(false);
+  const [saleFormModalOpen, setSaleFormModalOpen] = useState(false);
+  const [saleKeyword, setSaleKeyword] = useState("");
+  const [saleGrade, setSaleGrade] = useState("");
+  const [saleGenre, setSaleGenre] = useState("");
+  const [saleSelectedCard, setSaleSelectedCard] = useState(null);
+  const [saleSelectedId, setSaleSelectedId] = useState(null);
+  const [submittedQuantity, setSubmittedQuantity] = useState(0);
+  const [saleSuccessModal, setSaleSuccessModal] = useState(false);
+  const [saleFailureModal, setSaleFailureModal] = useState(false);
 
   const {
     cards,
@@ -75,8 +91,63 @@ export default function MarketPage() {
       openLoginModal(ROUTES.MY_GALLERY);
       return;
     }
+    //판매 모달 열기
+    setSaleSelectCardModalOpen(true);
+  };
 
-    router.push(ROUTES.MY_GALLERY);
+  //내 카드 정보
+  const {
+    cards: myCards,
+    meta,
+    createStatus,
+    isLoading,
+  } = useMyGalleryCards({
+    //판매 가능 카드를 모두 가져올 수 있도록 함.
+    limit: 1000,
+    isMobile: true,
+    grade: saleGrade === "ALL" ? "" : saleGrade, //값이 ALL일 경우엔 전체 데이터가 불러와지도록 함.
+    genre: saleGenre === "ALL" ? "" : saleGenre, //값이 ALL일 경우엔 전체 데이터가 불러와지도록 함.
+    keyword: saleKeyword,
+  });
+  console.log("grade", saleGrade);
+  console.log("genre", saleGenre);
+
+  //카드 판매 등록하기 & 등록 결과 모달 띄우기
+  const { handleSubmit, isSubmitting, errorMessage } = useSaleCard();
+  const handleFormSubmit = async (data) => {
+    const createdSale = await handleSubmit(data);
+    if (createdSale) {
+      setSubmittedQuantity(data?.quantity);
+      setSaleSuccessModal(true);
+    } else {
+      setSaleFailureModal(true);
+    }
+    setSaleFormModalOpen(false);
+  };
+
+  const clearSaleState = () => {
+    setSaleKeyword("");
+    setSaleGrade("");
+    setSaleGenre("");
+    setSaleSelectedCard(null);
+    setSaleSelectedId(null);
+    setSubmittedQuantity(0);
+  };
+
+  const closeResultModal = () => {
+    setSaleSuccessModal(false);
+    setSaleFailureModal(false);
+    clearSaleState();
+  };
+  const confirmSuccessModal = () => {
+    setSaleSuccessModal(false);
+    clearSaleState();
+    router.push("/my-shop");
+  };
+  const confirmFailureModal = () => {
+    setSaleFailureModal(false);
+    clearSaleState();
+    router.push("/market");
   };
 
   return (
@@ -129,6 +200,63 @@ export default function MarketPage() {
         isOpen={isLoginModalOpen}
         redirectUrl={redirectUrl}
         onClose={() => setIsLoginModalOpen(false)}
+      />
+
+      {/* Sale 모달 관련 */}
+      <ExchangeSelectCardModal
+        isOpen={saleSelectCardModalOpen}
+        onClose={() => {
+          setSaleSelectCardModalOpen(false);
+          clearSaleState();
+        }}
+        cards={myCards}
+        selectedCardId={saleSelectedId}
+        onSelectCard={(card) => {
+          setSaleSelectedCard(card);
+          setSaleSelectedId(card.id);
+        }}
+        onConfirm={() => {
+          //폼 모달 키고, 현재 모달 끄기.
+          setSaleFormModalOpen(true);
+          setSaleSelectCardModalOpen(false);
+        }}
+        keyword={saleKeyword}
+        onKeywordChange={setSaleKeyword}
+        grade={saleGrade}
+        onGradeChange={setSaleGrade}
+        genre={saleGenre}
+        onGenreChange={setSaleGenre}
+        isLoading={isLoading}
+        isDisabled={false}
+        errorMessage=""
+        emptyMessage="판매 가능한 포토카드가 없습니다."
+        helperText=""
+        confirmDisabledReason=""
+        expectedGrade=""
+        expectedGenre=""
+        isSale={true}
+      />
+      <SaleExchangeFormModal
+        isOpen={saleFormModalOpen}
+        onClose={() => {
+          setSaleFormModalOpen(false);
+          clearSaleState();
+        }}
+        onSubmit={handleFormSubmit}
+        card={saleSelectedCard}
+        isSubmitting={isSubmitting}
+        errorMessage={errorMessage}
+      />
+      <SaleResultModal
+        openSuccessModal={saleSuccessModal}
+        openFailureModal={saleFailureModal}
+        closeSuccessModal={closeResultModal}
+        closeFailureModal={closeResultModal}
+        confirmSuccessModal={confirmSuccessModal}
+        confirmFailureModal={confirmFailureModal}
+        cardName={saleSelectedCard?.name}
+        quantity={submittedQuantity}
+        grade={saleSelectedCard?.grade}
       />
     </main>
   );

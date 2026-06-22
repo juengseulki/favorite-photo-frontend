@@ -28,6 +28,7 @@ export default function ExchangeSelectCardModal({
   emptyMessage = "교환 가능한 포토카드가 없습니다.",
   helperText = "",
   confirmDisabledReason = "",
+  isSale = false,
 }) {
   const [selectionError, setSelectionError] = useState("");
 
@@ -47,7 +48,9 @@ export default function ExchangeSelectCardModal({
     if (isDisabled) return;
 
     if (!selectedCard) {
-      setSelectionError("교환할 포토카드를 선택해 주세요.");
+      setSelectionError(
+        isSale ? "판매할 포토카드를 선택해주세요" : "교환할 포토카드를 선택해 주세요.",
+      );
       return;
     }
 
@@ -91,7 +94,7 @@ export default function ExchangeSelectCardModal({
           </span>
 
           <h2 className="font-brand mt-[12px] text-[28px] font-bold text-white tablet:text-[32px] desktop:text-[40px]">
-            포토카드 교환하기
+            {isSale ? "나의 포토카드 판매하기" : "포토카드 교환하기"}
           </h2>
         </div>
 
