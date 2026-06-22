@@ -105,10 +105,12 @@ export default function MarketPage() {
     //판매 가능 카드를 모두 가져올 수 있도록 함.
     limit: 1000,
     isMobile: true,
-    grade: saleGrade,
-    genre: saleGenre,
+    grade: saleGrade === "ALL" ? "" : saleGrade, //값이 ALL일 경우엔 전체 데이터가 불러와지도록 함.
+    genre: saleGenre === "ALL" ? "" : saleGenre, //값이 ALL일 경우엔 전체 데이터가 불러와지도록 함.
     keyword: saleKeyword,
   });
+  console.log("grade", saleGrade);
+  console.log("genre", saleGenre);
 
   //카드 판매 등록하기 & 등록 결과 모달 띄우기
   const { handleSubmit, isSubmitting, errorMessage } = useSaleCard();
