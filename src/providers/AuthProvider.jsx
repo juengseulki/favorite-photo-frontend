@@ -8,6 +8,8 @@ import { clearAccessToken, requestRefreshToken, setAccessToken } from "@/lib/api
 
 const AuthContext = createContext(null);
 
+const SESSION_KEY = "oshi_has_session";
+
 export function AuthProvider({ children }) {
   const pathname = usePathname();
 
@@ -21,6 +23,11 @@ export function AuthProvider({ children }) {
         return;
       }
 
+      if (!localStorage.getItem(SESSION_KEY)) {
+        setIsLoading(false);
+        return;
+      }
+
       try {
         await requestRefreshToken();
 
@@ -30,6 +37,7 @@ export function AuthProvider({ children }) {
       } catch {
         clearAccessToken();
         setUser(null);
+        localStorage.removeItem(SESSION_KEY);
       } finally {
         setIsLoading(false);
       }
@@ -41,12 +49,14 @@ export function AuthProvider({ children }) {
   const login = ({ user, accessToken }) => {
     setAccessToken(accessToken);
     setUser(user);
+    localStorage.setItem(SESSION_KEY, "1");
   };
 
   const logout = async () => {
     await logoutUser().catch(() => {});
     clearAccessToken();
     setUser(null);
+    localStorage.removeItem(SESSION_KEY);
   };
 
   const updatePoint = (newBalance) => {

@@ -13,6 +13,7 @@ import { useRouter } from "next/navigation";
 import { ROUTES } from "@/lib/constants/routes";
 import { getPhotoCardStatus } from "@/lib/api/galleryApi";
 import { QUERY_KEYS } from "@/lib/constants/queryKeys";
+import { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/providers/AuthProvider";
 
@@ -38,11 +39,16 @@ export default function CreatePhotoCard() {
   });
 
   const createStatus = createStatusQuery.data;
-
   const remainingCreateCount = createStatus?.remainingCreateCount ?? 0;
   const monthlyCreateLimit = createStatus?.monthlyCreateLimit ?? 0;
   const year = createStatus?.year ?? "";
   const month = createStatus?.month ?? "";
+
+  useEffect(() => {
+    if (createStatusQuery.data?.remainingCreateCount === 0) {
+      router.replace(ROUTES.MY_GALLERY);
+    }
+  }, [createStatusQuery.data, router]);
 
   return (
     <ProtectedRoute>
@@ -51,7 +57,6 @@ export default function CreatePhotoCard() {
           <span className="hidden tablet:block font-brand text-[40px] desktop:text-[50px] font-normal tracking-[-0.03em]">
             포토카드 생성
           </span>
-
           <div className="flex items-baseline gap-[12px]">
             <div className="flex items-baseline gap-[4px]">
               <span className="text-main text-[32px] tablet:text-[40px]">
@@ -59,7 +64,6 @@ export default function CreatePhotoCard() {
               </span>
               <span className="text-[20px] tablet:text-[28px]">/{monthlyCreateLimit}</span>
             </div>
-
             <span className="text-gray-300 text-[16px]">
               ({year}년 {month}월)
             </span>
@@ -74,7 +78,7 @@ export default function CreatePhotoCard() {
               className="tablet:hidden"
               size="sm"
               label="포토카드 이름"
-              placeholder="포토카드 이름을 입력해주세요 (25자 이내)"
+              placeholder="포토카드 이름을 입력해주세요"
               value={values.name}
               onChange={(e) => handleChange("name", e.target.value)}
               onBlur={() => handleBlur("name", values.name)}
@@ -83,7 +87,7 @@ export default function CreatePhotoCard() {
             <Input
               className="hidden tablet:flex"
               label="포토카드 이름"
-              placeholder="포토카드 이름을 입력해주세요 (25자 이내)"
+              placeholder="포토카드 이름을 입력해주세요"
               value={values.name}
               onChange={(e) => handleChange("name", e.target.value)}
               onBlur={() => handleBlur("name", values.name)}
@@ -143,7 +147,7 @@ export default function CreatePhotoCard() {
               className="tablet:hidden"
               size="sm"
               label="가격"
-              placeholder="가격을 입력해 주세요 (100만원 이하)"
+              placeholder="가격을 입력해 주세요"
               value={values.initialPrice}
               onChange={(e) => handleChange("initialPrice", e.target.value.replace(/\D/g, ""))}
               onBlur={() => handleBlur("initialPrice", values.initialPrice)}
@@ -152,7 +156,7 @@ export default function CreatePhotoCard() {
             <Input
               className="hidden tablet:flex"
               label="가격"
-              placeholder="가격을 입력해 주세요 (100만원 이하)"
+              placeholder="가격을 입력해 주세요"
               value={values.initialPrice}
               onChange={(e) => handleChange("initialPrice", e.target.value.replace(/\D/g, ""))}
               onBlur={() => handleBlur("initialPrice", values.initialPrice)}
@@ -166,7 +170,7 @@ export default function CreatePhotoCard() {
               className="tablet:hidden"
               size="sm"
               label="총 발행량"
-              placeholder="총 발행량을 입력해주세요 (10장 이내)"
+              placeholder="총 발행량을 입력해주세요 (최대 10장)"
               value={values.totalQuantity}
               onChange={(e) => {
                 const value = e.target.value.replace(/\D/g, "");
@@ -185,7 +189,7 @@ export default function CreatePhotoCard() {
             <Input
               className="hidden tablet:flex"
               label="총 발행량"
-              placeholder="총 발행량을 입력해주세요 (10장 이내)"
+              placeholder="총 발행량을 입력해주세요 (최대 10장)"
               value={values.totalQuantity}
               onChange={(e) => {
                 const value = e.target.value.replace(/\D/g, "");
@@ -230,7 +234,7 @@ export default function CreatePhotoCard() {
               <Textarea
                 size="sm"
                 label="포토카드 설명"
-                placeholder="카드 설명을 입력해 주세요 (200자 이내)"
+                placeholder="카드 설명을 입력해 주세요"
                 value={values.description}
                 onChange={(e) => handleChange("description", e.target.value)}
                 onBlur={() => handleBlur("description", values.description)}
@@ -240,7 +244,7 @@ export default function CreatePhotoCard() {
             <div className="hidden tablet:block">
               <Textarea
                 label="포토카드 설명"
-                placeholder="카드 설명을 입력해 주세요 (200자 이내)"
+                placeholder="카드 설명을 입력해 주세요"
                 value={values.description}
                 onChange={(e) => handleChange("description", e.target.value)}
                 onBlur={() => handleBlur("description", values.description)}
