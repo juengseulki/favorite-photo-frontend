@@ -37,6 +37,13 @@ export default function CreatePhotoCard() {
     enabled: !isLoading && !!user,
   });
 
+  const createStatus = createStatusQuery.data;
+
+  const remainingCreateCount = createStatus?.remainingCreateCount ?? 0;
+  const monthlyCreateLimit = createStatus?.monthlyCreateLimit ?? 0;
+  const year = createStatus?.year ?? "";
+  const month = createStatus?.month ?? "";
+
   return (
     <ProtectedRoute>
       <div className="mx-auto max-w-[1920px] px-[20px] tablet:px-[60px] desktop:px-[220px] gap-[80px]">
@@ -46,15 +53,13 @@ export default function CreatePhotoCard() {
           </span>
           <div className="flex items-baseline gap-[12px]">
             <div className="flex items-baseline gap-[4px]">
-              <span className="text-main text-[40px]">
-                {createStatusQuery.data.remainingCreateCount}
-              </span>
+              <span className="text-main text-[40px]">{remainingCreateCount}</span>
 
-              <span className="text-[28px] l">/{createStatusQuery.data.monthlyCreateLimit}</span>
+              <span className="text-[28px] l">/{monthlyCreateLimit}</span>
             </div>
 
             <span className="text-gray-300 text-[16px] ">
-              ({createStatusQuery.data.year}년 {createStatusQuery.data.month}월)
+              ({year}년 {month}월)
             </span>
           </div>
         </div>
