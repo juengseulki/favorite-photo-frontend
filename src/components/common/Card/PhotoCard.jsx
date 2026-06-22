@@ -82,7 +82,7 @@ export default function PhotoCard({ card: item, revealStatus = false }) {
             <span className={card.genre}>{getGenreLabel(item.genre)}</span>
           </div>
 
-          <span className={card.nickname}>{item.creator.nickname}</span>
+          <span className={card.nickname}>{item.seller?.nickname ?? item.creator?.nickname}</span>
         </div>
       </div>
       <div className={card.infoArea}>
