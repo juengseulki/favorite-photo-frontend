@@ -1,10 +1,12 @@
 "use client";
 
+import MarketMobileFilter from "@/features/marketplace/components/MarketMobileFilter";
 import MyShopCards from "@/features/my-shop/components/MyShopCards";
 import MyShopFilterBar from "@/features/my-shop/components/MyShopFilterBar";
 import MyShopFilterModal from "@/features/my-shop/components/MyShopFilterModal";
 import MyShopGradeSummary from "@/features/my-shop/components/MyShopGradeSummary";
 import MyShopHeader from "@/features/my-shop/components/MyShopHeader";
+import MyShopMobileFilters from "@/features/my-shop/components/MyShopMobileFilters";
 import MyShopPagination from "@/features/my-shop/components/MyShopPagination";
 import { useMyShopCards } from "@/features/my-shop/hooks/useMyShopCards";
 import { useMyShopInfiniteCards } from "@/features/my-shop/hooks/useMyShopInfiniteCards";
@@ -94,20 +96,20 @@ const MyShopClient = () => {
           <MyShopPagination page={page} meta={meta} limit={limit} setPage={setPage} />
         )}
       </div>
-      {openFilter && (
-        <MyShopFilterModal
-          isOpen={openFilter}
-          onClose={() => setOpenFilter(false)}
-          grade={grade}
-          genre={genre}
-          tradeType={tradeType}
-          isSoldOut={isSoldOut}
-          onGradeChange={setGrade}
-          onGenreChange={setGenre}
-          onTradeTypeChange={setTradeType}
-          onIsSoldOutChange={setIsSoldOut}
-        />
-      )}
+      <MyShopMobileFilters
+        isOpen={openFilter}
+        onClose={() => setOpenFilter(false)}
+        grade={grade}
+        genre={genre}
+        saleStatus={isSoldOut}
+        tradeType={tradeType}
+        onGradeChange={setGrade}
+        onGenreChange={setGenre}
+        onSaleStatusChange={setIsSoldOut}
+        onTradeTypeChange={setTradeType}
+        count={meta?.counts}
+        resultCounts={meta?.resultCounts}
+      />
     </div>
   );
 };

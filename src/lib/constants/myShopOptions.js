@@ -6,6 +6,6 @@ export const TRADE_OPTIONS = [
 
 export const SOLDOUT_OPTIONS = [
   { label: "매진여부", value: "" },
-  { label: "판매 중", value: false },
-  { label: "품절", value: true },
+  { label: "판매 중", value: "ON_SALE" }, //ON_SALE로 바꾸기?
+  { label: "품절", value: "SOLD_OUT" }, //SOLD_OUT으로 바꾸기?
 ];
