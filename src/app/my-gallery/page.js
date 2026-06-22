@@ -8,8 +8,8 @@ import GalleryHeader from "@/features/my-gallery/components/GalleryHeader";
 import GallerySummary from "@/features/my-gallery/components/GallerySummary";
 import GalleryFilterBar from "@/features/my-gallery/components/GalleryFilterBar";
 import GalleryGrid from "@/features/my-gallery/components/GalleryGrid";
-import GalleryFilterModal from "@/features/my-gallery/components/GalleryFilterModal";
 import { useMyGalleryCards } from "@/features/my-gallery/hooks/useMyGalleryCards";
+import GalleryFilterSheet from "@/features/my-gallery/components/GalleryFilterSheet";
 
 export default function MyGalleryPage() {
   const { limit, isMobile } = useResponsiveLimit();
@@ -45,6 +45,13 @@ export default function MyGalleryPage() {
     setPage(1);
   };
 
+  const gradeCounts = Object.fromEntries((grades ?? []).map(({ grade, count }) => [grade, count]));
+
+  const genreCounts = cards.reduce((acc, card) => {
+    acc[card.genre] = (acc[card.genre] ?? 0) + (card.count ?? card.quantity ?? 1);
+    return acc;
+  }, {});
+  const resultCounts = meta?.totalCopyCount ?? meta?.totalCount ?? 0;
   return (
     <ProtectedRoute>
       <div className="mx-auto max-w-[1920px] px-[20px] desktop:px-[220px]">
@@ -75,11 +82,16 @@ export default function MyGalleryPage() {
           />
         </div>
 
-        <GalleryFilterModal
+        <GalleryFilterSheet
           isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
           grade={grade}
           genre={genre}
-          onClose={() => setIsModalOpen(false)}
+          counts={{
+            grades: gradeCounts,
+            genres: genreCounts,
+          }}
+          resultCounts={resultCounts}
           onGradeChange={handleGradeChange}
           onGenreChange={handleGenreChange}
         />
