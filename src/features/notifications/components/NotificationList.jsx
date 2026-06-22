@@ -8,8 +8,15 @@ import {
   useReadNotification,
 } from "../hooks/useNotifications";
 
-export default function NotificationList({ onClickItem, showHeader = true, limit }) {
+export default function NotificationList({
+  variant = "page",
+  onClickItem,
+  showHeader = true,
+  limit,
+}) {
   const router = useRouter();
+
+  const isDropdown = variant === "dropdown";
 
   const { data } = useNotifications();
   const notifications = Array.isArray(data) ? data : [];
@@ -19,7 +26,6 @@ export default function NotificationList({ onClickItem, showHeader = true, limit
   const unreadCount = notifications.filter((item) => !item.isRead).length;
 
   const { mutate: readNotification } = useReadNotification();
-
   const { mutate: readAllNotifications } = useReadAllNotifications();
 
   const handleClick = (notification) => {
@@ -47,10 +53,10 @@ export default function NotificationList({ onClickItem, showHeader = true, limit
   };
 
   return (
-    <div>
+    <div className="w-full">
       {showHeader && (
-        <div className="mb-4 flex justify-between">
-          <span className="text-white">안 읽은 알림 {unreadCount}개</span>
+        <div className="mb-[20px] flex justify-between">
+          <span className="text-[16px] text-white">안 읽은 알림 {unreadCount}개</span>
 
           {unreadCount > 0 && (
             <button onClick={() => readAllNotifications()} className="cursor-pointer text-main">
@@ -72,12 +78,24 @@ export default function NotificationList({ onClickItem, showHeader = true, limit
                 cursor-pointer
                 border-b
                 border-[#3E3E3E]
-                py-5
+
+                transition-colors
                 hover:bg-gray-500/40
+
+                ${isDropdown ? "px-0 py-[14px]" : "px-[5px] py-[22px] tablet:px-[20px]"}
+
                 ${item.isRead ? "opacity-50" : ""}
               `}
             >
-              <p className="text-white">{item.content}</p>
+              <p
+                className={`
+                  break-words
+                  text-white
+                  ${isDropdown ? "text-[14px]" : "text-[16px] tablet:text-[18px]"}
+                `}
+              >
+                {item.content}
+              </p>
 
               <p className="mt-2 text-[12px] text-gray-300">{getTimeAgo(item.createdAt)}</p>
             </li>

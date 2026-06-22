@@ -15,7 +15,7 @@ const buildMarketCardQueryParams = (params = {}) => {
 
 export async function getMarketCards(params = {}) {
   const queryString = buildMarketCardQueryParams(params);
-  const url = queryString ? `${API_ROUTES.MARKET.BASE}?${queryString}` : API_ROUTES.MARKET.BASE;
+  const url = queryString ? `${API_ROUTES.MARKET.CARDS}?${queryString}` : API_ROUTES.MARKET.CARDS;
 
   const response = await axiosInstance.get(url);
   return response.data?.data ?? response.data;
@@ -33,3 +33,11 @@ export const getMarketDetail = async (saleId) => {
 };
 
 export const purchaseCard = purchaseMarketCards;
+
+export const getMarketCounts = async (params) => {
+  const { data } = await axiosInstance.get(API_ROUTES.MARKET.COUNTS, {
+    params,
+  });
+
+  return data.data;
+};

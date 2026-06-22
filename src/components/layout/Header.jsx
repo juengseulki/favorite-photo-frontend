@@ -16,7 +16,7 @@ import MobileMenu from "./header/MobileMenu";
 export default function Header() {
   const router = useRouter();
   const pathname = usePathname();
-  const { user, logout } = useAuth();
+  const { user, logout, isLoading } = useAuth();
 
   const [isOpen, setIsOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -25,7 +25,7 @@ export default function Header() {
   const shouldShowMobileHeader = showMobileHeaderPages.includes(pathname);
 
   const { data } = useNotifications({
-    enabled: !!user,
+    enabled: !isLoading && !!user,
   });
 
   const notifications = Array.isArray(data) ? data : [];
@@ -46,7 +46,7 @@ export default function Header() {
           <Image src="/img/logos/logo.png" alt="최애의 포토" width={138} height={28} priority />
         </Link>
 
-        {user ? <UserMenu user={user} onLogout={handleLogout} /> : <GuestMenu />}
+        {isLoading ? null : user ? <UserMenu user={user} onLogout={handleLogout} /> : <GuestMenu />}
       </div>
 
       {shouldShowMobileHeader && (
@@ -64,7 +64,9 @@ export default function Header() {
             <Image src="/img/logos/logo.png" alt="최애의 포토" width={92} height={18} priority />
           </Link>
 
-          {user ? (
+          {isLoading ? (
+            <div className="h-6 w-6" />
+          ) : user ? (
             <Link
               href={ROUTES.NOTIFICATION}
               className="relative flex h-6 w-6 items-center justify-center"

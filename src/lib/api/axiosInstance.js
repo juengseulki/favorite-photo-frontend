@@ -59,6 +59,7 @@ export const requestRefreshToken = async () => {
 
 axiosInstance.interceptors.response.use(
   (response) => response,
+
   async (error) => {
     const originalRequest = error.config;
 
@@ -74,17 +75,19 @@ axiosInstance.interceptors.response.use(
       return Promise.reject(error);
     }
 
+    originalRequest._retry = true;
+
     if (isRefreshing) {
       return new Promise((resolve, reject) => {
         pendingQueue.push({ resolve, reject });
       }).then((token) => {
         originalRequest.headers = originalRequest.headers ?? {};
         originalRequest.headers.Authorization = `Bearer ${token}`;
+
         return axiosInstance(originalRequest);
       });
     }
 
-    originalRequest._retry = true;
     isRefreshing = true;
 
     try {
@@ -98,6 +101,7 @@ axiosInstance.interceptors.response.use(
       return axiosInstance(originalRequest);
     } catch (refreshError) {
       processQueue(refreshError, null);
+
       clearAccessToken();
 
       return Promise.reject(refreshError);

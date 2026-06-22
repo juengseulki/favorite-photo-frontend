@@ -244,8 +244,8 @@ export default function MarketPage() {
         isSubmitting={isSubmitting}
         errorMessage={errorMessage}
         onBack={() => {
-          setIsSaleFormOpen(false);
-          setIsSelectCardOpen(true);
+          setSaleFormModalOpen(false);
+          setSaleSelectCardModalOpen(true);
         }}
       />
       <SaleResultModal
