@@ -68,8 +68,9 @@ axiosInstance.interceptors.response.use(
 
     const isUnauthorized = error.response?.status === 401;
     const isRefreshEndpoint = originalRequest.url?.includes(API_ROUTES.AUTH.REFRESH);
+    const isLoginEndpoint = originalRequest.url?.includes(API_ROUTES.AUTH.LOGIN);
 
-    if (!isUnauthorized || originalRequest._retry || isRefreshEndpoint) {
+    if (!isUnauthorized || originalRequest._retry || isRefreshEndpoint || isLoginEndpoint) {
       return Promise.reject(error);
     }
 

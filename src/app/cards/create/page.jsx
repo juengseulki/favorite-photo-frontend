@@ -13,6 +13,7 @@ import { useRouter } from "next/navigation";
 import { ROUTES } from "@/lib/constants/routes";
 import { getPhotoCardStatus } from "@/lib/api/galleryApi";
 import { QUERY_KEYS } from "@/lib/constants/queryKeys";
+import { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/providers/AuthProvider";
 
@@ -37,6 +38,12 @@ export default function CreatePhotoCard() {
     enabled: !isLoading && !!user,
   });
 
+  useEffect(() => {
+    if (createStatusQuery.data?.remainingCreateCount === 0) {
+      router.replace(ROUTES.MY_GALLERY);
+    }
+  }, [createStatusQuery.data, router]);
+
   return (
     <ProtectedRoute>
       <div className="mx-auto max-w-[1920px] px-[20px] tablet:px-[60px] desktop:px-[220px] gap-[80px]">
@@ -47,14 +54,16 @@ export default function CreatePhotoCard() {
           <div className="flex items-baseline gap-[12px]">
             <div className="flex items-baseline gap-[4px]">
               <span className="text-main text-[40px]">
-                {createStatusQuery.data.remainingCreateCount}
+                {createStatusQuery.data?.remainingCreateCount ?? "-"}
               </span>
 
-              <span className="text-[28px] l">/{createStatusQuery.data.monthlyCreateLimit}</span>
+              <span className="text-[28px] l">
+                /{createStatusQuery.data?.monthlyCreateLimit ?? "-"}
+              </span>
             </div>
 
             <span className="text-gray-300 text-[16px] ">
-              ({createStatusQuery.data.year}년 {createStatusQuery.data.month}월)
+              ({createStatusQuery.data?.year}년 {createStatusQuery.data?.month}월)
             </span>
           </div>
         </div>
