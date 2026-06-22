@@ -47,14 +47,32 @@ export default function MarketDetailInfo({ sale }) {
 
   return (
     <aside className="flex w-full min-w-0 shrink flex-col tablet:w-[342px] desktop:h-[612px] desktop:w-[440px] desktop:shrink-0">
-      <div className="flex items-center justify-between border-b border-gray-450 pb-[12px] desktop:pb-[24px]">
-        <div className="flex min-w-0 items-center gap-[8px] pb-[20px] mt-[20px] desktop:gap-[15px]">
+      <div className="flex items-start justify-between gap-[12px] border-b border-gray-450 pb-[16px] pt-[20px] desktop:pb-[24px] desktop:pt-[24px]">
+        <div className="flex min-w-0 flex-1 flex-wrap items-center gap-x-[8px] gap-y-[6px] desktop:gap-x-[15px]">
           <GradeBadge grade={sale.grade} size="m" />
-          <span className="text-[16px] text-gray-300 desktop:text-[24px]">|</span>
-          <span className="text-[16px] text-gray-300 desktop:text-[24px]">{sale.genre}</span>
+
+          <span className="shrink-0 text-[16px] text-gray-300 desktop:text-[24px]">|</span>
+
+          <span className="min-w-0 break-words text-[16px] text-gray-300 desktop:text-[24px]">
+            {sale.genre}
+          </span>
         </div>
 
-        <span className="text-[18px] font-bold underline underline-offset-4 mt-[30px] pb-[30px] desktop:text-[24px]">
+        <span
+          className="
+              max-w-[120px]
+              break-words
+              text-right
+              text-[18px]
+              font-bold
+              text-white
+              underline
+              underline-offset-4
+
+              desktop:max-w-[160px]
+              desktop:text-[24px]
+            "
+        >
           {sale.sellerNickname}
         </span>
       </div>

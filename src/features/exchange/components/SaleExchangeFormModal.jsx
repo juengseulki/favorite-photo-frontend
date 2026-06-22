@@ -81,6 +81,7 @@ export default function SaleExchangeFormModal({
   isOpen,
   onClose,
   onSubmit,
+  onBack,
   card,
   defaultValues = EXCHANGE_FORM_DEFAULT_VALUES,
   isSubmitting = false,
@@ -139,6 +140,11 @@ export default function SaleExchangeFormModal({
 
     setDescriptionError("");
     onSubmit?.({ ...formValues, description: trimmedDescription, photoCardId: card.photoCardId });
+  };
+
+  const handleBack = () => {
+    setMessage("");
+    onBack?.();
   };
 
   return (
@@ -337,6 +343,24 @@ export default function SaleExchangeFormModal({
             [&::-webkit-scrollbar-track]:bg-transparent
           "
       >
+        {onBack && (
+          <button
+            type="button"
+            onClick={handleBack}
+            className="
+                  mb-[20px]
+                  flex
+                  h-[24px]
+                  w-[24px]
+                  cursor-pointer
+                  items-center
+                  justify-center
+                "
+            aria-label="카드 선택으로 돌아가기"
+          >
+            <Image src="/img/icons/back.png" alt="" width={22} height={22} />
+          </button>
+        )}
         <p className="font-brand text-[14px] font-bold text-gray-300 desktop:text-[24px]">
           {subtitle}
         </p>

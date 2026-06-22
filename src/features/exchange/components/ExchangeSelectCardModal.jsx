@@ -64,30 +64,33 @@ export default function ExchangeSelectCardModal({
       title=""
       size="form"
       onClose={onClose}
-      bodyClassName="mt-0"
-      actions={
-        <div className="flex w-full flex-col gap-3 px-4 tablet:flex-row tablet:justify-center tablet:gap-4 tablet:px-6 desktop:gap-[40px] desktop:px-[80px]">
-          <Button
-            variant="secondary"
-            size="lg"
-            className="w-full tablet:max-w-[240px] desktop:flex-1 desktop:max-w-none"
-            onClick={onClose}
-          >
-            취소하기
-          </Button>
-
-          <Button
-            size="lg"
-            className="w-full tablet:max-w-[240px] desktop:flex-1 desktop:max-w-none"
-            onClick={handleConfirm}
-            disabled={isDisabled}
-          >
-            선택하기
-          </Button>
-        </div>
-      }
+      bodyClassName="mt-0 overflow-hidden"
     >
-      <div className="mx-auto w-full max-w-[940px] space-y-6 px-4 tablet:px-6 desktop:space-y-8 desktop:px-0">
+      <div
+        className="
+              mx-auto
+              max-h-[calc(100vh-180px)]
+              w-full
+              max-w-[940px]
+              space-y-6
+              overflow-y-auto
+              overflow-x-hidden
+              px-4
+              pr-[10px]
+
+              tablet:px-6
+
+              desktop:max-h-[720px]
+              desktop:space-y-8
+              desktop:px-0
+              desktop:pr-[12px]
+
+              [&::-webkit-scrollbar]:w-[6px]
+              [&::-webkit-scrollbar-thumb]:rounded-full
+              [&::-webkit-scrollbar-thumb]:bg-gray-300
+              [&::-webkit-scrollbar-track]:bg-transparent
+            "
+      >
         <div>
           <span className="font-brand text-[18px] font-bold text-white desktop:text-[20px]">
             마이갤러리
@@ -150,6 +153,26 @@ export default function ExchangeSelectCardModal({
         {confirmDisabledReason && (
           <p className="text-right text-[13px] text-gray-300">{confirmDisabledReason}</p>
         )}
+
+        <div className="flex w-full flex-col gap-3 pt-4 tablet:flex-row tablet:justify-center tablet:gap-4 desktop:gap-[40px]">
+          <Button
+            variant="secondary"
+            size="lg"
+            className="w-full tablet:max-w-[240px] desktop:flex-1 desktop:max-w-none"
+            onClick={onClose}
+          >
+            취소하기
+          </Button>
+
+          <Button
+            size="lg"
+            className="w-full tablet:max-w-[240px] desktop:flex-1 desktop:max-w-none"
+            onClick={handleConfirm}
+            disabled={isDisabled}
+          >
+            선택하기
+          </Button>
+        </div>
       </div>
     </Modal>
   );

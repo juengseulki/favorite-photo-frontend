@@ -3,74 +3,105 @@ import GradeBadge from "@/components/common/Grade/GradeBadge";
 import { getGenreLabel } from "@/lib/constants/marketOptions";
 import { card } from "./cardStyles";
 
-export default function PhotoCard({ card: item, revealStatus = false }) {
-  const SERVER_URL = process.env.NEXT_PUBLIC_API_BASE_URL.replace("/api", "");
+const CARD_IMAGE_SIZES = "(min-width: 1920px) 360px, (min-width: 744px) 302px, 150px";
+const LOGO_IMAGE_SIZES = "138px";
 
-  const imageSrc = item.imageUrl?.startsWith("http")
-    ? item.imageUrl
-    : item.imageUrl?.startsWith("/")
-      ? item.imageUrl
-      : `${SERVER_URL}/${item.imageUrl}`;
+const GRADE_HOVER_EFFECT = {
+  COMMON: "hover:shadow-[0_0_18px_rgba(255,255,255,0.25)]",
+  RARE: "hover:shadow-[0_0_20px_rgba(41,182,246,0.45)]",
+  SUPER_RARE: "hover:shadow-[0_0_24px_rgba(168,85,247,0.55)]",
+  LEGENDARY: "hover:shadow-[0_0_30px_rgba(232,255,0,0.65)]",
+};
+
+function getImageSrc(imageUrl) {
+  const SERVER_URL = process.env.NEXT_PUBLIC_API_BASE_URL?.replace("/api", "") ?? "";
+
+  if (!imageUrl) return "/img/images/img1.png";
+  if (imageUrl.startsWith("http")) return imageUrl;
+  if (imageUrl.startsWith("/")) return imageUrl;
+
+  return `${SERVER_URL}/${imageUrl}`;
+}
+
+function StatusOverlay({ item }) {
+  if (item.status === "SOLD_OUT" || item.isSoldOut) {
+    return (
+      <div className="absolute inset-0 flex items-center justify-center bg-black/60">
+        <span
+          style={{ transform: "rotate(-24deg)" }}
+          className="
+            flex h-[74px] w-[74px]
+            items-center justify-center rounded-full
+            border-[3px] border-red
+            text-center text-[18px] font-bold leading-[1.05]
+            text-red
+            tablet:h-[110px] tablet:w-[110px] tablet:border-[4px] tablet:text-[26px]
+            desktop:h-[124px] desktop:w-[124px] desktop:text-[30px]
+          "
+        >
+          SOLD
+          <br />
+          OUT
+        </span>
+      </div>
+    );
+  }
+
+  if (item.status === "ON_SALE") {
+    return (
+      <div className="absolute left-[10px] top-[10px] rounded-sm bg-black/70 px-[10px] py-[4px]">
+        <span className="text-[16px] font-normal text-white">판매 중</span>
+      </div>
+    );
+  }
+
+  if (item.status === "PENDING") {
+    return (
+      <div className="absolute left-[10px] top-[10px] rounded-sm bg-black/70 px-[10px] py-[4px]">
+        <span className="text-[16px] font-normal text-main">교환 제시 대기 중</span>
+      </div>
+    );
+  }
+
+  return null;
+}
+
+export default function PhotoCard({ card: item, revealStatus = false }) {
+  const imageSrc = getImageSrc(item.imageUrl);
+  const hoverEffect = GRADE_HOVER_EFFECT[item.grade] ?? GRADE_HOVER_EFFECT.COMMON;
 
   return (
-    <article className={`${card.base} ${card.defaultSize}`}>
-      {/*revealStatus로 시작하는 코드는, 나의 판매 포토카드 페이지의 뱃지 및 품절상태를 표시하기 위해 작성된 부분입니다.
-        추후, 아래 품절 로직과 합쳐야 합니다.*/}
-      {revealStatus && (
-        <div className={`${card.image} relative`}>
-          <Image src={imageSrc} alt={item.name} fill className="object-cover" />
-          {item.status === "SOLD_OUT" ? (
-            <div className="w-full h-full bg-black/80 absolute top-0 left-0 ">
-              <Image
-                src="/img/icons/soldout.png"
-                alt="품절 아이콘"
-                fill
-                className="object-contain"
-              />
-            </div>
-          ) : (
-            <div className="px-[10px] py-[4px] bg-black/70 rounded-sm absolute top-[10px] left-[10px]">
-              {item.status === "ON_SALE" && (
-                <div className="text-[16px] font-normal text-white ">판매 중</div>
-              )}
-              {item.status === "PENDING" && (
-                <div className="text-[16px] font-normal text-main ">교환 제시 대기 중</div>
-              )}
-            </div>
-          )}
-        </div>
-      )}
-      {/*추후, 위 품절 로직과 합쳐야 합니다.*/}
-      {!revealStatus && (
-        <div className={card.image}>
-          <Image
-            src={imageSrc}
-            alt={item.name}
-            fill
-            className={`object-cover ${item.isSoldOut ? "brightness-[0.45] blur-[1px]" : ""}`}
-          />
-          {item.isSoldOut && (
-            <div className="absolute inset-0 flex items-center justify-center">
-              <span
-                style={{ transform: "rotate(-24deg)" }}
-                className="
-                flex h-[74px] w-[74px]
-                items-center justify-center rounded-full
-                border-[3px] border-red
-                text-center text-[18px] font-bold leading-[1.05]
-                text-red
-                tablet:h-[110px] tablet:w-[110px] tablet:border-[4px] tablet:text-[26px]
-                desktop:h-[124px] desktop:w-[124px] desktop:text-[30px]
-              "
-              >
-                SOLD
-                <br />
-                OUT
-              </span>
-            </div>
-          )}
-        </div>
-      )}
+    <article
+      className={`
+        ${card.base}
+        ${card.defaultSize}
+        group
+        cursor-pointer
+        transition-all
+        duration-300
+        hover:-translate-y-2
+        ${hoverEffect}
+      `}
+    >
+      <div className={`${card.image} overflow-hidden`}>
+        <Image
+          src={imageSrc}
+          alt={item.name}
+          fill
+          sizes={CARD_IMAGE_SIZES}
+          className={`
+            object-cover
+            transition-transform
+            duration-300
+            group-hover:scale-105
+            ${item.isSoldOut ? "brightness-[0.45] blur-[1px]" : ""}
+          `}
+        />
+
+        {revealStatus && <StatusOverlay item={item} />}
+        {!revealStatus && item.isSoldOut && <StatusOverlay item={item} />}
+      </div>
+
       <h3 className={card.title}>{item.name}</h3>
       <div className={card.metaWrap}>
         <div className={card.metaInner}>
@@ -97,7 +128,13 @@ export default function PhotoCard({ card: item, revealStatus = false }) {
         </div>
       </div>
       <div className={card.logoWrap}>
-        <Image src="/img/logos/logo.png" alt="최애의 포토" fill className="object-contain" />
+        <Image
+          src="/img/logos/logo.png"
+          alt="최애의 포토"
+          fill
+          sizes={LOGO_IMAGE_SIZES}
+          className="object-contain"
+        />
       </div>
     </article>
   );

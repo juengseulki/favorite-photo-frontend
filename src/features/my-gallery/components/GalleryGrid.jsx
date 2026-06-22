@@ -77,6 +77,10 @@ export default function GalleryGrid({ cards, selectedCard, setSelectedCard }) {
           onSubmit={handleFormSubmit}
           isSubmitting={isSubmitting}
           errorMessage={errorMessage}
+          onBack={() => {
+            setIsSaleFormOpen(false);
+            setIsSelectCardOpen(true);
+          }}
         />
       )}
       <SaleResultModal
