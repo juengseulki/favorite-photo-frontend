@@ -28,7 +28,10 @@ import ExchangeInfo from "./ExchangeInfo";
 export default function MarketDetail() {
   const router = useRouter();
   const { saleId } = useParams();
-  const { data: sale, isLoading, isError, error } = useMarketDetail(saleId);
+  const parsedSaleId = Number(saleId);
+  const isValidSaleId = Number.isInteger(parsedSaleId) && parsedSaleId > 0;
+  const querySaleId = isValidSaleId ? parsedSaleId : null;
+  const { data: sale, isLoading, isError, error } = useMarketDetail(querySaleId);
 
   const [isExchangeModalOpen, setIsExchangeModalOpen] = useState(false);
   const [isProposalModalOpen, setIsProposalModalOpen] = useState(false);
@@ -50,7 +53,7 @@ export default function MarketDetail() {
     { enabled: isExchangeModalOpen },
   );
 
-  const { data: sentProposals = [] } = useSentExchangeProposals(saleId);
+  const { data: sentProposals = [] } = useSentExchangeProposals(querySaleId);
 
   const exchangeCardList = useMemo(
     () => (Array.isArray(exchangeCards) ? exchangeCards.map(normalizeExchangeCard) : []),
@@ -70,7 +73,9 @@ export default function MarketDetail() {
     },
   });
 
-  const { mutate: cancelProposal } = useCancelExchangeProposal(saleId);
+  const { mutate: cancelProposal } = useCancelExchangeProposal(querySaleId);
+
+  if (!isValidSaleId) notFound();
 
   if (isError) {
     const isNotFound = error?.response?.status === 404;
@@ -91,7 +96,7 @@ export default function MarketDetail() {
     );
   }
 
-  if (!sale) return null;
+  if (!sale) notFound();
 
   const exchange = {
     description: sale.exchangeDescription ?? sale.exchange?.description ?? "",
@@ -114,7 +119,7 @@ export default function MarketDetail() {
     if (!card) return;
 
     createProposal({
-      saleId: Number(saleId),
+      saleId: parsedSaleId,
       offeredCardCopyId: card.cardCopyId ?? card.id,
       description: message,
     });
@@ -133,7 +138,6 @@ export default function MarketDetail() {
 
   return (
     <main className="min-h-screen bg-black text-white">
-      {/* 모바일 전용 헤더 */}
       <header className="flex h-[60px] items-center border-b border-gray-450 px-[15px] tablet:hidden">
         <button
           type="button"
@@ -194,8 +198,6 @@ export default function MarketDetail() {
           genre={genre}
           onGenreChange={setGenre}
           isLoading={isExchangeCardsLoading}
-          expectedGrade={exchange.grade}
-          expectedGenre={exchange.genre}
         />
 
         <ExchangeProposalFormModal
