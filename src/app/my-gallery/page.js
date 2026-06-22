@@ -21,7 +21,7 @@ export default function MyGalleryPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedCard, setSelectedCard] = useState(null);
 
-  const { cards, meta, grades, observerRef, createStatus } = useMyGalleryCards({
+  const { cards, meta, grades, observerRef, createStatus, isPending } = useMyGalleryCards({
     limit,
     isMobile,
     page,
@@ -69,7 +69,12 @@ export default function MyGalleryPage() {
           onOpenFilter={() => setIsModalOpen(true)}
         />
 
-        <GalleryGrid cards={cards} selectedCard={selectedCard} setSelectedCard={setSelectedCard} />
+        <GalleryGrid
+          cards={cards}
+          selectedCard={selectedCard}
+          setSelectedCard={setSelectedCard}
+          isPending={isPending}
+        />
 
         <div ref={observerRef} className="h-[1px] tablet:hidden" />
 

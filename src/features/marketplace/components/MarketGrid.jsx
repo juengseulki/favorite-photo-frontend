@@ -1,11 +1,12 @@
 import { PhotoCard } from "@/components/common/Card";
+import Loading from "@/components/common/Loading";
 
 export default function MarketGrid({ cards, isPending, onCardClick }) {
   return (
     <section className="mt-[40px] desktop:mt-[60px]">
       {isPending ? (
         <div className="flex min-h-[300px] items-center justify-center text-[14px] text-gray-300">
-          마켓을 불러오는 중...
+          <Loading text="마켓을 불러오는 중..." />
         </div>
       ) : cards.length === 0 ? (
         <div className="flex min-h-[300px] items-center justify-center text-[14px] text-gray-300">
