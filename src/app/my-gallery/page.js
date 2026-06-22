@@ -51,11 +51,7 @@ export default function MyGalleryPage() {
     acc[card.genre] = (acc[card.genre] ?? 0) + (card.count ?? card.quantity ?? 1);
     return acc;
   }, {});
-
-  const resultCounts = cards.reduce((total, card) => {
-    return total + (card.count ?? card.quantity ?? 1);
-  }, 0);
-
+  const resultCounts = meta?.totalCopyCount ?? meta?.totalCount ?? 0;
   return (
     <ProtectedRoute>
       <div className="mx-auto max-w-[1920px] px-[20px] desktop:px-[220px]">

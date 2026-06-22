@@ -23,7 +23,7 @@ export default function GalleryFilterSheet({
   grade,
   genre,
   counts,
-  resultCount,
+  resultCounts,
   onGradeChange,
   onGenreChange,
 }) {
@@ -151,7 +151,7 @@ export default function GalleryFilterSheet({
             className="h-[56px] flex-1 rounded-[2px] bg-main text-[22px] font-bold text-black"
             onClick={onClose}
           >
-            {resultCount ?? 0}개 포토보기
+            {resultCounts ?? 0}개 포토보기
           </button>
         </div>
       </section>
