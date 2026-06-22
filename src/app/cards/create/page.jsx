@@ -13,6 +13,7 @@ import { useRouter } from "next/navigation";
 import { ROUTES } from "@/lib/constants/routes";
 import { getPhotoCardStatus } from "@/lib/api/galleryApi";
 import { QUERY_KEYS } from "@/lib/constants/queryKeys";
+import { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/providers/AuthProvider";
 
@@ -43,6 +44,12 @@ export default function CreatePhotoCard() {
   const monthlyCreateLimit = createStatus?.monthlyCreateLimit ?? 0;
   const year = createStatus?.year ?? "";
   const month = createStatus?.month ?? "";
+
+  useEffect(() => {
+    if (createStatusQuery.data?.remainingCreateCount === 0) {
+      router.replace(ROUTES.MY_GALLERY);
+    }
+  }, [createStatusQuery.data, router]);
 
   return (
     <ProtectedRoute>
