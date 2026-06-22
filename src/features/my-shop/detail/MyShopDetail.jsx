@@ -170,7 +170,7 @@ export default function MyShopDetail() {
           <div className="h-[22px] w-[22px] shrink-0" />
         </header>
 
-        <div className="mx-auto w-full px-[15px] pb-[80px] pt-[20px] tablet:px-[20px] tablet:pb-[100px] tablet:pt-[40px] desktop:w-[1480px] desktop:px-0 desktop:pb-[80px] desktop:pt-[124px]">
+        <div className="mx-auto w-full px-[15px] pb-[80px] pt-[20px] tablet:px-[20px] tablet:pb-[100px] tablet:pt-[40px] desktop:w-[1480px] desktop:px-0 desktop:pb-[80px] desktop:pt-[40px]">
           <Link
             href={ROUTES.MY_SHOP}
             className="
