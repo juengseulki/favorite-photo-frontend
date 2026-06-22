@@ -17,7 +17,7 @@ export default function NotificationButton() {
         type="button"
         aria-label="알림"
         onClick={() => setIsOpen((prev) => !prev)}
-        className="relative"
+        className="relative cursor-pointer"
       >
         <Image src="/img/icons/alarm_default.png" alt="알림" width={24} height={24} />
 
