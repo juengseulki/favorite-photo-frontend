@@ -5,6 +5,9 @@ import Modal from "@/components/common/Modal";
 import Button from "@/components/common/Button";
 import { useRandomBox } from "@/features/point/hooks/useRandomBox";
 
+import { useEffect } from "react";
+import confetti from "canvas-confetti";
+
 export default function PointModal({ isOpen, onClose }) {
   const {
     BOXES_L,
@@ -24,6 +27,16 @@ export default function PointModal({ isOpen, onClose }) {
     resetRandomBox();
     onClose();
   };
+
+  useEffect(() => {
+    if (!isOpen || !isResult) return;
+
+    confetti({
+      particleCount: 120,
+      spread: 70,
+      origin: { y: 0.6 },
+    });
+  }, [isOpen, isResult]);
 
   return (
     <>
@@ -57,9 +70,22 @@ export default function PointModal({ isOpen, onClose }) {
                     height={198}
                     width={246}
                     onClick={() => handleSelectBox(box.id)}
-                    className={`cursor-pointer object-cover ${
-                      selectedBox && selectedBox !== box.id ? "opacity-50" : ""
-                    }`}
+                    className={`
+                          cursor-pointer
+                          object-cover
+                          transition-all
+                          duration-300
+                          hover:-translate-y-3
+                          hover:scale-110
+                          hover:drop-shadow-[0_0_18px_rgba(232,255,0,0.8)]
+                          ${
+                            selectedBox === box.id
+                              ? "scale-110 drop-shadow-[0_0_18px_rgba(232,255,0,0.8)]"
+                              : selectedBox
+                                ? "opacity-50"
+                                : ""
+                          }
+                        `}
                   />
                 ))}
               </div>
@@ -72,9 +98,22 @@ export default function PointModal({ isOpen, onClose }) {
                     height={132}
                     width={164}
                     onClick={() => handleSelectBox(box.id)}
-                    className={`cursor-pointer object-cover ${
-                      selectedBox && selectedBox !== box.id ? "opacity-50" : ""
-                    }`}
+                    className={`
+                          cursor-pointer
+                          object-cover
+                          transition-all
+                          duration-300
+                          hover:-translate-y-3
+                          hover:scale-110
+                          hover:drop-shadow-[0_0_18px_rgba(232,255,0,0.8)]
+                          ${
+                            selectedBox === box.id
+                              ? "scale-110 drop-shadow-[0_0_18px_rgba(232,255,0,0.8)]"
+                              : selectedBox
+                                ? "opacity-50"
+                                : ""
+                          }
+                        `}
                   />
                 ))}
               </div>
@@ -87,9 +126,22 @@ export default function PointModal({ isOpen, onClose }) {
                     height={78}
                     width={97}
                     onClick={() => handleSelectBox(box.id)}
-                    className={`cursor-pointer object-cover ${
-                      selectedBox && selectedBox !== box.id ? "opacity-50" : ""
-                    }`}
+                    className={`
+                          cursor-pointer
+                          object-cover
+                          transition-all
+                          duration-300
+                          hover:-translate-y-3
+                          hover:scale-110
+                          hover:drop-shadow-[0_0_18px_rgba(232,255,0,0.8)]
+                          ${
+                            selectedBox === box.id
+                              ? "scale-110 drop-shadow-[0_0_18px_rgba(232,255,0,0.8)]"
+                              : selectedBox
+                                ? "opacity-50"
+                                : ""
+                          }
+                        `}
                   />
                 ))}
               </div>

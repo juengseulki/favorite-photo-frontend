@@ -66,6 +66,8 @@ export function useMyGalleryCards({ limit, isMobile, page, grade, genre, keyword
     enabled: !isLoading && !!user,
   });
 
+  const isPending = isMobile ? infiniteQuery.isPending : pageQuery.isPending;
+
   useEffect(() => {
     if (!isMobile) return;
     if (!observerRef.current) return;
@@ -93,5 +95,6 @@ export function useMyGalleryCards({ limit, isMobile, page, grade, genre, keyword
     grades,
     observerRef,
     createStatus: createStatusQuery.data,
+    isPending,
   };
 }
