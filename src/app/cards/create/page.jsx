@@ -38,6 +38,12 @@ export default function CreatePhotoCard() {
     enabled: !isLoading && !!user,
   });
 
+  const createStatus = createStatusQuery.data;
+  const remainingCreateCount = createStatus?.remainingCreateCount ?? 0;
+  const monthlyCreateLimit = createStatus?.monthlyCreateLimit ?? 0;
+  const year = createStatus?.year ?? "";
+  const month = createStatus?.month ?? "";
+
   useEffect(() => {
     if (createStatusQuery.data?.remainingCreateCount === 0) {
       router.replace(ROUTES.MY_GALLERY);
@@ -47,23 +53,19 @@ export default function CreatePhotoCard() {
   return (
     <ProtectedRoute>
       <div className="mx-auto max-w-[1920px] px-[20px] tablet:px-[60px] desktop:px-[220px] gap-[80px]">
-        <div className="hidden tablet:flex justify-between border-b-2 border-gray-100 mb-10 items-center">
-          <span className="font-brand text-[40px] desktop:text-[50px] font-normal tracking-[-0.03em]">
+        <div className="flex justify-between mb-5 items-center tablet:border-b-2 tablet:border-gray-100 tablet:mb-10">
+          <span className="hidden tablet:block font-brand text-[40px] desktop:text-[50px] font-normal tracking-[-0.03em]">
             포토카드 생성
           </span>
           <div className="flex items-baseline gap-[12px]">
             <div className="flex items-baseline gap-[4px]">
-              <span className="text-main text-[40px]">
-                {createStatusQuery.data?.remainingCreateCount ?? "-"}
+              <span className="text-main text-[32px] tablet:text-[40px]">
+                {remainingCreateCount}
               </span>
-
-              <span className="text-[28px] l">
-                /{createStatusQuery.data?.monthlyCreateLimit ?? "-"}
-              </span>
+              <span className="text-[20px] tablet:text-[28px]">/{monthlyCreateLimit}</span>
             </div>
-
-            <span className="text-gray-300 text-[16px] ">
-              ({createStatusQuery.data?.year}년 {createStatusQuery.data?.month}월)
+            <span className="text-gray-300 text-[16px]">
+              ({year}년 {month}월)
             </span>
           </div>
         </div>

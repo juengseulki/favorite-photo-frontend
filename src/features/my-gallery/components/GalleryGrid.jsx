@@ -57,6 +57,10 @@ export default function GalleryGrid({ cards, selectedCard, setSelectedCard }) {
         desktop:justify-items-start
         desktop:gap-x-[80px]
         desktop:gap-y-[80px]
+        
+        mb-25
+        tablet:mb-10
+        desktop:mb-10
       "
       >
         {cards.map((card) => (

@@ -6,6 +6,10 @@ import { ERROR_MESSAGES } from "@/lib/constants";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 
+const MAX_NAME_LENGTH = 25;
+const MAX_PRICE = 1000000;
+const MAX_DESCRIPTION_LENGTH = 200;
+
 export default function useCreatePhotoCardForm() {
   const [values, setValues] = useState({
     name: "",
@@ -80,15 +84,35 @@ export default function useCreatePhotoCardForm() {
   };
 
   const handleChange = (field, value) => {
+    let nextValue = value;
+
+    if (field === "name") {
+      nextValue = value.slice(0, MAX_NAME_LENGTH);
+    }
+
+    if (field === "description") {
+      nextValue = value.slice(0, MAX_DESCRIPTION_LENGTH);
+    }
+
+    if (field === "initialPrice") {
+      const onlyNumber = value.replace(/\D/g, "");
+
+      if (!onlyNumber) {
+        nextValue = "";
+      } else {
+        nextValue = String(Math.min(Number(onlyNumber), MAX_PRICE));
+      }
+    }
+
     setValues((t) => ({
       ...t,
-      [field]: value,
+      [field]: nextValue,
     }));
 
     if (touched[field]) {
       setErrors((t) => ({
         ...t,
-        [field]: validateField(field, value),
+        [field]: validateField(field, nextValue),
       }));
     }
   };
