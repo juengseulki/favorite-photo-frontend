@@ -7,6 +7,9 @@ import { useAuth } from "@/providers/AuthProvider";
 import PointModal from "./randomBoxModal";
 import { getRandomBoxStatus } from "@/lib/api/pointApi";
 
+const MIN_DELAY = 3000;
+const MAX_DELAY = 8000;
+
 export default function RandomPointModalGate() {
   const { user, isLoading } = useAuth();
   const searchParams = useSearchParams();
@@ -15,6 +18,16 @@ export default function RandomPointModalGate() {
 
   useEffect(() => {
     if (isLoading || !user) return;
+
+    let timerId;
+
+    const openWithSurpriseDelay = () => {
+      const delay = Math.floor(Math.random() * (MAX_DELAY - MIN_DELAY + 1)) + MIN_DELAY;
+
+      timerId = window.setTimeout(() => {
+        setIsOpen(true);
+      }, delay);
+    };
 
     const checkRandomBox = async () => {
       try {
@@ -27,11 +40,10 @@ export default function RandomPointModalGate() {
         }
 
         const res = await getRandomBoxStatus();
-
         const canOpen = res?.data?.data?.canOpen ?? res?.data?.canOpen;
 
         if (canOpen) {
-          setIsOpen(true);
+          openWithSurpriseDelay();
         }
       } catch {
         // 랜덤포인트 체크 실패는 앱 사용을 막지 않음
@@ -40,12 +52,10 @@ export default function RandomPointModalGate() {
 
     checkRandomBox();
 
-    const timer = setInterval(checkRandomBox, 60 * 1000);
-
-    return () => clearInterval(timer);
+    return () => {
+      if (timerId) window.clearTimeout(timerId);
+    };
   }, [isLoading, user, searchParams]);
-
-  if (!user) return null;
 
   return <PointModal isOpen={isOpen} onClose={() => setIsOpen(false)} />;
 }

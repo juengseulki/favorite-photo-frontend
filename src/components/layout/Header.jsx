@@ -21,7 +21,7 @@ export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const showMobileHeaderPages = [ROUTES.HOME, ROUTES.MARKET];
+  const showMobileHeaderPages = [ROUTES.HOME, ROUTES.MARKET, ROUTES.CREATE_CARD];
   const shouldShowMobileHeader = showMobileHeaderPages.includes(pathname);
 
   const { data } = useNotifications({
