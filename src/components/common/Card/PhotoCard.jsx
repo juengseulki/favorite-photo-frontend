@@ -3,15 +3,15 @@ import GradeBadge from "@/components/common/Grade/GradeBadge";
 import { getGenreLabel } from "@/lib/constants/marketOptions";
 import { card } from "./cardStyles";
 
-const CARD_IMAGE_SIZES = "(min-width: 1920px) 360px, (min-width: 744px) 302px, 150px";
-const LOGO_IMAGE_SIZES = "138px";
-
 const GRADE_HOVER_EFFECT = {
   COMMON: "hover:shadow-[0_0_18px_rgba(255,255,255,0.25)]",
   RARE: "hover:shadow-[0_0_20px_rgba(41,182,246,0.45)]",
   SUPER_RARE: "hover:shadow-[0_0_24px_rgba(168,85,247,0.55)]",
   LEGENDARY: "hover:shadow-[0_0_30px_rgba(232,255,0,0.65)]",
 };
+
+const CARD_IMAGE_SIZES = "(min-width: 1920px) 360px, (min-width: 744px) 302px, 150px";
+const LOGO_IMAGE_SIZES = "138px";
 
 function getImageSrc(imageUrl) {
   const SERVER_URL = process.env.NEXT_PUBLIC_API_BASE_URL?.replace("/api", "") ?? "";
@@ -103,19 +103,19 @@ export default function PhotoCard({ card: item, revealStatus = false }) {
       </div>
 
       <h3 className={card.title}>{item.name}</h3>
+
       <div className={card.metaWrap}>
         <div className={card.metaInner}>
           <div className={card.gradeLine}>
             <GradeBadge grade={item.grade} size="xs" />
-
             <span className={card.divider} />
-
             <span className={card.genre}>{getGenreLabel(item.genre)}</span>
           </div>
 
           <span className={card.nickname}>{item.seller?.nickname ?? item.creator?.nickname}</span>
         </div>
       </div>
+
       <div className={card.infoArea}>
         <div className={card.infoRow}>
           <span className={card.infoLabel}>가격</span>
@@ -127,6 +127,7 @@ export default function PhotoCard({ card: item, revealStatus = false }) {
           <span className={card.infoValue}>{item.count}</span>
         </div>
       </div>
+
       <div className={card.logoWrap}>
         <Image
           src="/img/logos/logo.png"

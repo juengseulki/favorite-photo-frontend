@@ -4,8 +4,9 @@ import { useSaleCard } from "../hooks/useSaleCard";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import SaleResultModal from "@/features/sales/components/SaleResultModal";
+import Loading from "@/components/common/Loading";
 
-export default function GalleryGrid({ cards, selectedCard, setSelectedCard }) {
+export default function GalleryGrid({ cards, selectedCard, setSelectedCard, isPending }) {
   const { handleSubmit, isSubmitting, errorMessage } = useSaleCard();
   const [saleSuccessModal, setSaleSuccessModal] = useState(false);
   const [saleFailureModal, setSaleFailureModal] = useState(false);
@@ -38,6 +39,10 @@ export default function GalleryGrid({ cards, selectedCard, setSelectedCard }) {
     setSelectedCard(null);
     router.push("/market");
   };
+
+  if (isPending) {
+    return <Loading text="갤러리를 불러오는 중..." />;
+  }
 
   return (
     <>
