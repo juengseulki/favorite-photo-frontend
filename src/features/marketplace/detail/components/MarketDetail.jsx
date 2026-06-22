@@ -1,7 +1,7 @@
 ﻿"use client";
 
 import { useMemo, useState } from "react";
-import { useParams, useRouter, notFound } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { ROUTES } from "@/lib/constants/routes";
@@ -28,7 +28,10 @@ import ExchangeInfo from "./ExchangeInfo";
 export default function MarketDetail() {
   const router = useRouter();
   const { saleId } = useParams();
-  const { data: sale, isLoading, isError, error } = useMarketDetail(saleId);
+  const parsedSaleId = Number(saleId);
+  const isValidSaleId = Number.isInteger(parsedSaleId) && parsedSaleId > 0;
+  const querySaleId = isValidSaleId ? parsedSaleId : null;
+  const { data: sale, isLoading, isError, error } = useMarketDetail(querySaleId);
 
   const [isExchangeModalOpen, setIsExchangeModalOpen] = useState(false);
   const [isProposalModalOpen, setIsProposalModalOpen] = useState(false);
@@ -50,7 +53,7 @@ export default function MarketDetail() {
     { enabled: isExchangeModalOpen },
   );
 
-  const { data: sentProposals = [] } = useSentExchangeProposals(saleId);
+  const { data: sentProposals = [] } = useSentExchangeProposals(querySaleId);
 
   const exchangeCardList = useMemo(
     () => (Array.isArray(exchangeCards) ? exchangeCards.map(normalizeExchangeCard) : []),
@@ -70,21 +73,30 @@ export default function MarketDetail() {
     },
   });
 
-  const { mutate: cancelProposal } = useCancelExchangeProposal(saleId);
+  const { mutate: cancelProposal } = useCancelExchangeProposal(querySaleId);
 
-  if (isLoading) return null;
+  if (!isValidSaleId) notFound();
 
   if (isError) {
-    if (error?.response?.status === 404) notFound();
+    const isNotFound = error?.response?.status === 404;
 
     return (
-      <main className="flex min-h-screen items-center justify-center bg-black">
-        <p className="text-[14px] text-gray-300">상세 정보를 불러오지 못했습니다.</p>
+      <main className="flex min-h-screen flex-col items-center justify-center gap-[20px] bg-black px-[20px] text-center">
+        <p className="text-[18px] font-bold text-white">
+          {isNotFound ? "존재하지 않는 판매글입니다." : "상세 정보를 불러오지 못했습니다."}
+        </p>
+
+        <Link
+          href={ROUTES.MARKET}
+          className="text-[14px] font-bold text-main underline underline-offset-4"
+        >
+          마켓플레이스로 돌아가기
+        </Link>
       </main>
     );
   }
 
-  if (!sale) return null;
+  if (!sale) notFound();
 
   const exchange = {
     description: sale.exchangeDescription ?? sale.exchange?.description ?? "",
@@ -107,7 +119,7 @@ export default function MarketDetail() {
     if (!card) return;
 
     createProposal({
-      saleId: Number(saleId),
+      saleId: parsedSaleId,
       offeredCardCopyId: card.cardCopyId ?? card.id,
       description: message,
     });
@@ -126,7 +138,6 @@ export default function MarketDetail() {
 
   return (
     <main className="min-h-screen bg-black text-white">
-      {/* 모바일 전용 헤더 */}
       <header className="flex h-[60px] items-center border-b border-gray-450 px-[15px] tablet:hidden">
         <button
           type="button"
@@ -187,8 +198,6 @@ export default function MarketDetail() {
           genre={genre}
           onGenreChange={setGenre}
           isLoading={isExchangeCardsLoading}
-          expectedGrade={exchange.grade}
-          expectedGenre={exchange.genre}
         />
 
         <ExchangeProposalFormModal
