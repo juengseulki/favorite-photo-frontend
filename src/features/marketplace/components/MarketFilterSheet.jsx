@@ -59,16 +59,6 @@ export default function MarketFilterSheet({
     saleStatus,
   }[activeTab];
 
-  const totalCount = (counts?.saleStatuses?.onSale ?? 0) + (counts?.saleStatuses?.soldOut ?? 0);
-
-  const selectedCount = selectedValue
-    ? activeTab === "grade"
-      ? (counts?.grades?.[selectedValue] ?? 0)
-      : activeTab === "genre"
-        ? (counts?.genres?.[selectedValue] ?? 0)
-        : (counts?.saleStatuses?.[selectedValue] ?? 0)
-    : totalCount;
-
   const getCount = (value) => {
     if (activeTab === "grade") {
       return counts?.grades?.[value] ?? 0;
@@ -102,10 +92,6 @@ export default function MarketFilterSheet({
 
     return option.label;
   };
-
-  const visibleCount = selectedValue
-    ? getCount(selectedValue)
-    : activeOptions.reduce((total, option) => total + getCount(option.value), 0);
 
   const handleReset = () => {
     onGradeChange("");

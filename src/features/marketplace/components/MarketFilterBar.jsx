@@ -1,6 +1,5 @@
 import Dropdown from "@/components/common/Dropdown";
 import Input from "@/components/common/Input";
-import { withOptionCounts } from "@/features/marketplace/utils/withOptionCounts";
 import {
   MARKET_GENRE_OPTIONS,
   MARKET_GRADE_OPTIONS,
@@ -14,17 +13,12 @@ export default function MarketFilterBar({
   saleStatus,
   sort,
   keyword,
-  counts,
   onGradeChange,
   onGenreChange,
   onSaleStatusChange,
   onSortChange,
   onKeywordChange,
 }) {
-  const gradeOptions = withOptionCounts(MARKET_GRADE_OPTIONS, counts?.grades);
-  const genreOptions = withOptionCounts(MARKET_GENRE_OPTIONS, counts?.genres);
-  const saleStatusOptions = withOptionCounts(MARKET_SALE_STATUS_OPTIONS, counts?.saleStatuses);
-
   return (
     <section className="mt-[20px] tablet:mt-[30px]">
       <div className="flex w-full flex-col gap-[20px] tablet:flex-row tablet:items-center tablet:justify-between">
@@ -44,7 +38,7 @@ export default function MarketFilterBar({
             <Dropdown
               placeholder="등급"
               size="sort"
-              options={gradeOptions}
+              options={MARKET_GRADE_OPTIONS}
               value={grade}
               onChange={onGradeChange}
               buttonClassName="h-auto w-auto border-0 px-0 tablet:text-[12px] desktop:text-[14px]"
@@ -53,7 +47,7 @@ export default function MarketFilterBar({
             <Dropdown
               placeholder="장르"
               size="sort"
-              options={genreOptions}
+              options={MARKET_GENRE_OPTIONS}
               value={genre}
               onChange={onGenreChange}
               buttonClassName="h-auto w-auto border-0 px-0 tablet:text-[12px] desktop:text-[14px]"
@@ -62,7 +56,7 @@ export default function MarketFilterBar({
             <Dropdown
               placeholder="매진여부"
               size="sort"
-              options={saleStatusOptions}
+              options={MARKET_SALE_STATUS_OPTIONS}
               value={saleStatus}
               onChange={onSaleStatusChange}
               buttonClassName="h-auto w-auto border-0 px-0 tablet:text-[12px] desktop:text-[14px]"
