@@ -1,6 +1,5 @@
 import Image from "next/image";
 import Dropdown from "@/components/common/Dropdown";
-import { withOptionCounts } from "@/features/marketplace/utils/withOptionCounts";
 import {
   MARKET_GENRE_OPTIONS,
   MARKET_GRADE_OPTIONS,
@@ -12,21 +11,16 @@ function FilterControls({
   grade,
   genre,
   saleStatus,
-  counts,
   onGradeChange,
   onGenreChange,
   onSaleStatusChange,
 }) {
-  const gradeOptions = withOptionCounts(MARKET_GRADE_OPTIONS, counts?.grades);
-  const genreOptions = withOptionCounts(MARKET_GENRE_OPTIONS, counts?.genres);
-  const saleStatusOptions = withOptionCounts(MARKET_SALE_STATUS_OPTIONS, counts?.saleStatuses);
-
   return (
     <>
       <Dropdown
         placeholder="등급"
         size="sort"
-        options={gradeOptions}
+        options={MARKET_GRADE_OPTIONS}
         value={grade}
         onChange={onGradeChange}
       />
@@ -34,7 +28,7 @@ function FilterControls({
       <Dropdown
         placeholder="장르"
         size="sort"
-        options={genreOptions}
+        options={MARKET_GENRE_OPTIONS}
         value={genre}
         onChange={onGenreChange}
       />
@@ -42,7 +36,7 @@ function FilterControls({
       <Dropdown
         placeholder="매진여부"
         size="sort"
-        options={saleStatusOptions}
+        options={MARKET_SALE_STATUS_OPTIONS}
         value={saleStatus}
         onChange={onSaleStatusChange}
       />

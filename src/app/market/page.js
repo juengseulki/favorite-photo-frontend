@@ -160,7 +160,6 @@ export default function MarketPage() {
         saleStatus={saleStatus}
         sort={sort}
         keyword={keyword}
-        counts={counts}
         onGradeChange={setGrade}
         onGenreChange={setGenre}
         onSaleStatusChange={setSaleStatus}

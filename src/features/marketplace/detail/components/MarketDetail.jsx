@@ -75,8 +75,6 @@ export default function MarketDetail() {
 
   const { mutate: cancelProposal } = useCancelExchangeProposal(querySaleId);
 
-  if (!isValidSaleId) notFound();
-
   if (isError) {
     const isNotFound = error?.response?.status === 404;
 
@@ -96,7 +94,20 @@ export default function MarketDetail() {
     );
   }
 
-  if (!sale) notFound();
+  if (!sale) {
+    return (
+      <main className="flex min-h-screen flex-col items-center justify-center gap-[20px] bg-black px-[20px] text-center">
+        <p className="text-[18px] font-bold text-white">존재하지 않는 판매글입니다.</p>
+
+        <Link
+          href={ROUTES.MARKET}
+          className="text-[14px] font-bold text-main underline underline-offset-4"
+        >
+          마켓플레이스로 돌아가기
+        </Link>
+      </main>
+    );
+  }
 
   const exchange = {
     description: sale.exchangeDescription ?? sale.exchange?.description ?? "",
@@ -164,7 +175,7 @@ export default function MarketDetail() {
       <div className="mx-auto w-full px-[15px] pb-[80px] pt-[20px] tablet:px-[20px] tablet:pb-[100px] tablet:pt-[40px] desktop:w-[1480px] desktop:px-0 desktop:pb-[60px] desktop:pt-[124px]">
         <Link
           href={ROUTES.MARKET}
-          className="font-brand mb-[20px] hidden text-[14px] text-gray-300 tablet:block desktop:mb-[60px] desktop:text-[24px]"
+          className="font-brand mb-[20px] hidden cursor-pointer text-[14px] text-gray-300 transition hover:text-white tablet:block desktop:mb-[60px] desktop:text-[24px]"
         >
           마켓플레이스
         </Link>
