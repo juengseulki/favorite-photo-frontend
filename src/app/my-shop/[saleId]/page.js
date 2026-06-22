@@ -1,7 +1,7 @@
-"use client";
+﻿"use client";
 
-import { useState } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { notFound, useParams, useRouter } from "next/navigation";
 import Image from "next/image";
 
 import { useSaleDetail } from "@/features/sales/hooks/useSaleDetail";
@@ -16,6 +16,7 @@ import SaleTakeDownModal from "@/features/sales/components/SaleTakeDownModal";
 import ExchangeDecisionModal from "@/features/exchange/components/ExchangeDecisionModal";
 import ExchangeRequestCard from "@/features/exchange/components/ExchangeRequestCard";
 import ProtectedRoute from "@/components/common/ProtectedRoute";
+import { useAuth } from "@/providers/AuthProvider";
 
 import toast from "react-hot-toast";
 import { ROUTES } from "@/lib/constants/routes";
@@ -46,6 +47,7 @@ function SwapIcon() {
 function mapProposalToCard(proposal) {
   const photoCard = proposal?.offeredCardCopy?.photoCard;
   if (!photoCard) return null;
+
   return {
     id: proposal.offeredCardCopyId ?? proposal.id,
     name: photoCard.name,
@@ -61,18 +63,40 @@ function mapProposalToCard(proposal) {
 export default function Page() {
   const { saleId } = useParams();
   const router = useRouter();
+  const { user } = useAuth();
 
-  const { data: sale, isLoading, isError } = useSaleDetail(saleId);
-  const { data: proposals = [] } = useExchangeProposals(saleId);
+  const parsedSaleId = Number(saleId);
+  const isValidSaleId = Number.isInteger(parsedSaleId) && parsedSaleId > 0;
+  const querySaleId = isValidSaleId ? parsedSaleId : null;
 
-  const { mutate: modifySale, isPending: isModifying } = useModifySale(saleId);
-  const { mutate: cancelSale, isPending: isCanceling } = useCancelSale(saleId);
-  const { mutate: acceptProposal, isPending: isAccepting } = useAcceptExchangeProposal(saleId);
-  const { mutate: rejectProposal, isPending: isRejecting } = useRejectExchangeProposal(saleId);
+  const { data: sale, isLoading, isError, error } = useSaleDetail(querySaleId);
+  const { data: proposals = [] } = useExchangeProposals(querySaleId);
+
+  const { mutate: modifySale, isPending: isModifying } = useModifySale(querySaleId);
+  const { mutate: cancelSale, isPending: isCanceling } = useCancelSale(querySaleId);
+  const { mutate: acceptProposal, isPending: isAccepting } = useAcceptExchangeProposal(querySaleId);
+  const { mutate: rejectProposal, isPending: isRejecting } = useRejectExchangeProposal(querySaleId);
 
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isTakeDownOpen, setIsTakeDownOpen] = useState(false);
   const [decisionModal, setDecisionModal] = useState(null);
+
+  useEffect(() => {
+    if (!sale || !user) return;
+
+    if (sale.sellerId && sale.sellerId !== user.id) {
+      router.replace(ROUTES.MY_SHOP);
+      return;
+    }
+
+    if (!sale.sellerId && sale.sellerNickname && sale.sellerNickname !== user.nickname) {
+      router.replace(ROUTES.MY_SHOP);
+    }
+  }, [router, sale, user]);
+
+  if (!isValidSaleId) {
+    notFound();
+  }
 
   if (isLoading) {
     return (
@@ -82,14 +106,31 @@ export default function Page() {
     );
   }
 
-  if (isError || !sale) {
+  if (isError) {
+    if (error?.response?.status === 404) {
+      notFound();
+    }
+
     return (
       <div className={styles["onp-root"]}>
         <div className={styles["onp-page"]}>
-          <p className={styles["onp-desc"]}>판매 정보를 불러올 수 없습니다.</p>
+          <p className={styles["onp-desc"]}>판매 정보를 불러오지 못했습니다.</p>
         </div>
       </div>
     );
+  }
+
+  if (!sale) {
+    notFound();
+  }
+
+  const isNotOwner =
+    !!user &&
+    ((sale.sellerId && sale.sellerId !== user.id) ||
+      (!sale.sellerId && sale.sellerNickname && sale.sellerNickname !== user.nickname));
+
+  if (isNotOwner) {
+    return null;
   }
 
   const remainingQuantity = sale.remainingQuantity ?? 0;
@@ -120,8 +161,10 @@ export default function Page() {
 
   const handleDecisionConfirm = () => {
     if (!decisionModal) return;
+
     const { proposalId, decision } = decisionModal;
     const mutate = decision === "approve" ? acceptProposal : rejectProposal;
+
     mutate(proposalId, {
       onSettled: () => setDecisionModal(null),
     });
@@ -132,13 +175,12 @@ export default function Page() {
       <div className={styles["onp-root"]}>
         <div className={styles["onp-page"]}>
           <main>
-            <p className="font-brand text-[10px] font-bold leading-none text-white desktop:text-[18px] mb-6">
+            <p className="mb-6 font-brand text-[10px] font-bold leading-none text-white desktop:text-[18px]">
               마켓플레이스
             </p>
             <h1 className={styles["onp-title"]}>{sale.name}</h1>
             <div className={`${styles["onp-rule"]} ${styles["onp-rule-strong"]}`} />
 
-            {/* 상세: 이미지 + 정보 */}
             <div className={styles["onp-detail-grid"]}>
               <div className={styles["onp-media"]}>
                 {sale.imageUrl && (
@@ -226,7 +268,6 @@ export default function Page() {
               </div>
             </div>
 
-            {/* 교환 제시 목록 */}
             <section className={styles["onp-offers-section"]}>
               <h2 className={`${styles["onp-title"]} ${styles["onp-title-sm"]}`}>교환 제시 목록</h2>
               <div className={`${styles["onp-rule"]} ${styles["onp-rule-strong"]}`} />
@@ -238,7 +279,9 @@ export default function Page() {
                   {proposals.map((proposal) => {
                     const card = mapProposalToCard(proposal);
                     if (!card) return null;
+
                     const status = proposal.status?.toLowerCase() ?? "pending";
+
                     return (
                       <ExchangeRequestCard
                         key={proposal.id}
