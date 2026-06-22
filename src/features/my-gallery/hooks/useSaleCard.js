@@ -10,7 +10,8 @@ export function useSaleCard() {
   const handleSubmit = async (formData) => {
     setIsSubmitting(true);
     try {
-      await createSale({ data: formData });
+      const createdSale = await createSale({ data: formData });
+      return createdSale;
     } catch (error) {
       setErrorMessage("Sale 등록에 실패했습니다", error.message);
     } finally {

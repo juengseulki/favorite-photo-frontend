@@ -11,10 +11,14 @@ import useCreatePhotoCardForm from "@/features/cards/hooks/useCreatePhotoCardFor
 import PhotoCardCreateModal from "@/features/cards/components/PhotoCardCreateModal";
 import { useRouter } from "next/navigation";
 import { ROUTES } from "@/lib/constants/routes";
+import { getPhotoCardStatus } from "@/lib/api/galleryApi";
+import { QUERY_KEYS } from "@/lib/constants/queryKeys";
+import { useQuery } from "@tanstack/react-query";
+import { useAuth } from "@/providers/AuthProvider";
 
 export default function CreatePhotoCard() {
   const router = useRouter();
-
+  const { isLoading, user } = useAuth();
   const {
     values,
     errors,
@@ -27,15 +31,33 @@ export default function CreatePhotoCard() {
     setCreatePhotoCardResult,
   } = useCreatePhotoCardForm();
 
+  const createStatusQuery = useQuery({
+    queryKey: [QUERY_KEYS.GALLERY.MY_CARD_STATUS],
+    queryFn: getPhotoCardStatus,
+    enabled: !isLoading && !!user,
+  });
+
   return (
     <ProtectedRoute>
       <div className="mx-auto max-w-[1920px] px-[20px] tablet:px-[60px] desktop:px-[220px] gap-[80px]">
-        <div className="hidden tablet:flex justify-between border-b-2 border-gray-100 mb-10">
+        <div className="hidden tablet:flex justify-between border-b-2 border-gray-100 mb-10 items-center">
           <span className="font-brand text-[40px] desktop:text-[50px] font-normal tracking-[-0.03em]">
             포토카드 생성
           </span>
-        </div>
+          <div className="flex items-baseline gap-[12px]">
+            <div className="flex items-baseline gap-[4px]">
+              <span className="text-main text-[40px]">
+                {createStatusQuery.data.remainingCreateCount}
+              </span>
 
+              <span className="text-[28px] l">/{createStatusQuery.data.monthlyCreateLimit}</span>
+            </div>
+
+            <span className="text-gray-300 text-[16px] ">
+              ({createStatusQuery.data.year}년 {createStatusQuery.data.month}월)
+            </span>
+          </div>
+        </div>
         <form
           onSubmit={handleSubmit}
           className="flex flex-col justify-center items-center gap-10 tablet:gap-[30px] mb-10 tablet:mb-10"
