@@ -5,6 +5,7 @@ import {
   useNotifications,
   useReadNotification,
 } from "@/features/notifications/hooks/useNotifications";
+import ProtectedRoute from "@/components/common/ProtectedRoute";
 
 export default function NotificationPage() {
   const router = useRouter();
@@ -57,23 +58,25 @@ export default function NotificationPage() {
   };
 
   return (
-    <div>
-      {notifications.length === 0 ? (
-        <p className="text-[14px] text-gray-300">알림이 없습니다.</p>
-      ) : (
-        <ul className="flex flex-col gap-[12px]">
-          {notifications.map((item) => (
-            <li
-              key={item.id}
-              onClick={() => handleClick(item)}
-              className={`w-full text-left flex flex-col gap-[10px] ${item.isRead ? "opacity-50" : "opacity-100"} border-b border-[#3E3E3E] p-5`}
-            >
-              <p className="text-[14px] text-white"> {item.content}</p>
-              <p className="text-[12px] text-gray-300">{getTimeAgo(item.createdAt)}</p>
-            </li>
-          ))}
-        </ul>
-      )}
-    </div>
+    <ProtectedRoute>
+      <div>
+        {notifications.length === 0 ? (
+          <p className="text-[14px] text-gray-300">알림이 없습니다.</p>
+        ) : (
+          <ul className="flex flex-col gap-[12px]">
+            {notifications.map((item) => (
+              <li
+                key={item.id}
+                onClick={() => handleClick(item)}
+                className={`w-full text-left flex flex-col gap-[10px] ${item.isRead ? "opacity-50" : "opacity-100"} border-b border-[#3E3E3E] p-5`}
+              >
+                <p className="text-[14px] text-white"> {item.content}</p>
+                <p className="text-[12px] text-gray-300">{getTimeAgo(item.createdAt)}</p>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+    </ProtectedRoute>
   );
 }

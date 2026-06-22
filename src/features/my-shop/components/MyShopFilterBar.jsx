@@ -45,7 +45,7 @@ const MyShopFilterBar = ({
           onChange={onGradeChange}
           size=""
           iconSize={22}
-          buttonClassName="gap-[10px] border-none text-gray-200 font-bold h-[22px] "
+          buttonClassName="gap-[10px] border-none text-gray-200 font-bold h-[22px] cursor-pointer "
         />
         <Dropdown
           placeholder="장르"
@@ -54,7 +54,7 @@ const MyShopFilterBar = ({
           onChange={onGenreChange}
           size=""
           iconSize={22}
-          buttonClassName="gap-[10px] border-none text-gray-200 font-bold h-[22px]"
+          buttonClassName="gap-[10px] border-none text-gray-200 font-bold h-[22px] cursor-pointer "
         />
         <Dropdown
           placeholder="판매방법"
@@ -63,7 +63,7 @@ const MyShopFilterBar = ({
           onChange={onTradeTypeChange}
           size=""
           iconSize={22}
-          buttonClassName="gap-[10px] border-none text-gray-200 font-bold h-[22px] "
+          buttonClassName="gap-[10px] border-none text-gray-200 font-bold h-[22px] cursor-pointer  "
         />
         <Dropdown
           placeholder="매진여부"
@@ -72,7 +72,7 @@ const MyShopFilterBar = ({
           onChange={onIsSoldOutChange}
           size=""
           iconSize={22}
-          buttonClassName="gap-[10px] border-none text-gray-200 font-bold h-[22px]"
+          buttonClassName="gap-[10px] border-none text-gray-200 font-bold h-[22px] cursor-pointer "
         />
       </div>
     </div>

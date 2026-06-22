@@ -121,7 +121,11 @@ function LoginFormContent() {
 
       <p className="text-center text-[14px] text-white tablet:text-[16px]">
         최애의 포토가 처음이신가요?{" "}
-        <Link href={signupHref} prefetch={false} className="!text-main underline">
+        <Link
+          href={signupHref}
+          prefetch={false}
+          className="!text-main underline transition-opacity hover:opacity-70"
+        >
           회원가입하기
         </Link>
       </p>

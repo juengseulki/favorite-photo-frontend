@@ -60,6 +60,8 @@ function SignupFormContent() {
 
     if (form.password.length < 8) {
       next.password = ERROR_MESSAGES.PASSWORD_MIN_LENGTH;
+    } else if (!/^(?=.*[a-zA-Z])(?=.*\d)/.test(form.password)) {
+      next.password = ERROR_MESSAGES.PASSWORD_ALPHANUMERIC;
     }
 
     if (form.password !== form.passwordConfirm) {
@@ -201,7 +203,11 @@ function SignupFormContent() {
 
       <p className="text-center text-[14px] text-white tablet:text-[16px]">
         이미 최애의포토 회원이신가요?{" "}
-        <Link href={loginHref} prefetch={false} className="!text-main underline">
+        <Link
+          href={loginHref}
+          prefetch={false}
+          className="!text-main underline transition-opacity hover:opacity-70"
+        >
           로그인하기
         </Link>
       </p>
