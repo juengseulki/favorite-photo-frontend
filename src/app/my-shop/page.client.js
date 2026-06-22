@@ -13,6 +13,7 @@ import { useMyShopInfiniteCards } from "@/features/my-shop/hooks/useMyShopInfini
 import { useIntersectionObserver } from "@/hooks/useIntersectionObserver";
 import useResponsiveLimit from "@/hooks/useResponsiveLimit";
 import { useState } from "react";
+import Loading from "@/components/common/Loading";
 
 const MyShopClient = () => {
   const { limit, isMobile } = useResponsiveLimit(); //데스크톱 15개, 태블릿 & 모바일 16개
@@ -82,7 +83,7 @@ const MyShopClient = () => {
           />
         </div>
         {isLoading || isLoadingMobile ? (
-          <div>로딩 중..</div>
+          <Loading text="카드를 불러오는 중..." />
         ) : isMobile ? (
           <MyShopCards cards={mobileItems} />
         ) : (
@@ -90,7 +91,7 @@ const MyShopClient = () => {
         )}
         {isMobile ? (
           <div ref={bottomRef} className="flex justify-center text-gray-400">
-            {isFetchingNextPage && <div>카드를 불러오는 중...</div>}
+            {isFetchingNextPage && <Loading text="카드를 불러오는 중..." />}
           </div>
         ) : (
           <MyShopPagination page={page} meta={meta} limit={limit} setPage={setPage} />
