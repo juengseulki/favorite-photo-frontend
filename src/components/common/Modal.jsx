@@ -17,11 +17,11 @@ const SIZE_CLASSES = {
   mobileFullPage:
     "fixed inset-0 h-screen max-h-screen w-full rounded-none border-0 tablet:bottom-0 tablet:left-1/2 tablet:right-auto tablet:top-auto tablet:h-auto tablet:max-h-[90vh] tablet:w-[744px] tablet:-translate-x-1/2 tablet:rounded-b-none tablet:rounded-t-[16px] desktop:static desktop:h-auto desktop:w-[1160px] desktop:translate-x-0 desktop:rounded-[2px] desktop:border",
   saleForm:
-    "h-screen w-screen max-h-screen overflow-y-auto rounded-none border-0 px-0 py-0 tablet:h-auto tablet:max-h-[90vh] tablet:w-[744px] tablet:rounded-[2px] tablet:border tablet:px-[40px] tablet:py-[50px] desktop:h-[1000px] desktop:w-[1160px] desktop:px-[120px] desktop:py-[80px]",
+    "h-screen w-screen max-h-screen overflow-hidden rounded-none border-0 px-0 py-0 tablet:h-[90vh] tablet:w-[744px] tablet:rounded-[2px] tablet:border tablet:px-[40px] tablet:py-[50px] desktop:h-[90vh] desktop:w-[1160px] desktop:px-[120px] desktop:py-[80px]",
 };
 
 const SHEET_SIZES = ["bottomSheet", "mobileFullPage"];
-const NO_SCROLL_SIZES = ["purchase", "purchaseResult"];
+const NO_SCROLL_SIZES = ["purchase", "purchaseResult", "form", "saleForm"];
 const CLOSE_BUTTON_CLASSES = {
   purchase: "right-5 top-[50px]",
   purchaseResult: "right-5 top-[26px]",
@@ -40,6 +40,7 @@ export default function Modal({
 }) {
   const isSheetSize = SHEET_SIZES.includes(size);
   const isNoScroll = NO_SCROLL_SIZES.includes(size);
+  const isSaleForm = size === "saleForm";
   const closeButtonClassName = CLOSE_BUTTON_CLASSES[size] ?? "right-5 top-5";
 
   useEffect(() => {
@@ -61,18 +62,20 @@ export default function Modal({
   if (!isOpen) return null;
 
   const overlayClassName = sheetOnTablet
-    ? "fixed inset-0 z-50 flex items-center justify-center bg-black/75 px-[15px] tablet:items-end desktop:items-center"
-    : `fixed inset-0 z-50 flex bg-black/75 ${
+    ? "fixed inset-0 z-50 flex items-center justify-center overflow-hidden bg-black/75 px-[15px] tablet:items-end desktop:items-center"
+    : `fixed inset-0 z-50 flex overflow-hidden bg-black/75 ${
         isSheetSize
           ? "items-end justify-center px-0 tablet:px-0 desktop:items-center desktop:px-[15px]"
-          : "items-center justify-center px-[15px]"
+          : isSaleForm
+            ? "items-start justify-center px-0 tablet:items-center tablet:px-[15px]"
+            : "items-center justify-center px-[15px]"
       }`;
 
   const sectionClassName = sheetOnTablet
     ? `
         relative
         max-h-[90vh]
-        overflow-y-auto
+        overflow-hidden
         rounded-[2px]
         border border-gray-400
         bg-gray-500

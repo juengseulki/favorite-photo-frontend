@@ -143,7 +143,6 @@ export default function SaleExchangeFormModal({
   };
 
   const handleBack = () => {
-    setMessage("");
     onBack?.();
   };
 
@@ -154,9 +153,10 @@ export default function SaleExchangeFormModal({
       size="saleForm"
       onClose={onClose}
       className="bg-gray-500 [&>button]:hidden tablet:[&>button]:block"
+      bodyClassName="mt-0 h-full"
     >
       {/* 모바일 전용 */}
-      <div className="tablet:hidden">
+      <div className="h-screen overflow-y-auto tablet:hidden">
         <div className="-mt-[35px] flex min-h-full w-full flex-col">
           <button
             type="button"
@@ -322,20 +322,16 @@ export default function SaleExchangeFormModal({
       <div
         className="
             hidden
+            h-full
+            overflow-y-auto
+            overflow-x-hidden
+            pr-[20px]
+
             tablet:mx-auto
             tablet:block
-
-            tablet:max-h-[720px]
             tablet:w-[684px]
-            tablet:overflow-y-auto
-            tablet:overflow-x-hidden
-            tablet:pr-[20px]
 
-            desktop:max-h-[840px]
             desktop:w-[940px]
-            desktop:overflow-y-auto
-            desktop:overflow-x-hidden
-            desktop:pr-[20px]
 
             [&::-webkit-scrollbar]:w-[6px]
             [&::-webkit-scrollbar-thumb]:rounded-full
