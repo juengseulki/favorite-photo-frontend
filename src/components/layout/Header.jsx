@@ -34,7 +34,7 @@ export default function Header() {
   const handleLogout = async () => {
     await logout();
     setIsOpen(false);
-    router.push(ROUTES.LOGIN);
+    router.push(ROUTES.HOME);
   };
 
   return (
