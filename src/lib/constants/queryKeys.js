@@ -23,7 +23,6 @@ export const QUERY_KEYS = {
   MARKET: {
     ROOT: ["market"],
     LIST: (filters = {}) => [...QUERY_KEYS.MARKET.ROOT, "list", filters],
-    COUNTS: (filters = {}) => [...QUERY_KEYS.MARKET.ROOT, "counts", filters],
     DETAIL: (saleId) => [...QUERY_KEYS.MARKET.ROOT, "detail", saleId],
   },
 
