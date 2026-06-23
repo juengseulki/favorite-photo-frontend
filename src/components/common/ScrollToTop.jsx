@@ -15,7 +15,7 @@ export default function ScrollToTop() {
       type="button"
       onClick={handleClick}
       className="
-        fixed bottom-[100px] right-12.5 z-50
+        fixed bottom-25 tablet:bottom-[100px] right-6 tablet:right-12.5 z-50
         flex h-14 w-14 flex-col items-center justify-center gap-[3px]
         rounded-full bg-gray-300
         transition-all duration-200
