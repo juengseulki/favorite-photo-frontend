@@ -7,11 +7,15 @@ export function useRejectExchangeProposal(saleId) {
 
   return useMutation({
     mutationFn: (proposalId) => rejectExchangeProposal(proposalId),
+
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.EXCHANGES.ROOT });
-      if (saleId) {
-        queryClient.invalidateQueries({ queryKey: QUERY_KEYS.SALES.DETAIL(saleId) });
-      }
+      queryClient.invalidateQueries({
+        queryKey: QUERY_KEYS.EXCHANGES.ROOT,
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: QUERY_KEYS.MARKET.DETAIL(saleId),
+      });
     },
   });
 }
