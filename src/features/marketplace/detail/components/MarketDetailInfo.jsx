@@ -46,7 +46,7 @@ export default function MarketDetailInfo({ sale }) {
   };
 
   return (
-    <aside className="flex w-full min-w-0 shrink flex-col tablet:w-[342px] desktop:h-[612px] desktop:w-[440px] desktop:shrink-0">
+    <aside className="flex w-full min-w-0 shrink-0 flex-col tablet:w-[342px] desktop:h-[612px] desktop:w-[440px]">
       <div className="flex items-start justify-between gap-[12px] border-b border-gray-450 pb-[16px] pt-[20px] desktop:pb-[24px] desktop:pt-[24px]">
         <div className="flex min-w-0 flex-1 flex-wrap items-center gap-x-[8px] gap-y-[6px] desktop:gap-x-[15px]">
           <GradeBadge grade={sale.grade} size="m" />
@@ -108,7 +108,7 @@ export default function MarketDetailInfo({ sale }) {
       <Button
         variant={isSoldOut ? "disabled" : "primary"}
         size="lg"
-        className="mt-[40px] h-[55px] w-full rounded-[2px] py-0 text-[16px] font-bold desktop:mt-[80px] desktop:h-[60px] desktop:text-[18px]"
+        className="mt-[40px] h-[55px] w-full rounded-[2px] py-0 text-[16px] font-bold desktop: desktop:h-[60px] desktop:text-[18px]"
         onClick={() => {
           if (!isSoldOut) setIsPurchaseModalOpen(true);
         }}

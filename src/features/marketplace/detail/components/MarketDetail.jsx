@@ -203,7 +203,7 @@ export default function MarketDetail() {
           {sale.name}
         </h2>
 
-        <section className="mt-[15px] flex flex-col gap-[20px] tablet:mt-[20px] tablet:flex-row tablet:gap-[20px] desktop:mt-[70px] desktop:gap-[80px]">
+        <section className="mt-[15px] flex flex-col gap-[20px] tablet:mt-[20px] tablet:flex-row tablet:items-start tablet:justify-between tablet:gap-[20px] desktop:mt-[70px] desktop:justify-start desktop:gap-[80px]">
           <MarketDetailImage imageUrl={sale.imageUrl} name={sale.name} isSoldOut={isSoldOut} />
 
           <MarketDetailInfo sale={sale} />
