@@ -7,8 +7,24 @@ export function useModifySale(saleId) {
 
   return useMutation({
     mutationFn: (payload) => modifySale(saleId, payload),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.SALES.DETAIL(saleId) });
+
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({
+        queryKey: QUERY_KEYS.SALES.DETAIL(saleId),
+      });
+
+      await queryClient.invalidateQueries({
+        queryKey: QUERY_KEYS.SALES.ROOT,
+      });
+
+      await queryClient.invalidateQueries({
+        queryKey: QUERY_KEYS.MARKET.ROOT,
+      });
+
+      await queryClient.refetchQueries({
+        queryKey: QUERY_KEYS.SALES.DETAIL(saleId),
+        type: "active",
+      });
     },
   });
 }
