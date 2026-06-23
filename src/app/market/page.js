@@ -98,9 +98,10 @@ export default function MarketPage() {
   //내 카드 정보
   const { cards: myCards, isPending: isMyCardsLoading } = useMyGalleryCards({
     limit: 1000,
+    enabled: saleSelectCardModalOpen,
     isMobile: true,
-    grade: saleGrade === "ALL" ? "" : saleGrade, //값이 ALL일 경우엔 전체 데이터가 불러와지도록 함.
-    genre: saleGenre === "ALL" ? "" : saleGenre, //값이 ALL일 경우엔 전체 데이터가 불러와지도록 함.
+    grade: saleGrade === "ALL" ? "" : saleGrade,
+    genre: saleGenre === "ALL" ? "" : saleGenre,
     keyword: saleKeyword,
   });
 
@@ -180,7 +181,7 @@ export default function MarketPage() {
         grade={grade}
         genre={genre}
         saleStatus={saleStatus}
-        counts={counts}
+        counts={counts ?? {}}
         resultCounts={resultCounts}
         onGradeChange={setGrade}
         onGenreChange={setGenre}

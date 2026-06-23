@@ -1,10 +1,25 @@
 import { axiosInstance } from "@/lib/api/axiosInstance";
 import { API_ROUTES } from "../constants";
 
-export async function getMyGalleryCards({ page, limit, grade, genre, keyword }) {
-  const response = await axiosInstance.get(
-    `${API_ROUTES.GALLERY.MY_CARDS}?page=${page}&limit=${limit}&grade=${grade}&genre=${genre}&keyword=${keyword}`,
-  );
+const buildGalleryQueryParams = (params = {}) => {
+  const searchParams = new URLSearchParams();
+
+  Object.entries(params).forEach(([key, value]) => {
+    if (value !== undefined && value !== null && value !== "") {
+      searchParams.set(key, String(value));
+    }
+  });
+
+  return searchParams.toString();
+};
+
+export async function getMyGalleryCards(params = {}) {
+  const queryString = buildGalleryQueryParams(params);
+  const url = queryString
+    ? `${API_ROUTES.GALLERY.MY_CARDS}?${queryString}`
+    : API_ROUTES.GALLERY.MY_CARDS;
+
+  const response = await axiosInstance.get(url);
 
   return response.data.data;
 }
