@@ -36,7 +36,7 @@ export function useMyGalleryCards({
         ...commonParams,
         page,
       }),
-    nabled: enabled && !isLoading && !!user && !isMobile,
+    enabled: enabled && !isLoading && !!user && !isMobile,
   });
 
   const infiniteQuery = useInfiniteQuery({

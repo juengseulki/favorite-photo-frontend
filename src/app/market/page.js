@@ -96,12 +96,7 @@ export default function MarketPage() {
   };
 
   //내 카드 정보
-  const {
-    cards: myCards,
-    meta,
-    createStatus,
-    isLoading,
-  } = useMyGalleryCards({
+  const { cards: myCards, isPending: isMyCardsLoading } = useMyGalleryCards({
     limit: 1000,
     enabled: saleSelectCardModalOpen,
     isMobile: true,
@@ -223,7 +218,7 @@ export default function MarketPage() {
         onGradeChange={setSaleGrade}
         genre={saleGenre}
         onGenreChange={setSaleGenre}
-        isLoading={isLoading}
+        isLoading={isMyCardsLoading}
         isDisabled={false}
         errorMessage=""
         emptyMessage="판매 가능한 포토카드가 없습니다."
