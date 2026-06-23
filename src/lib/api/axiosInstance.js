@@ -2,6 +2,7 @@ import axios from "axios";
 import { API_ROUTES } from "@/lib/constants/apiRoutes";
 
 let accessToken = null;
+let refreshPromise = null;
 
 export const setAccessToken = (token) => {
   accessToken = token;
@@ -46,15 +47,25 @@ const processQueue = (error, token = null) => {
 };
 
 export const requestRefreshToken = async () => {
-  const { data } = await refreshClient.post(API_ROUTES.AUTH.REFRESH);
-  const newToken = data?.data?.accessToken;
+  if (!refreshPromise) {
+    refreshPromise = refreshClient
+      .post(API_ROUTES.AUTH.REFRESH)
+      .then(({ data }) => {
+        const newToken = data?.data?.accessToken;
 
-  if (!newToken) {
-    throw new Error("AccessToken 재발급에 실패했습니다.");
+        if (!newToken) {
+          throw new Error("AccessToken 재발급에 실패했습니다.");
+        }
+
+        setAccessToken(newToken);
+        return newToken;
+      })
+      .finally(() => {
+        refreshPromise = null;
+      });
   }
 
-  setAccessToken(newToken);
-  return newToken;
+  return refreshPromise;
 };
 
 axiosInstance.interceptors.response.use(
@@ -101,7 +112,6 @@ axiosInstance.interceptors.response.use(
       return axiosInstance(originalRequest);
     } catch (refreshError) {
       processQueue(refreshError, null);
-
       clearAccessToken();
 
       return Promise.reject(refreshError);

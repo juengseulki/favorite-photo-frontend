@@ -28,7 +28,7 @@ export function useMyGalleryCards({ limit, isMobile, page, grade, genre, keyword
         ...commonParams,
         page,
       }),
-    enabled: !isLoading && !!user && !isMobile,
+    enabled: enabled && !isLoading && !!user && !isMobile,
   });
 
   const infiniteQuery = useInfiniteQuery({
