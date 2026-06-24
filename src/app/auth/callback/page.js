@@ -25,7 +25,7 @@ function CallbackHandler() {
       setAccessToken(token);
       const meRes = await getMe();
       login({ user: meRes.data.data.user, accessToken: token });
-      router.replace(ROUTES.HOME);
+      router.replace(ROUTES.MARKET);
     };
 
     finalize().catch(() => router.replace(`${ROUTES.LOGIN}?error=oauth_failed`));

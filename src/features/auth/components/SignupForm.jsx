@@ -18,10 +18,10 @@ function SignupFormContent() {
 
   const { user, isLoading: authLoading, login } = useAuth();
 
-  const redirectUrl = searchParams.get("redirect") ?? ROUTES.HOME;
+  const redirectUrl = searchParams.get("redirect") ?? ROUTES.MARKET;
 
   const loginHref =
-    redirectUrl !== ROUTES.HOME
+    redirectUrl !== ROUTES.MARKET
       ? `${ROUTES.LOGIN}?redirect=${encodeURIComponent(redirectUrl)}`
       : ROUTES.LOGIN;
 
@@ -38,7 +38,7 @@ function SignupFormContent() {
 
   useEffect(() => {
     if (!authLoading && user) {
-      router.replace(ROUTES.HOME);
+      router.replace(ROUTES.MARKET);
     }
   }, [authLoading, user, router]);
 

@@ -40,7 +40,7 @@ function SetupNicknameForm() {
     try {
       const res = await completeGoogleSignup({ provider, providerAccountId, email, nickname });
       login(res.data.data);
-      router.replace(ROUTES.HOME);
+      router.replace(ROUTES.MARKET);
     } catch (err) {
       setError(err.response?.data?.error?.message || "오류가 발생했습니다.");
     } finally {
